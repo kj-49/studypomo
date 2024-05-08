@@ -19,9 +19,9 @@ namespace PomodoroUI.Pages
         {
             if (_userService.GetCurrentUserAsync().Result != null)
             {
-                return RedirectToPage("/Pomodoro/LoggedIn/Index");
+                return RedirectToPage("/Timer/Index", new { area = "Registered" });
             }
-            return RedirectToPage("/Pomodoro/Public/Index");
+            return RedirectToPage("/Timer/Index", new { area = "Public" });
         }
     }
 }

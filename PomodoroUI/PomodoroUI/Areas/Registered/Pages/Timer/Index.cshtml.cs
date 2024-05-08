@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using PomodoroLibrary.Models.Tables;
 using PomodoroLibrary.Services.Interfaces;
 
-namespace PomodoroUI.Pages.Pomodoro.LoggedIn;
+namespace PomodoroUI.Areas.Registered.Pages.Timer;
 
 public class IndexModel : PageModel
 {

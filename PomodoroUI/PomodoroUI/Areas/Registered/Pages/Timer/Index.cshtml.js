@@ -50,6 +50,14 @@ function addEventListeners() {
         resetTimer();
     });
 
+    let radios = document.querySelectorAll('input[name="timer-options"]');
+    radios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            setTimerText(getSelectedValue(), 0);
+        });
+    });
+
+
 }
 
 function startTimer(onTimerFinished) {
@@ -77,13 +85,13 @@ function resetTimer() {
     clearInterval(currentInterval);
     secondsLeft = null;
     timerDuration = null;
-    setTimerText('00', '00');
+    setTimerText(getSelectedValue(), 0);
 }
 
 function setTimerText(minutes, seconds) {
     let timerEl = document.getElementById(TIMER_ELEMENT_ID);
 
-    timerEl.textContent = minutes + ":" + seconds;
+    timerEl.textContent = String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
 }
 
 function addSquares() {
@@ -92,4 +100,8 @@ function addSquares() {
         const level = Math.floor(Math.random() * 3);
         squares.insertAdjacentHTML('beforeend', `<li data-level="${level}"></li>`);
     }
+}
+
+function getSelectedValue() {
+    return document.querySelector('input[name="timer-options"]:checked').value;
 }
