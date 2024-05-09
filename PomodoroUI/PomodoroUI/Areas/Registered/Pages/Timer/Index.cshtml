@@ -1,7 +1,54 @@
 ﻿@page
+@using PomodoroLibrary.Models.Utility
 @model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
 @{
 }
+
+<div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header mb-3">
+                <h5 class="modal-title" id="taskModalLabel">Create a Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="mb-1 px-3">
+                <small>Add important task you want to complete during this session.</a></small>
+            </div>
+            <hr class="text-opacity-50" />
+                <div>
+                    <form method="post" asp-page-handler="CreateOverride">
+                        <div class="modal-body">
+                        <div class="mb-2">
+                            <label asp-for="TaskCreate.Name" class="form-label">Task:</label>
+                            <input class="form-control form-control-sm" asp-for="TaskCreate.Name" />
+                            <span asp-validation-for="TaskCreate.Name" class="text-danger"></span>
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="TaskCreate.TaskPriorityId" class="form-label">Priority:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" selected type="radio" asp-for="TaskCreate.TaskPriorityId" value="@((int)SD.TaskPriority.Low)" id="low" />
+                                <label class="form-check-label" for="low">Low</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="TaskCreate.TaskPriorityId" value="@((int)SD.TaskPriority.Medium)" id="medium" />
+                                <label class="form-check-label" for="medium">Medium</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="TaskCreate.TaskPriorityId" value="@((int)SD.TaskPriority.High)" id="high" />
+                                <label class="form-check-label" for="high">High</label>
+                            </div>
+                            <span asp-validation-for="TaskCreate.TaskPriorityId" class="text-danger form-text"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="util-button" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="util-button-green">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row d-none">
     <div class="col-4">
@@ -90,7 +137,7 @@
                 </p>
             </div>
             <div>
-                <button class="btn btn-primary">Add Task</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#task-modal">Add Task</button>
             </div>
         </div>
 

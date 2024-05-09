@@ -18,6 +18,9 @@ public class IndexModel : PageModel
         _userService = userService;
     }
 
+    [BindProperty]
+    public TaskCreate TaskCreate { get; set; }
+
     public async Task<IActionResult> OnGetAsync()
     {
         IdentityUser<int>? user = await _userService.GetCurrentUserAsync();
@@ -26,4 +29,11 @@ public class IndexModel : PageModel
 
         return Page();
     }
+
+    public async Task<IActionResult> OnPostCreateTaskAsync()
+    {
+        // Add task
+        return RedirectToPage("./Index");
+    }
+
 }

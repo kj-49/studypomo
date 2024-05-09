@@ -53,6 +53,7 @@ function addEventListeners() {
     let radios = document.querySelectorAll('input[name="timer-options"]');
     radios.forEach(radio => {
         radio.addEventListener('change', function () {
+            resetTimer();
             setTimerText(getSelectedValue(), 0);
         });
     });
