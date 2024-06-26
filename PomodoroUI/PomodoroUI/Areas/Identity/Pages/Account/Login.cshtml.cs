@@ -24,13 +24,11 @@ namespace PomodoroUI.Areas.Identity.Pages.Account
         private readonly SignInManager<IdentityUser<int>> _signInManager;
         private readonly UserManager<IdentityUser<int>> _userManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly ILoginService _loginService;
 
-        public LoginModel(SignInManager<IdentityUser<int>> signInManager, ILogger<LoginModel> logger, ILoginService loginService, UserManager<IdentityUser<int>> userManager)
+        public LoginModel(SignInManager<IdentityUser<int>> signInManager, ILogger<LoginModel> logger, UserManager<IdentityUser<int>> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
-            _loginService = loginService;
             _userManager = userManager;
         }
 
@@ -121,12 +119,6 @@ namespace PomodoroUI.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    IdentityUser<int> user = await _userManager.FindByEmailAsync(Input.Email);
-                    OperationResult dbResult = await _loginService.CreateModelAsync(new PomodoroLibrary.Models.Tables.LoginModel
-                    {
-                        Timestamp = DateTime.UtcNow,
-                        AspNetUsersId = user.Id
-                    });
 
                     return LocalRedirect(returnUrl);
                 }

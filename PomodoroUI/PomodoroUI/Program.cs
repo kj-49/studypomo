@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using PomodoroLibrary.Data;
-using PomodoroLibrary.Data.Identity;
+using PomodoroLibrary.Data.Database;
 using PomodoroLibrary.Data.Interfaces;
 using PomodoroLibrary.Services;
 using PomodoroLibrary.Services.Interfaces;
@@ -21,9 +21,7 @@ builder.Services.AddIdentity<IdentityUser<int>, IdentityRole<int>>().AddEntityFr
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 #region app services
-builder.Services.AddScoped<ILoginRepository, LoginRepository>();
-builder.Services.AddScoped<ILoginService, LoginService>();
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
 #endregion
 

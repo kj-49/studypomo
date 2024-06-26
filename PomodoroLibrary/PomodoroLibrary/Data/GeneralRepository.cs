@@ -1,98 +1,54 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using PomodoroLibrary.Data.Database;
 using PomodoroLibrary.Data.Interfaces;
 using PomodoroLibrary.Models.Utility;
-
 using System.Data;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-
 
 namespace PomodoroLibrary.Data;
 
-public class GeneralRepository<T> : IGeneralRepository<T> where T : class
+public class GeneralRepository<T> : IRepository<T> where T : class
 {
-    private readonly IConfiguration _config;
-    public GeneralRepository(IConfiguration config)
+    private readonly ApplicationDbContext _db;
+    internal DbSet<T> dbSet;
+
+    public GeneralRepository(ApplicationDbContext db)
     {
-        _config = config;
+        _db = db;
+        dbSet = _db.Set<T>();
     }
 
-    public async virtual Task<OperationResult<T>> InsertModelAndReturnAsync(string storedProcedure, T parameters)
+    public async Task AddAsync(T model)
     {
-        using IDbConnection connection = new SqlConnection(_config.GetConnectionString("Default"));
-        try
-        {
-            var result = await connection.QueryFirstOrDefaultAsync<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-            if (result != null)
-            {
-                return OperationResult<T>.Success(result);
-            }
-            else
-            {
-                return OperationResult<T>.Failure("No records created.");
-            }
-        }
-        catch (Exception ex)
-        {
-            return OperationResult<T>.Failure($"An error has occured: {ex.Message}");
-        }
+        await dbSet.AddAsync(model);
     }
 
-    public async virtual Task<OperationResult<T>> DeleteModelAndReturnAsync(string storedProcedure, int id)
+    public async Task<IEnumerable<T>> GetAllAsync()
     {
-        using IDbConnection connection = new SqlConnection(_config.GetConnectionString("Default"));
-
-        try
-        {
-            var result = await connection.QueryFirstOrDefaultAsync<T>(storedProcedure, new { Id = id }, commandType: CommandType.StoredProcedure);
-            if (result != null)
-            {
-                return OperationResult<T>.Success(result);
-            }
-            else
-            {
-                return OperationResult<T>.Failure("No records deleted.");
-            }
-        }
-        catch (Exception ex)
-        {
-            return OperationResult<T>.Failure($"An error has occured: {ex.Message}");
-        }
+        IQueryable<T> query = dbSet;
+        return await query.ToListAsync();
     }
 
-    public async virtual Task<OperationResult<T>> UpdateModelAndReturnAsync(string storedProcedure, T parameters)
+    public async Task<T?> GetAsync(Expression<Func<T, bool>> filter)
     {
-        using IDbConnection connection = new SqlConnection(_config.GetConnectionString("Default"));
-
-        try
-        {
-            var result = await connection.QueryFirstAsync<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
-
-            return OperationResult<T>.Success(result);
-        }
-        catch (Exception ex)
-        {
-            return OperationResult<T>.Failure($"An error has occured: {ex.Message}");
-        }
+        IQueryable<T> query = dbSet;
+        query = query.Where(filter);
+        return await query.FirstOrDefaultAsync();
     }
 
-    public async virtual Task<ICollection<T>> GetAllAsync()
+    public void Remove(T model)
     {
-        using IDbConnection connection = new SqlConnection(_config.GetConnectionString("Default"));
-
-        var result = await connection.GetAllAsync<T>();
-
-        return result.ToList();
+        dbSet.Remove(model);
     }
 
-    public async virtual Task<T?> GetByIdAsync(int id)
+    public void RemoveRange(IEnumerable<T> models)
     {
-        using IDbConnection connection = new SqlConnection(_config.GetConnectionString("Default"));
-
-        var result = await connection.GetAsync<T>(id);
-
-        return result;
+        dbSet.RemoveRange(models);
     }
 }

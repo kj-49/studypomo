@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PomodoroLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class IdentityTables : Migration
+    public partial class efcoreinit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,11 +47,39 @@ namespace PomodoroLibrary.Migrations
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudyType",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TypeName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudyType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TaskPriority",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Level = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DisplayHexColor = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskPriority", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,6 +188,84 @@ namespace PomodoroLibrary.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "StudySession",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Started = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Ended = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StudyTypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudySession", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StudySession_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudySession_StudyType_StudyTypeId",
+                        column: x => x.StudyTypeId,
+                        principalTable: "StudyType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Task",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Completed = table.Column<bool>(type: "bit", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateCompleted = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TaskPriorityId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Task", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Task_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Task_TaskPriority_TaskPriorityId",
+                        column: x => x.TaskPriorityId,
+                        principalTable: "TaskPriority",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "StudyType",
+                columns: new[] { "Id", "TypeName" },
+                values: new object[,]
+                {
+                    { 1, "Pomodoro" },
+                    { 2, "Short Break" },
+                    { 3, "Long Break" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TaskPriority",
+                columns: new[] { "Id", "DisplayHexColor", "Level" },
+                values: new object[,]
+                {
+                    { 1, "#28b54d", "Low" },
+                    { 2, "#b57828", "Medium" },
+                    { 3, "#b52d28", "High" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -196,6 +304,26 @@ namespace PomodoroLibrary.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudySession_StudyTypeId",
+                table: "StudySession",
+                column: "StudyTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudySession_UserId",
+                table: "StudySession",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Task_TaskPriorityId",
+                table: "Task",
+                column: "TaskPriorityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Task_UserId",
+                table: "Task",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -217,10 +345,22 @@ namespace PomodoroLibrary.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "StudySession");
+
+            migrationBuilder.DropTable(
+                name: "Task");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "StudyType");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "TaskPriority");
         }
     }
 }

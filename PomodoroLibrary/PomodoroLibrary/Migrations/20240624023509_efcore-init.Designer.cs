@@ -5,22 +5,22 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PomodoroLibrary.Data.Identity;
+using PomodoroLibrary.Data.Database;
 
 #nullable disable
 
 namespace PomodoroLibrary.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240112183855_IdentityTables")]
-    partial class IdentityTables
+    [Migration("20240624023509_efcore-init")]
+    partial class efcoreinit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -94,6 +94,11 @@ namespace PomodoroLibrary.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -145,6 +150,10 @@ namespace PomodoroLibrary.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser<int>");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -226,6 +235,152 @@ namespace PomodoroLibrary.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PomodoroLibrary.Models.Entities.StudySession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Ended")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Started")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StudyTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudyTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("StudySession", (string)null);
+                });
+
+            modelBuilder.Entity("PomodoroLibrary.Models.Entities.StudyType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StudyType", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            TypeName = "Pomodoro"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            TypeName = "Short Break"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            TypeName = "Long Break"
+                        });
+                });
+
+            modelBuilder.Entity("PomodoroLibrary.Models.Entities.Task", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DateCompleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TaskPriorityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskPriorityId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Task", (string)null);
+                });
+
+            modelBuilder.Entity("PomodoroLibrary.Models.Entities.TaskPriority", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DisplayHexColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaskPriority", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DisplayHexColor = "#28b54d",
+                            Level = "Low"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DisplayHexColor = "#b57828",
+                            Level = "Medium"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DisplayHexColor = "#b52d28",
+                            Level = "High"
+                        });
+                });
+
+            modelBuilder.Entity("PomodoroLibrary.Models.Identity.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser<int>");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -275,6 +430,44 @@ namespace PomodoroLibrary.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PomodoroLibrary.Models.Entities.StudySession", b =>
+                {
+                    b.HasOne("PomodoroLibrary.Models.Entities.StudyType", "StudyType")
+                        .WithMany()
+                        .HasForeignKey("StudyTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PomodoroLibrary.Models.Identity.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StudyType");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PomodoroLibrary.Models.Entities.Task", b =>
+                {
+                    b.HasOne("PomodoroLibrary.Models.Entities.TaskPriority", "TaskPriority")
+                        .WithMany()
+                        .HasForeignKey("TaskPriorityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PomodoroLibrary.Models.Identity.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TaskPriority");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
