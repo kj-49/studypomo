@@ -12,21 +12,22 @@ using System.Threading.Tasks;
 
 namespace PomodoroLibrary.Services;
 
-public class StudyTaskService
+public class StudyTaskService : IStudyTaskService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
 
-    public StudyTaskService(IMapper mapper, IUnitOfWork unitOfWork)
+    public StudyTaskService(IMapper mapper, IUnitOfWork unitOfWork, IUserService userService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userService = userService;
     }
 
     public async Task CreateAsync(StudyTaskCreate studyTaskCreate)
     {
-        ApplicationUser? user = await  _userService.GetCurrentUserAsync();
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) throw new Exception("User not found");
 
         var taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Level == studyTaskCreate.TaskPriority.ToString());

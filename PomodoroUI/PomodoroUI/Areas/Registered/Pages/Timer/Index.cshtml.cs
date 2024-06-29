@@ -9,7 +9,6 @@ using PomodoroLibrary.Data.Interfaces;
 using PomodoroLibrary.Models.Identity;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
-using PomodoroLibrary.Services;
 using PomodoroLibrary.Services.Interfaces;
 
 namespace PomodoroUI.Areas.Registered.Pages.Timer;
@@ -18,11 +17,13 @@ public class IndexModel : PageModel
 {
     private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IStudyTaskService _studyTaskService;
 
-    public IndexModel(IUserService userService, IUnitOfWork unitOfWork)
+    public IndexModel(IUserService userService, IUnitOfWork unitOfWork, IStudyTaskService studyTaskService)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
+        _studyTaskService = studyTaskService;
     }
 
     public ICollection<StudyTask> StudyTasks { get; set; }
@@ -41,10 +42,12 @@ public class IndexModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPostCreateTaskAsync()
+    public async Task<IActionResult> OnPostCreateStudyTaskAsync()
     {
         // Add task
-        return RedirectToPage("./Index");
+        await _studyTaskService.CreateAsync(StudyTaskCreate);
+
+        return RedirectToPage();
     }
 
 }

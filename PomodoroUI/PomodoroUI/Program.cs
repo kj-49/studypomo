@@ -27,6 +27,7 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 #region App Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();
 //builder.Services.AddScoped<IStudyTaskRepository, StudyTaskRepository>();
 //builder.Services.AddScoped<ITaskPriorityRepository, TaskPriorityRepository>();
 #endregion

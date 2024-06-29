@@ -24,13 +24,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         base.OnModelCreating(builder);
 
 
-        builder.Entity<StudyTask>().ToTable(nameof(StudyTask));
+        builder.Entity<StudyTask>().ToTable(nameof(StudyTask))
+            .HasOne(u => u.TaskPriority);
 
-        builder.Entity<TaskPriority>().ToTable(nameof(TaskPriority)).HasData(
+        builder.Entity<TaskPriority>().ToTable(nameof(TaskPriority))
+            .HasData(
             new TaskPriority { Id = 1, Level = "Low" , DisplayHexColor = "#28b54d" },
             new TaskPriority { Id = 2, Level = "Medium", DisplayHexColor = "#b57828" },
-            new TaskPriority { Id = 3, Level = "High", DisplayHexColor = "#b52d28" }
-        );
+            new TaskPriority { Id = 3, Level = "High", DisplayHexColor = "#b52d28" });
 
         builder.Entity<StudySession>().ToTable(nameof(StudySession));
 
