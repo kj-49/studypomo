@@ -1,5 +1,9 @@
-﻿using PomodoroLibrary.Data.Interfaces;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using PomodoroLibrary.Data.Interfaces;
+using PomodoroLibrary.Models.Identity;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
+using PomodoroLibrary.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +14,35 @@ namespace PomodoroLibrary.Services;
 
 public class StudyTaskService
 {
-    private readonly IStudyTaskRepository _studyTaskRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    private readonly IUserService _userService;
 
-    public StudyTaskService(IStudyTaskRepository studyTaskRepository)
+    public StudyTaskService(IMapper mapper, IUnitOfWork unitOfWork)
     {
-        _studyTaskRepository = studyTaskRepository;
+        _mapper = mapper;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task CreateAsync(StudyTaskCreate studyTaskCreate)
     {
-        //StudyTask studyTask - new StudyTask
-        //{
+        ApplicationUser? user = await  _userService.GetCurrentUserAsync();
+        if (user == null) throw new Exception("User not found");
 
-        //}
+        var taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Level == studyTaskCreate.TaskPriority.ToString());
 
-        //_studyTaskRepository.AddAsync
+        StudyTask studyTask = new StudyTask
+        {
+            User = user,
+            Name = studyTaskCreate.Name,
+            Completed = false,
+            DateCreated = DateTime.UtcNow,
+            DateCompleted = null,
+            TaskPriority = taskPriority
+        };
+
+        await _unitOfWork.StudyTask.AddAsync(studyTask);
+        _unitOfWork.Save();
     }
 
 }

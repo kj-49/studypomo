@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PomodoroLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class efcoreinit : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,8 +47,7 @@ namespace PomodoroLibrary.Migrations
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -217,7 +216,7 @@ namespace PomodoroLibrary.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Task",
+                name: "StudyTask",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -231,15 +230,15 @@ namespace PomodoroLibrary.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Task", x => x.Id);
+                    table.PrimaryKey("PK_StudyTask", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Task_AspNetUsers_UserId",
+                        name: "FK_StudyTask_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Task_TaskPriority_TaskPriorityId",
+                        name: "FK_StudyTask_TaskPriority_TaskPriorityId",
                         column: x => x.TaskPriorityId,
                         principalTable: "TaskPriority",
                         principalColumn: "Id",
@@ -316,13 +315,13 @@ namespace PomodoroLibrary.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_TaskPriorityId",
-                table: "Task",
+                name: "IX_StudyTask_TaskPriorityId",
+                table: "StudyTask",
                 column: "TaskPriorityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_UserId",
-                table: "Task",
+                name: "IX_StudyTask_UserId",
+                table: "StudyTask",
                 column: "UserId");
         }
 
@@ -348,7 +347,7 @@ namespace PomodoroLibrary.Migrations
                 name: "StudySession");
 
             migrationBuilder.DropTable(
-                name: "Task");
+                name: "StudyTask");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

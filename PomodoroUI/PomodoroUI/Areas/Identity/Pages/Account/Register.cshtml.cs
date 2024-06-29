@@ -18,22 +18,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using PomodoroLibrary.Models.Identity;
 
 namespace PomodoroUI.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser<int>> _signInManager;
-        private readonly UserManager<IdentityUser<int>> _userManager;
-        private readonly IUserStore<IdentityUser<int>> _userStore;
-        private readonly IUserEmailStore<IdentityUser<int>> _emailStore;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<IdentityUser<int>> userManager,
-            IUserStore<IdentityUser<int>> userStore,
-            SignInManager<IdentityUser<int>> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IUserStore<ApplicationUser> userStore,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -154,11 +155,11 @@ namespace PomodoroUI.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser<int> CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser<int>>();
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {
@@ -168,13 +169,13 @@ namespace PomodoroUI.Areas.Identity.Pages.Account
             }
         }
 
-        private IUserEmailStore<IdentityUser<int>> GetEmailStore()
+        private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<IdentityUser<int>>)_userStore;
+            return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }
 }

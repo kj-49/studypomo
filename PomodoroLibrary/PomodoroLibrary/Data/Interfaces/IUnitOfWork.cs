@@ -9,6 +9,8 @@ namespace PomodoroLibrary.Data.Interfaces;
 public interface IUnitOfWork
 {
     IStudyTaskRepository StudyTask { get; }
+    ITaskPriorityRepository TaskPriority { get; }
+    IUserRepository User { get; }
 
     void Save();
 }

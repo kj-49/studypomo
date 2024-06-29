@@ -1,7 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using PomodoroLibrary.Models.Identity
 
-@inject SignInManager<IdentityUser<int>> SignInManager
-@inject UserManager<IdentityUser<int>> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))

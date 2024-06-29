@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PomodoroLibrary.Models.Identity;
 using PomodoroLibrary.Services.Interfaces;
 
 namespace PomodoroUI.Areas.Public.Pages.Timer;
@@ -17,7 +18,7 @@ public class IndexModel : PageModel
     }
     public async Task<IActionResult> OnGetAsync()
     {
-        IdentityUser<int>? user = await _userService.GetCurrentUserAsync();
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
         if (user != null) return RedirectToPage("/Pomodoro/LoggedIn/Index");
 

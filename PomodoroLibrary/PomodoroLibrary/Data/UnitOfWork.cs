@@ -11,6 +11,8 @@ namespace PomodoroLibrary.Data;
 public class UnitOfWork : IUnitOfWork
 {
     public IStudyTaskRepository StudyTask { get; private set; }
+    public ITaskPriorityRepository TaskPriority { get; private set; }
+    public IUserRepository User { get; private set; }
 
     private ApplicationDbContext _db;
 
@@ -18,6 +20,8 @@ public class UnitOfWork : IUnitOfWork
     {
         _db = db;
         StudyTask = new StudyTaskRepository(_db);
+        TaskPriority = new TaskPriorityRepository(_db);
+        User = new UserRepository(_db);
     }
 
     public void Save()

@@ -2,8 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.Framework;
+using PomodoroLibrary.Data;
 using PomodoroLibrary.Data.Interfaces;
-using PomodoroLibrary.Models.Entities;
+using PomodoroLibrary.Models.Identity;
+using PomodoroLibrary.Models.Tables.StudyTaskEntities;
+using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
 using PomodoroLibrary.Services;
 using PomodoroLibrary.Services.Interfaces;
 
@@ -12,21 +17,24 @@ namespace PomodoroUI.Areas.Registered.Pages.Timer;
 public class IndexModel : PageModel
 {
     private readonly IUserService _userService;
-    private readonly IStudyTaskRepository _taskRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public IndexModel(IUserService userService, IStudyTaskRepository taskRepository)
+    public IndexModel(IUserService userService, IUnitOfWork unitOfWork)
     {
         _userService = userService;
-        _taskRepository = taskRepository;
+        _unitOfWork = unitOfWork;
     }
 
-    public ICollection<StudyTask> Tasks { get; set; }
+    public ICollection<StudyTask> StudyTasks { get; set; }
+    [BindProperty]
+    public StudyTaskCreate StudyTaskCreate { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
-        IdentityUser<int>? user = await _userService.GetCurrentUserAsync();
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-        Tasks = (await _taskRepository.GetAllAsync()).ToList();
+        StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+        StudyTaskCreate = new StudyTaskCreate();
 
         if (user == null) return RedirectToPage("/Pomodoro/Public/Index");
 

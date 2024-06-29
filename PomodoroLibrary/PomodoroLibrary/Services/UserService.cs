@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using PomodoroLibrary.Data;
+using PomodoroLibrary.Data.Interfaces;
+using PomodoroLibrary.Models.Identity;
 using PomodoroLibrary.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,23 +16,23 @@ namespace PomodoroLibrary.Services;
 public class UserService : IUserService
 {
     private readonly IHttpContextAccessor _http;
-    private readonly UserManager<IdentityUser<int>> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UserService(IHttpContextAccessor http, UserManager<IdentityUser<int>> userManager)
+    public UserService(IHttpContextAccessor http, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
     {
         _http = http;
         _userManager = userManager;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<IdentityUser<int>?> GetCurrentUserAsync()
+    public async Task<ApplicationUser?> GetCurrentUserAsync()
     {
-        ClaimsPrincipal? appUser = _http?.HttpContext?.User;
+        ClaimsPrincipal? principle = _http?.HttpContext?.User;
 
-        if (appUser == null) return null;
+        if (principle == null) return null;
 
-        IdentityUser<int>? user = await _userManager.GetUserAsync(appUser);
-
-        if (user == null) return null;
+        ApplicationUser? user = await _userManager.GetUserAsync(principle);
 
         return user;
     }
