@@ -12,7 +12,7 @@ using PomodoroLibrary.Data.Database;
 namespace PomodoroLibrary.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240629031044_init")]
+    [Migration("20240707021539_init")]
     partial class init
     {
         /// <inheritdoc />

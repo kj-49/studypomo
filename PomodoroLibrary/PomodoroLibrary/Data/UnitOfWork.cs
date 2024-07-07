@@ -24,9 +24,9 @@ public class UnitOfWork : IUnitOfWork
         User = new UserRepository(_db);
     }
 
-    public void Save()
+    public int Complete()
     {
-        _db.SaveChanges();
+        return _db.SaveChanges();
     }
 
 }

@@ -24,8 +24,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         base.OnModelCreating(builder);
 
 
-        builder.Entity<StudyTask>().ToTable(nameof(StudyTask))
-            .HasOne(u => u.TaskPriority);
+        builder.Entity<StudyTask>()
+            .ToTable(nameof(StudyTask))
+            .Navigation(u => u.TaskPriority).AutoInclude();
 
         builder.Entity<TaskPriority>().ToTable(nameof(TaskPriority))
             .HasData(

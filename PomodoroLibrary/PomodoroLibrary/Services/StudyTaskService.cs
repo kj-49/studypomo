@@ -43,7 +43,7 @@ public class StudyTaskService : IStudyTaskService
         };
 
         await _unitOfWork.StudyTask.AddAsync(studyTask);
-        _unitOfWork.Save();
+        _unitOfWork.Complete();
     }
 
 }

@@ -12,5 +12,5 @@ public interface IUnitOfWork
     ITaskPriorityRepository TaskPriority { get; }
     IUserRepository User { get; }
 
-    void Save();
+    int Complete();
 }
