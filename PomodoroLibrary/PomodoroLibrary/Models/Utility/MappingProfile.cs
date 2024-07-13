@@ -12,6 +12,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<StudyTaskCreate, StudyTask>();
+        CreateMap<StudyTaskVM, StudyTask>();
     }
 }

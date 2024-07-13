@@ -3,6 +3,9 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    var model = Model;
+
+    var test = "test";
 }
 @model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
 
@@ -12,8 +15,9 @@
     hx-post
     hx-page="Index"
     hx-page-handler="CreateStudyTask"
-    hx-swap="outerHTML"
-    _="on htmx:beforeSend set #submitButton.disabled to 'disabled'">
+    hx-swap="innerHTML"
+    hx-target="#current-tasks"
+    hx-on::after-request=" if(event.detail.successful) this.reset()">
     <div class="modal-body">
         <div class="mb-2">
             <label asp-for="StudyTaskCreate.Name" class="form-label">Task:</label>
@@ -45,7 +49,6 @@
 </form>
 
 @section Scripts {
-    <script>
-        
-    </script>
+
+    <partial name="_ValidationScriptsPartial" />
 }

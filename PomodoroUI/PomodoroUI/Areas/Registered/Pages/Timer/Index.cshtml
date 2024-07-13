@@ -18,12 +18,32 @@
             <hr class="text-opacity-50" />
             <div>
                 <div>
-                    @await Html.PartialAsync("Partials/_StudyTaskForm")
+                    @await Html.PartialAsync("Partials/_StudyTaskCreate")
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="study-task-edit-modal" tabindex="-1" aria-labelledby="taskEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header mb-3">
+                <h5 class="modal-title" id="taskEditModalLabel">Edit Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="mb-1 px-3">
+                <small>Add important tasks you want to complete during this session.</a></small>
+            </div>
+            <hr class="text-opacity-50" />
+            <div>
+                <div>
+                    @await Html.PartialAsync("Partials/_StudyTaskCreate")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="d-flex mb-4">
     <i class="bi bi-square-fill text-primary me-2"></i>

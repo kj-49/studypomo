@@ -25,7 +25,7 @@ public class StudyTaskService : IStudyTaskService
         _userService = userService;
     }
 
-    public async Task CreateAsync(StudyTaskCreate studyTaskCreate)
+    public async Task CreateAsync(StudyTaskVM studyTaskCreate)
     {
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) throw new Exception("User not found");

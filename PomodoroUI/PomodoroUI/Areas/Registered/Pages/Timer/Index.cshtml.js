@@ -58,15 +58,27 @@ function addEventListeners() {
         });
     });
 
-    document.querySelector('#study-task-form').addEventListener('submit', (e) => {
+    let createTaskForm = document.getElementById('study-task-form');
+
+    createTaskForm.addEventListener('submit', (e) => {
         let modalEl = document.getElementById('study-task-modal');
         let modalInst = bootstrap.Modal.getInstance(modalEl);
         if (modalInst) {
-            modalInst.hide();
+
+            // Check form validity before submitting using jQuery validation
+            if ($(createTaskForm).valid()) {
+                modalInst.hide();
+            }
+
         } else {
             // If no instance exists, create one and then hide it
             modalInst = new bootstrap.Modal(modalElement);
-            modalInst.hide();
+
+            // Check form validity before submitting using jQuery validation
+            if ($(createTaskForm).valid()) {
+                modalInst.hide();
+            }
+
         }
     });
 

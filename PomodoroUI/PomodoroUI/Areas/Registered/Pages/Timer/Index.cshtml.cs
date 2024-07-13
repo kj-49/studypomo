@@ -11,6 +11,7 @@ using PomodoroLibrary.Models.Identity;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
 using PomodoroLibrary.Services.Interfaces;
+using System.Runtime.CompilerServices;
 
 namespace PomodoroUI.Areas.Registered.Pages.Timer;
 
@@ -29,7 +30,9 @@ public class IndexModel : PageModel
 
     public ICollection<StudyTask> StudyTasks { get; set; }
     [BindProperty]
-    public StudyTaskCreate StudyTaskCreate { get; set; }
+    public StudyTaskVM StudyTaskCreate { get; set; }
+    [BindProperty]
+    public StudyTaskVM StudyTaskEdit { get; set; }
 
     public bool RenderTasksOutOfBand { get; set; }
 
@@ -38,7 +41,9 @@ public class IndexModel : PageModel
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
         StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
-        StudyTaskCreate = new StudyTaskCreate();
+
+        StudyTaskCreate = new StudyTaskVM();
+        StudyTaskCreate = new StudyTaskVM();
 
         if (user == null) return RedirectToPage("/Pomodoro/Public/Index");
 
@@ -49,20 +54,15 @@ public class IndexModel : PageModel
     {
         if (Request.IsHtmx()) {
 
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
             await _studyTaskService.CreateAsync(StudyTaskCreate);
 
             StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
 
             RenderTasksOutOfBand = true;
 
-            StudyTaskCreate = new StudyTaskCreate();
+            StudyTaskCreate = new StudyTaskVM();
 
-            return Partial("Partials/_StudyTaskForm", this);
+            return Partial("Partials/_StudyTasks", this);
         }
 
         return Page();
@@ -78,9 +78,14 @@ public class IndexModel : PageModel
 
             RenderTasksOutOfBand = true;
 
-            return Partial("Partials/_StudyTaskForm", this);
+            return Partial("Partials/_StudyTaskCreate", this);
         }
 
+        return Page();
+    }
+
+    public async Task<IActionResult> OnGetStudyTaskAsync(int id)
+    {
         return Page();
     }
 

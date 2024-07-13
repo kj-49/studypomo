@@ -24,7 +24,7 @@ else
                         <h6>@task.Name</h6>
                     </div>
                     <div>
-                        <button class="nav-link" type="submit" asp-page-handler="RemoveStudyTask" asp-route-id="@task.Id"><i class="bi bi-trash-fill text-danger"></i></button>
+                        <button class="nav-link" hx-post hx-page-handler="RemoveStudyTask" hx-route-id="@task.Id"><i class="bi bi-trash-fill text-danger"></i></button>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between">
@@ -32,7 +32,13 @@ else
                         <small>Priority: @task.TaskPriority.Level</small>
                     </div>
                     <div>
-                        <i class="bi bi-pencil text-primary"></i>
+                        <a class="nav-link" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#study-task-edit-modal"
+                            hx-get=""
+                            >
+                            <i class="bi bi-pencil text-primary"></i>
+                        </a>
                     </div>
                 </div>
             </div>
