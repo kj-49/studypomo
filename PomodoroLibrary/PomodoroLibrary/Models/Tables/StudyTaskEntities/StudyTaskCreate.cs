@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace PomodoroLibrary.Models.Tables.StudyTaskEntities;
 
-public class StudyTaskVM
+public class StudyTaskCreate
 {
     [Required]
     public string Name { get; set; }
     [Required]
-    public SD.TaskPriority TaskPriority { get; set; }
+    public int TaskPriorityId { get; set; }
 }

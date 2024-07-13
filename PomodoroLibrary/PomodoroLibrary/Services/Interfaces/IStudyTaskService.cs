@@ -4,7 +4,8 @@ namespace PomodoroLibrary.Services.Interfaces
 {
     public interface IStudyTaskService
     {
-        Task CreateAsync(StudyTaskVM studyTaskCreate);
+        Task CreateAsync(StudyTaskCreate studyTaskCreate);
         Task RemoveAsync(int id);
+        Task UpdateAsync(StudyTaskUpdate studyTaskUpdate);
     }
 }

@@ -5,7 +5,7 @@
 @{
 }
 
-<div class="modal fade" id="study-task-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+<div class="modal fade" id="study-task-create-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header mb-3">
@@ -36,8 +36,8 @@
             </div>
             <hr class="text-opacity-50" />
             <div>
-                <div>
-                    @await Html.PartialAsync("Partials/_StudyTaskCreate")
+                <div id="study-task-edit-form">
+
                 </div>
             </div>
         </div>
@@ -93,7 +93,7 @@
                 <h5>Tasks</h5>
             </div>
             <div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-modal">Add Task</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-create-modal">Add Task</button>
             </div>
         </div>
 

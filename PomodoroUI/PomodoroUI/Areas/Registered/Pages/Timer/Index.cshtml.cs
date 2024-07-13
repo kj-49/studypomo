@@ -1,4 +1,5 @@
 
+using AutoMapper;
 using Htmx;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,19 +21,23 @@ public class IndexModel : PageModel
     private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IStudyTaskService _studyTaskService;
+    private readonly IMapper _mapper;
 
-    public IndexModel(IUserService userService, IUnitOfWork unitOfWork, IStudyTaskService studyTaskService)
+    public IndexModel(IUserService userService, IUnitOfWork unitOfWork, IStudyTaskService studyTaskService, IMapper mapper)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
         _studyTaskService = studyTaskService;
+        _mapper = mapper;
     }
+
+    public ICollection<TaskPriority> TaskPriorities { get; set; }
 
     public ICollection<StudyTask> StudyTasks { get; set; }
     [BindProperty]
-    public StudyTaskVM StudyTaskCreate { get; set; }
+    public StudyTaskCreate StudyTaskCreate { get; set; }
     [BindProperty]
-    public StudyTaskVM StudyTaskUpdate { get; set; }
+    public StudyTaskUpdate StudyTaskUpdate { get; set; }
 
     public bool RenderTasksOutOfBand { get; set; }
 
@@ -41,9 +46,10 @@ public class IndexModel : PageModel
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
         StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+        TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
 
-        StudyTaskCreate = new StudyTaskVM();
-        StudyTaskUpdate = new StudyTaskVM();
+        StudyTaskCreate = new StudyTaskCreate();
+        StudyTaskUpdate = new StudyTaskUpdate();
 
         if (user == null) return RedirectToPage("/Pomodoro/Public/Index");
 
@@ -57,6 +63,8 @@ public class IndexModel : PageModel
             await _studyTaskService.CreateAsync(StudyTaskCreate);
 
             StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+
+            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
 
             RenderTasksOutOfBand = true;
 
@@ -74,16 +82,46 @@ public class IndexModel : PageModel
 
             StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
 
-            RenderTasksOutOfBand = true;
+            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
 
-            return Partial("Partials/_StudyTaskCreate", this);
+            return Partial("Partials/_StudyTasks", this);
         }
 
         return Page();
     }
 
-    public async Task<IActionResult> OnGetStudyTaskAsync(int id)
+    public async Task<IActionResult> OnPostUpdateStudyTaskAsync()
     {
+        if (Request.IsHtmx())
+        {
+            await _studyTaskService.UpdateAsync(StudyTaskUpdate);
+
+            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+
+            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+
+            return Partial("Partials/_StudyTasks", this);
+        }
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnGetStudyTaskUpdateAsync(int id)
+    {
+        
+        if (Request.IsHtmx())
+        {
+            StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(u => u.Id == id);
+
+            if (studyTask == null) return NotFound();
+
+            StudyTaskUpdate = _mapper.Map<StudyTaskUpdate>(studyTask);
+
+            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+
+            return Partial("Partials/_StudyTaskUpdate", this);
+        }
+
         return Page();
     }
 

@@ -25,12 +25,12 @@ public class StudyTaskService : IStudyTaskService
         _userService = userService;
     }
 
-    public async Task CreateAsync(StudyTaskVM studyTaskCreate)
+    public async Task CreateAsync(StudyTaskCreate studyTaskCreate)
     {
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) throw new Exception("User not found");
 
-        var taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Level == studyTaskCreate.TaskPriority.ToString());
+        var taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
 
         StudyTask studyTask = new StudyTask
         {
@@ -55,4 +55,15 @@ public class StudyTaskService : IStudyTaskService
         _unitOfWork.Complete();
     }
 
+    public async Task UpdateAsync(StudyTaskUpdate studyTaskUpdate)
+    {
+        StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(u => u.Id == studyTaskUpdate.Id);
+
+        if (studyTask == null) throw new Exception("Study Task not found");
+
+        StudyTask updatedStudyTask = _mapper.Map(studyTaskUpdate, studyTask);
+
+        _unitOfWork.StudyTask.Update(updatedStudyTask);
+        _unitOfWork.Complete();
+    }
 }

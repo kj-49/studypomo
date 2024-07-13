@@ -12,6 +12,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<StudyTaskVM, StudyTask>();
+        CreateMap<StudyTask, StudyTaskUpdate>().ReverseMap();
+
     }
 }

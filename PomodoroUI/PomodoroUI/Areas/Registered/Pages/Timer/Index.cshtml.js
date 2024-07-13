@@ -58,7 +58,8 @@ function addEventListeners() {
         });
     });
 
-    closeOnSubmit('study-task-create-form', 'study-task-modal');
+    closeOnSubmit('study-task-create-form', 'study-task-create-modal');
+    closeOnSubmit('study-task-create-form', 'study-task-edit-modal');
 
 }
 
