@@ -46,4 +46,13 @@ public class StudyTaskService : IStudyTaskService
         _unitOfWork.Complete();
     }
 
+    public async Task RemoveAsync(int id)
+    {
+        StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(u => u.Id == id);
+        if (studyTask == null) throw new Exception("Study Task not found");
+
+        _unitOfWork.StudyTask.Remove(studyTask);
+        _unitOfWork.Complete();
+    }
+
 }

@@ -60,13 +60,28 @@ public class IndexModel : PageModel
 
             RenderTasksOutOfBand = true;
 
+            StudyTaskCreate = new StudyTaskCreate();
+
             return Partial("Partials/_StudyTaskForm", this);
         }
 
-        // Add task
-        //
+        return Page();
+    }
 
-        return RedirectToPage();
+    public async Task<IActionResult> OnPostRemoveStudyTaskAsync(int id)
+    {
+        if (Request.IsHtmx())
+        {
+            await _studyTaskService.RemoveAsync(id);
+
+            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+
+            RenderTasksOutOfBand = true;
+
+            return Partial("Partials/_StudyTaskForm", this);
+        }
+
+        return Page();
     }
 
 }

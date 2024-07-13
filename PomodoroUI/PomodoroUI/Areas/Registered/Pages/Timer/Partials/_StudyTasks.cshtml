@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
+
+@if (Model.StudyTasks.Count == 0)
+{
+    <p>No Tasks yet.</p>
+}
+else
+{
+    <form hx-post
+        hx-page="Index"
+        hx-swap="outerHTML">
+   
+        @foreach (var task in Model.StudyTasks)
+        {
+            <div class="border border-1 border-opacity-25 border-primary-subtle rounded p-3 mb-2">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6>@task.Name</h6>
+                    </div>
+                    <div>
+                        <button class="nav-link" type="submit" asp-page-handler="RemoveStudyTask" asp-route-id="@task.Id"><i class="bi bi-trash-fill text-danger"></i></button>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <small>Priority: @task.TaskPriority.Level</small>
+                    </div>
+                    <div>
+                        <i class="bi bi-pencil text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        }
+        @Html.AntiForgeryToken()
+    </form>
+}
+

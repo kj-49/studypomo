@@ -76,36 +76,11 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-modal">Add Task</button>
             </div>
         </div>
+
         <div id="current-tasks">
-            @if (Model.StudyTasks.Count == 0)
-            {
-                <p>No Tasks yet.</p>
-            }
-            else
-            {
-                @foreach (var task in Model.StudyTasks)
-                {
-                    <div class="border border-1 border-opacity-25 border-primary-subtle rounded p-3 mb-2">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6>@task.Name</h6>
-                            </div>
-                            <div>
-                                <i class="bi bi-trash text-danger"></i>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <small>Priority: @task.TaskPriority.Level</small>
-                            </div>
-                            <div>
-                                <i class="bi bi-pencil text-primary"></i>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
+            @await Html.PartialAsync("Partials/_StudyTasks")
         </div>
+
     </div>
 
 </div>
