@@ -58,6 +58,18 @@ function addEventListeners() {
         });
     });
 
+    document.querySelector('#study-task-form').addEventListener('submit', (e) => {
+        let modalEl = document.getElementById('study-task-modal');
+        let modalInst = bootstrap.Modal.getInstance(modalEl);
+        if (modalInst) {
+            modalInst.hide();
+        } else {
+            // If no instance exists, create one and then hide it
+            modalInst = new bootstrap.Modal(modalElement);
+            modalInst.hide();
+        }
+    });
+
 
 }
 

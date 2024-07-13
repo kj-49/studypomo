@@ -1,0 +1,76 @@
+﻿@using PomodoroLibrary.Models.Utility
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
+
+@if (Model.RenderTasksOutOfBand)
+{
+    <div id="current-tasks" hx-swap-oob="true">
+        @foreach (var task in Model.StudyTasks)
+        {
+            <div class="border border-1 border-opacity-25 border-primary-subtle rounded p-3 mb-2">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6>@task.Name</h6>
+                    </div>
+                    <div>
+                        <i class="bi bi-trash text-danger"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <small>Priority: @task.TaskPriority.Level</small>
+                    </div>
+                    <div>
+                        <i class="bi bi-pencil text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<form id="study-task-form" 
+    hx-post
+    hx-page="Index"
+    hx-page-handler="CreateStudyTask"
+    hx-swap="outerHTML"
+    _="on htmx:beforeSend set #submitButton.disabled to 'disabled'">
+    <div class="modal-body">
+        <div class="mb-2">
+            <label asp-for="StudyTaskCreate.Name" class="form-label">Task:</label>
+            <input class="form-control form-control-sm" asp-for="StudyTaskCreate.Name" />
+            <span asp-validation-for="StudyTaskCreate.Name" class="text-danger form-text"></span>
+        </div>
+        <div class="mb-2">
+            <label asp-for="StudyTaskCreate.TaskPriority" class="form-label">Priority:</label>
+            <div class="form-check">
+                <input class="form-check-input" selected type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.Low)" id="low" />
+                <label class="form-check-label" for="low">Low</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.Medium)" id="medium" />
+                <label class="form-check-label" for="medium">Medium</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.High)" id="high" />
+                <label class="form-check-label" for="high">High</label>
+            </div>
+            <span asp-validation-for="StudyTaskCreate.TaskPriority" class="text-danger form-text"></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" id="submitButton" class="btn btn-primary">Create</button>
+    </div>
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script>
+        
+    </script>
+}

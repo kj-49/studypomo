@@ -1,4 +1,5 @@
 
+using Htmx;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -30,6 +31,8 @@ public class IndexModel : PageModel
     [BindProperty]
     public StudyTaskCreate StudyTaskCreate { get; set; }
 
+    public bool RenderTasksOutOfBand { get; set; }
+
     public async Task<IActionResult> OnGetAsync()
     {
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
@@ -44,8 +47,24 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostCreateStudyTaskAsync()
     {
+        if (Request.IsHtmx()) {
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            await _studyTaskService.CreateAsync(StudyTaskCreate);
+
+            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+
+            RenderTasksOutOfBand = true;
+
+            return Partial("Partials/_StudyTaskForm", this);
+        }
+
         // Add task
-        await _studyTaskService.CreateAsync(StudyTaskCreate);
+        //
 
         return RedirectToPage();
     }

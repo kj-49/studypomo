@@ -1,10 +1,11 @@
 ﻿@page
+@using PomodoroLibrary.Models.Tables.StudyTaskEntities
 @using PomodoroLibrary.Models.Utility
 @model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
 @{
 }
 
-<div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+<div class="modal fade" id="study-task-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header mb-3">
@@ -17,35 +18,7 @@
             <hr class="text-opacity-50" />
             <div>
                 <div>
-                    <form method="post" asp-page-handler="CreateStudyTask">
-                        <div class="modal-body">
-                            <div class="mb-2">
-                                <label asp-for="StudyTaskCreate.Name" class="form-label">Task:</label>
-                                <input class="form-control form-control-sm" asp-for="StudyTaskCreate.Name" />
-                                <span asp-validation-for="StudyTaskCreate.Name" class="text-danger form-text"></span>
-                            </div>
-                            <div class="mb-2">
-                                <label asp-for="StudyTaskCreate.TaskPriority" class="form-label">Priority:</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" selected type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.Low)" id="low" />
-                                    <label class="form-check-label" for="low">Low</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.Medium)" id="medium" />
-                                    <label class="form-check-label" for="medium">Medium</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.High)" id="high" />
-                                    <label class="form-check-label" for="high">High</label>
-                                </div>
-                                <span asp-validation-for="StudyTaskCreate.TaskPriority" class="text-danger form-text"></span>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Create</button>
-                        </div>
-                    </form>
+                    @await Html.PartialAsync("Partials/_StudyTaskForm")
                 </div>
             </div>
         </div>
@@ -100,31 +73,39 @@
                 <h5>Tasks</h5>
             </div>
             <div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#task-modal">Add Task</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-modal">Add Task</button>
             </div>
         </div>
-
-        @foreach (var task in Model.StudyTasks)
-        {
-            <div class="border border-1 border-opacity-25 border-primary-subtle rounded p-3 mb-2">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6>@task.Name</h6>
+        <div id="current-tasks">
+            @if (Model.StudyTasks.Count == 0)
+            {
+                <p>No Tasks yet.</p>
+            }
+            else
+            {
+                @foreach (var task in Model.StudyTasks)
+                {
+                    <div class="border border-1 border-opacity-25 border-primary-subtle rounded p-3 mb-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6>@task.Name</h6>
+                            </div>
+                            <div>
+                                <i class="bi bi-trash text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <small>Priority: @task.TaskPriority.Level</small>
+                            </div>
+                            <div>
+                                <i class="bi bi-pencil text-primary"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <i class="bi bi-trash text-danger"></i>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <small>Priority: @task.TaskPriority.Level</small>
-                    </div>
-                    <div>
-                        <i class="bi bi-pencil text-primary"></i>
-                    </div>
-                </div>
-            </div>
-        }
+                }
+            }
+        </div>
     </div>
 
 </div>
