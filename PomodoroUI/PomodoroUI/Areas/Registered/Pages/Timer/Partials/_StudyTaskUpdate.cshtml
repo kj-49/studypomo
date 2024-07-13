@@ -11,7 +11,7 @@
 
 @await Html.PartialAsync("Partials/_TasksOutOfBounds")
 
-<form id="study-task-create-form" 
+<form id="study-task-form" 
     hx-post
     hx-page="Index"
     hx-page-handler="CreateStudyTask"
@@ -20,25 +20,25 @@
     hx-on::after-request=" if(event.detail.successful) this.reset()">
     <div class="modal-body">
         <div class="mb-2">
-            <label asp-for="StudyTaskCreate.Name" class="form-label">Task:</label>
-            <input class="form-control form-control-sm" asp-for="StudyTaskCreate.Name" />
-            <span asp-validation-for="StudyTaskCreate.Name" class="text-danger form-text"></span>
+            <label asp-for="StudyTaskUpdate.Name" class="form-label">Task:</label>
+            <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Name" />
+            <span asp-validation-for="StudyTaskUpdate.Name" class="text-danger form-text"></span>
         </div>
         <div class="mb-2">
-            <label asp-for="StudyTaskCreate.TaskPriority" class="form-label">Priority:</label>
+            <label asp-for="StudyTaskUpdate.TaskPriority" class="form-label">Priority:</label>
             <div class="form-check">
-                <input class="form-check-input" selected type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.Low)" id="low" />
+                <input class="form-check-input" selected type="radio" asp-for="StudyTaskUpdate.TaskPriority" value="@((int)SD.TaskPriority.Low)" id="low" />
                 <label class="form-check-label" for="low">Low</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.Medium)" id="medium" />
+                <input class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriority" value="@((int)SD.TaskPriority.Medium)" id="medium" />
                 <label class="form-check-label" for="medium">Medium</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriority" value="@((int)SD.TaskPriority.High)" id="high" />
+                <input class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriority" value="@((int)SD.TaskPriority.High)" id="high" />
                 <label class="form-check-label" for="high">High</label>
             </div>
-            <span asp-validation-for="StudyTaskCreate.TaskPriority" class="text-danger form-text"></span>
+            <span asp-validation-for="StudyTaskUpdate.TaskPriority" class="text-danger form-text"></span>
         </div>
     </div>
     <div class="modal-footer">

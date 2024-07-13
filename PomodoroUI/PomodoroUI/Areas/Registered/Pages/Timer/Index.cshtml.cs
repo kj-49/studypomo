@@ -32,7 +32,7 @@ public class IndexModel : PageModel
     [BindProperty]
     public StudyTaskVM StudyTaskCreate { get; set; }
     [BindProperty]
-    public StudyTaskVM StudyTaskEdit { get; set; }
+    public StudyTaskVM StudyTaskUpdate { get; set; }
 
     public bool RenderTasksOutOfBand { get; set; }
 
@@ -43,7 +43,7 @@ public class IndexModel : PageModel
         StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
 
         StudyTaskCreate = new StudyTaskVM();
-        StudyTaskCreate = new StudyTaskVM();
+        StudyTaskUpdate = new StudyTaskVM();
 
         if (user == null) return RedirectToPage("/Pomodoro/Public/Index");
 
@@ -59,8 +59,6 @@ public class IndexModel : PageModel
             StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
 
             RenderTasksOutOfBand = true;
-
-            StudyTaskCreate = new StudyTaskVM();
 
             return Partial("Partials/_StudyTasks", this);
         }
