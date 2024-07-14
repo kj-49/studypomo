@@ -1,11 +1,4 @@
-﻿using Microsoft.Build.Framework;
-using PomodoroLibrary.Models.Identity;
-using PomodoroLibrary.Models.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PomodoroLibrary.Models.Tables.StudyTaskEntities;
 
@@ -14,5 +7,6 @@ public class StudyTaskCreate
     [Required]
     public string Name { get; set; }
     [Required]
+    [Display(Name = "Priority")]
     public int TaskPriorityId { get; set; }
 }

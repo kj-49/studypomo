@@ -13,7 +13,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="mb-1 px-3">
-                <small>Add important tasks you want to complete during this session.</a></small>
+                <small>Add important tasks you want to complete during this session.</small>
             </div>
             <hr class="text-opacity-50" />
             <div>
@@ -34,10 +34,10 @@
             <div class="mb-1 px-3">
                 <small>Add important tasks you want to complete during this session.</a></small>
             </div>
-            <hr class="text-opacity-50" />
+            <hr class="text-opacity-50 mb-0" />
             <div>
                 <div id="study-task-edit-form">
-
+                    @await Html.PartialAsync("Partials/_StudyTaskUpdate")
                 </div>
             </div>
         </div>

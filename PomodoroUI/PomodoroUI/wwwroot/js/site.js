@@ -8,7 +8,7 @@ function closeOnSubmit(formId, modalId) {
         if (modalInst) {
 
             // Check form validity before submitting using jQuery validation
-            if ($(form).valid()) {
+            if ($(e.target).valid()) {
                 modalInst.hide();
             }
 
@@ -17,7 +17,7 @@ function closeOnSubmit(formId, modalId) {
             modalInst = new bootstrap.Modal(modalElement);
 
             // Check form validity before submitting using jQuery validation
-            if ($(form).valid()) {
+            if ($(e.target).valid()) {
                 modalInst.hide();
             }
 

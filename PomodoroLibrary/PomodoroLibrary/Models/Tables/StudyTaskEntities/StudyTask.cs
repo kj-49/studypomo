@@ -11,10 +11,12 @@ namespace PomodoroLibrary.Models.Tables.StudyTaskEntities;
 public class StudyTask
 {
     public int Id { get; set; }
+    public int UserId { get; set; }
     public ApplicationUser User { get; set; }
     public string Name { get; set; }
     public bool Completed { get; set; }
     public DateTime DateCreated { get; set; }
     public DateTime? DateCompleted { get; set; }
+    public int TaskPriorityId { get; set; }
     public TaskPriority TaskPriority { get; set; }
 }

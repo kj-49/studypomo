@@ -59,7 +59,7 @@ function addEventListeners() {
     });
 
     closeOnSubmit('study-task-create-form', 'study-task-create-modal');
-    closeOnSubmit('study-task-create-form', 'study-task-edit-modal');
+    closeOnSubmit('study-task-edit-form', 'study-task-edit-modal');
 
 }
 
