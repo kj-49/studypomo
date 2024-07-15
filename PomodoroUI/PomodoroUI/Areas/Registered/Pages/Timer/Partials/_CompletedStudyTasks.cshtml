@@ -1,0 +1,45 @@
+﻿@using Humanizer
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
+
+@if (Model.StudyTasks.Count == 0)
+{
+    <p>No Completed tasks.</p>
+}
+else
+{
+    <form hx-post
+        hx-page="Index"
+        >
+   
+        @foreach (var task in Model.StudyTasks)
+        {
+            <div class="card mb-3 border-success-subtle">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div class="d-flex align-items-center">
+                            <h6 class="card-title mb-0 me-2">@task.Name</h6>
+                            <span class="badge" style="background-color: @(task.TaskPriority.DisplayHexColor)">Priority: @task.TaskPriority.Level</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-link text-danger p-0 me-3" hx-post hx-swap="innerHTML" hx-target="#completed-tasks" hx-page-handler="RemoveCompletedTask" hx-route-id="@task.Id">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                            <a class="btn btn-link text-primary p-0" data-bs-toggle="modal" data-bs-target="#completed-task-edit-modal" hx-get hx-page="Index" hx-page-handler="CompletedTaskUpdate" hx-route-id="@task.Id" hx-swap="innerHTML" hx-target="#completed-task-edit-form">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <small>Completed @task.DateCompleted.Humanize()</small>
+                </div>
+            </div>
+        }
+        @Html.AntiForgeryToken()
+    </form>
+}
+
