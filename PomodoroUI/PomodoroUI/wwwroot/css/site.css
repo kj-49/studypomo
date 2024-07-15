@@ -31,7 +31,7 @@ body {
     background-color: var(--background-color);
 }
 .timer {
-    font-size: 6rem;
+    font-size: 6.25rem;
     font-weight: 700;
 }
 
