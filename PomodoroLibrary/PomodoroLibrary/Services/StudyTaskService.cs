@@ -75,6 +75,7 @@ public class StudyTaskService : IStudyTaskService
         if (studyTask == null) throw new Exception("Study Task not found");
 
         studyTask.Completed = true;
+        studyTask.DateCompleted = DateTime.UtcNow;
 
         _unitOfWork.StudyTask.Update(studyTask);
         _unitOfWork.Complete();
@@ -87,6 +88,7 @@ public class StudyTaskService : IStudyTaskService
         if (studyTask == null) throw new Exception("Study Task not found");
 
         studyTask.Completed = false;
+        studyTask.DateCompleted = null;
 
         _unitOfWork.StudyTask.Update(studyTask);
         _unitOfWork.Complete();
