@@ -41,11 +41,8 @@ else
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-link text-danger p-0 me-3" hx-post hx-swap="innerHTML" hx-target="#current-tasks" hx-page-handler="RemoveStudyTask" hx-route-id="@task.Id">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
                             <a class="btn btn-link text-primary p-0" data-bs-toggle="modal" data-bs-target="#study-task-edit-modal" hx-get hx-page="Index" hx-page-handler="StudyTaskUpdate" hx-route-id="@task.Id" hx-swap="innerHTML" hx-target="#study-task-edit-form">
-                                <i class="bi bi-pencil"></i>
+                                <i class="bi bi-three-dots"></i>
                             </a>
                         </div>
                     </div>
