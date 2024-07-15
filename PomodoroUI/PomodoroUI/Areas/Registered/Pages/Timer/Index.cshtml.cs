@@ -142,4 +142,21 @@ public class IndexModel : PageModel
 
     }
 
+    public async Task<IActionResult> OnPostUncompleteTaskAsync(int id)
+    {
+        if (Request.IsHtmx())
+        {
+            await _studyTaskService.UncompleteAsync(id);
+
+            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+
+            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+
+            return Partial("Partials/_AllStudyTasks", this);
+        }
+
+        return Page();
+
+    }
+
 }

@@ -79,4 +79,16 @@ public class StudyTaskService : IStudyTaskService
         _unitOfWork.StudyTask.Update(studyTask);
         _unitOfWork.Complete();
     }
+
+    public async Task UncompleteAsync(int id)
+    {
+        StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(u => u.Id == id);
+
+        if (studyTask == null) throw new Exception("Study Task not found");
+
+        studyTask.Completed = false;
+
+        _unitOfWork.StudyTask.Update(studyTask);
+        _unitOfWork.Complete();
+    }
 }
