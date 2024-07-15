@@ -14,8 +14,22 @@ using VnLibrary.Services.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions
+        .AuthorizeFolder("/") // Require auth for all paths
+        .AuthorizeAreaFolder("Registered", "/"); // Require admin or master for Admin Area
+
+});
+
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration.GetSection("Google:ClientId").Value;
+    googleOptions.ClientSecret = builder.Configuration.GetSection("Google:ClientSecret").Value;
+});
 
 // Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -23,6 +37,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+// Must add after Identity.
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = $"/Identity/Account/Login";
+    options.LogoutPath = $"/Identity/Account/Logout";
+    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
 
 #region App Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -45,13 +45,15 @@ public class IndexModel : PageModel
     {
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
+        //user = null;
+
+        //if (user == null) return Challenge();
+
         StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
         TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
 
         StudyTaskCreate = new StudyTaskCreate();
         StudyTaskUpdate = new StudyTaskUpdate();
-
-        if (user == null) return RedirectToPage("/Pomodoro/Public/Index");
 
         return Page();
     }
@@ -65,8 +67,6 @@ public class IndexModel : PageModel
             StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
 
             TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
-
-            RenderTasksOutOfBand = true;
 
             return Partial("Partials/_StudyTasks", this);
         }

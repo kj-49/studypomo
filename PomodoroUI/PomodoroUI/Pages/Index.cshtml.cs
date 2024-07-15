@@ -17,11 +17,13 @@ namespace PomodoroUI.Pages
 
         public IActionResult OnGet()
         {
-            if (_userService.GetCurrentUserAsync().Result != null)
-            {
-                return RedirectToPage("/Timer/Index", new { area = "Registered" });
-            }
-            return RedirectToPage("/Timer/Index", new { area = "Public" });
+            //if (_userService.GetCurrentUserAsync().Result != null)
+            //{
+            //    return RedirectToPage("/Timer/Index", new { area = "Registered" });
+            //}
+            //return RedirectToPage("/Timer/Index", new { area = "Public" });
+
+            return RedirectToPage("/Timer/Index", new { area = "Registered" });
         }
     }
 }
