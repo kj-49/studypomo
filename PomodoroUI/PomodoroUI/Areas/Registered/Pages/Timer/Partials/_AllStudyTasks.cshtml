@@ -1,0 +1,34 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
+
+<div id="all-study-tasks" class="row gx-5">
+    <div class="col-6">
+        <div class="d-flex justify-content-between align-items-end mb-3" style="height: 40px">
+            <div class="d-flex h-100 align-items-end">
+                <h5 class="mb-0 me-4">Tasks</h5>
+                <small class="btn btn-link m-0 p-0" style="display: none">Complete Checked</small>
+            </div>
+            <div>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-create-modal">Add Task</button>
+            </div>
+        </div>
+
+        <div id="current-tasks">
+            @await Html.PartialAsync("Partials/_UncompletedStudyTasks")
+        </div>
+
+    </div>
+    <div class="col-6">
+        <div class="d-flex justify-content-between align-items-end mb-3" style="height: 40px">
+            <h5 class="mb-0 me-2">Completed Tasks</h5>
+        </div>
+        <div id="completed-tasks">
+            @await Html.PartialAsync("Partials/_CompletedStudyTasks")
+        </div>
+    </div>
+</div>

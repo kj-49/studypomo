@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using PomodoroLibrary.Data.Interfaces;
 using PomodoroLibrary.Models.Identity;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
@@ -64,6 +65,18 @@ public class StudyTaskService : IStudyTaskService
         StudyTask updatedStudyTask = _mapper.Map(studyTaskUpdate, studyTask);
 
         _unitOfWork.StudyTask.Update(updatedStudyTask);
+        _unitOfWork.Complete();
+    }
+
+    public async Task CompleteAsync(int id)
+    {
+        StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(u => u.Id == id);
+
+        if (studyTask == null) throw new Exception("Study Task not found");
+
+        studyTask.Completed = true;
+
+        _unitOfWork.StudyTask.Update(studyTask);
         _unitOfWork.Complete();
     }
 }

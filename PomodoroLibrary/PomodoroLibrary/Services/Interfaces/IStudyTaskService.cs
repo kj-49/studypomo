@@ -7,5 +7,6 @@ namespace PomodoroLibrary.Services.Interfaces
         Task CreateAsync(StudyTaskCreate studyTaskCreate);
         Task RemoveAsync(int id);
         Task UpdateAsync(StudyTaskUpdate studyTaskUpdate);
+        Task CompleteAsync(int id);
     }
 }

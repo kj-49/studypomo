@@ -68,7 +68,7 @@ public class IndexModel : PageModel
 
             TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
 
-            return Partial("Partials/_StudyTasks", this);
+            return Partial("Partials/_UncompletedStudyTasks", this);
         }
 
         return Page();
@@ -84,7 +84,7 @@ public class IndexModel : PageModel
 
             TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
 
-            return Partial("Partials/_StudyTasks", this);
+            return Partial("Partials/_AllStudyTasks", this);
         }
 
         return Page();
@@ -100,7 +100,7 @@ public class IndexModel : PageModel
 
             TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
 
-            return Partial("Partials/_StudyTasks", this);
+            return Partial("Partials/_UncompletedStudyTasks", this);
         }
 
         return Page();
@@ -123,6 +123,23 @@ public class IndexModel : PageModel
         }
 
         return Page();
+    }
+
+    public async Task<IActionResult> OnPostCompleteTaskAsync(int id)
+    {
+        if (Request.IsHtmx())
+        {
+            await _studyTaskService.CompleteAsync(id);
+
+            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+
+            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+
+            return Partial("Partials/_AllStudyTasks", this);
+        }
+
+        return Page();
+
     }
 
 }
