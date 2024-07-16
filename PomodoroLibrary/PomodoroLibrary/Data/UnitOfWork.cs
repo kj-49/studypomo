@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork
     public IStudyTaskRepository StudyTask { get; private set; }
     public ITaskPriorityRepository TaskPriority { get; private set; }
     public IUserRepository User { get; private set; }
+    public ITaskLabelRepository TaskLabel { get; private set; }
 
     private ApplicationDbContext _db;
 
@@ -22,6 +23,7 @@ public class UnitOfWork : IUnitOfWork
         StudyTask = new StudyTaskRepository(_db);
         TaskPriority = new TaskPriorityRepository(_db);
         User = new UserRepository(_db);
+        TaskLabel = new TaskLabelRepository(_db);
     }
 
     public int Complete()

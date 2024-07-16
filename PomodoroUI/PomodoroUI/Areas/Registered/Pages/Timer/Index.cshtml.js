@@ -109,3 +109,22 @@ function addSquares() {
 function getSelectedValue() {
     return document.querySelector('input[name="timer-options"]:checked').value;
 }
+
+function submitCreateStudyTaskForm() {
+
+    let form = document.getElementById('study-task-create-form');
+
+    let selectList = document.createElement('select');
+    selectList.type = 'hidden';
+    selectList.name = 'StudyTaskCreate.StudyLabelIds';
+
+    this.selectedLabels.forEach(id => {
+        const option = document.createElement('option');
+        input.value = id;
+        selectList.appendChild(input);
+    });
+
+    form.appendChild(selectList);
+    form.submit();
+
+}

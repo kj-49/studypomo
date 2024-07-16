@@ -1,5 +1,5 @@
 ﻿using PomodoroLibrary.Models.Tables.LabelEntities;
-using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
+using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PomodoroLibrary.Data.Interfaces;
 
-public interface ITaskPriorityRepository : IRepository<TaskPriority>
+public interface ITaskLabelRepository : IRepository<TaskLabel>
 {
-
+    void Update(TaskLabel model);
 }

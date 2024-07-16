@@ -1,14 +1,13 @@
 ﻿using PomodoroLibrary.Models.Tables.LabelEntities;
-using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PomodoroLibrary.Data.Interfaces;
+namespace PomodoroLibrary.Services.Interfaces;
 
-public interface ITaskPriorityRepository : IRepository<TaskPriority>
+public interface ITaskLabelService
 {
-
+    Task CreateAsync(TaskLabelCreate taskLabelCreate);
 }

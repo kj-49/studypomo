@@ -11,6 +11,7 @@ public interface IUnitOfWork
     IStudyTaskRepository StudyTask { get; }
     ITaskPriorityRepository TaskPriority { get; }
     IUserRepository User { get; }
+    ITaskLabelRepository TaskLabel { get; }
 
     int Complete();
 }

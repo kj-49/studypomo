@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PomodoroLibrary.Models.Identity;
+using PomodoroLibrary.Models.Tables.LabelEntities;
 using PomodoroLibrary.Models.Tables.StudySessionEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using PomodoroLibrary.Models.Tables.StudyTypeEntities;
@@ -18,15 +19,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<TaskPriority> TaskPriorities { get; set; }
     public DbSet<StudySession> StudySessions { get; set; }
     public DbSet<StudyType> StudyTypes { get; set; }
+    public DbSet<TaskLabel> TaskLabels { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-
         builder.Entity<StudyTask>()
             .ToTable(nameof(StudyTask))
             .Navigation(u => u.TaskPriority).AutoInclude();
+
+        builder.Entity<TaskLabel>().ToTable(nameof(TaskLabel));
 
         builder.Entity<TaskPriority>().ToTable(nameof(TaskPriority))
             .HasData(

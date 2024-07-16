@@ -9,4 +9,5 @@ public class StudyTaskCreate
     [Required]
     [Display(Name = "Priority")]
     public int TaskPriorityId { get; set; }
+    public List<int> StudyLabelIds { get; set; }
 }

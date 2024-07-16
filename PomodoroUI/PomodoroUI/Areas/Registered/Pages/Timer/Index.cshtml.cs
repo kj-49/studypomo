@@ -9,6 +9,7 @@ using Microsoft.Build.Framework;
 using PomodoroLibrary.Data;
 using PomodoroLibrary.Data.Interfaces;
 using PomodoroLibrary.Models.Identity;
+using PomodoroLibrary.Models.Tables.LabelEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
 using PomodoroLibrary.Services.Interfaces;
@@ -39,6 +40,8 @@ public class IndexModel : PageModel
     [BindProperty]
     public StudyTaskUpdate StudyTaskUpdate { get; set; }
 
+    public ICollection<TaskLabel> TaskLabels { get; set; }
+
     public bool RenderTasksOutOfBand { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
@@ -51,6 +54,7 @@ public class IndexModel : PageModel
 
         StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
         TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+        TaskLabels = (await _unitOfWork.TaskLabel.GetAllAsync()).ToList();
 
         StudyTaskCreate = new StudyTaskCreate();
         StudyTaskUpdate = new StudyTaskUpdate();
