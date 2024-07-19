@@ -1,4 +1,5 @@
 ﻿using PomodoroLibrary.Models.Identity;
+using PomodoroLibrary.Models.Tables.LabelEntities;
 using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
 using System;
 using System.Collections.Generic;
@@ -19,4 +20,6 @@ public class StudyTask
     public DateTime? DateCompleted { get; set; }
     public int TaskPriorityId { get; set; }
     public TaskPriority TaskPriority { get; set; }
+
+    public List<TaskLabel> TaskLabels { get; } = [];
 }

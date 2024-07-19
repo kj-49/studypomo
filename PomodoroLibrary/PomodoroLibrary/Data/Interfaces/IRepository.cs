@@ -10,8 +10,9 @@ namespace PomodoroLibrary.Data.Interfaces;
 public interface IRepository<T> where T : class
 {
     Task<IEnumerable<T>> GetAllAsync();
+    Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter);
     Task<T?> GetAsync(Expression<Func<T, bool>> filter);
-    Task AddAsync(T model);
+    Task<T> AddAsync(T model);
     void Remove(T model);
     void RemoveRange(IEnumerable<T> models);
 }

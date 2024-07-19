@@ -9,5 +9,6 @@ namespace PomodoroLibrary.Services.Interfaces
         Task UpdateAsync(StudyTaskUpdate studyTaskUpdate);
         Task CompleteAsync(int id);
         Task UncompleteAsync(int id);
+        Task<ICollection<StudyTask>> GetAllAsync(int userId);
     }
 }

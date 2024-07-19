@@ -10,4 +10,5 @@ namespace PomodoroLibrary.Services.Interfaces;
 public interface ITaskLabelService
 {
     Task CreateAsync(TaskLabelCreate taskLabelCreate);
+    Task<ICollection<TaskLabel>> GetAllAsync(int userId);
 }

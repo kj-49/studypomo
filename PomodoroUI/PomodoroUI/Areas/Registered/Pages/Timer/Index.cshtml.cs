@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Build.Framework;
 using PomodoroLibrary.Data;
 using PomodoroLibrary.Data.Interfaces;
@@ -22,14 +23,18 @@ public class IndexModel : PageModel
     private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IStudyTaskService _studyTaskService;
+    private readonly ITaskPriorityService _taskPriorityService;
+    private readonly ITaskLabelService _taskLabelService;
     private readonly IMapper _mapper;
 
-    public IndexModel(IUserService userService, IUnitOfWork unitOfWork, IStudyTaskService studyTaskService, IMapper mapper)
+    public IndexModel(IUserService userService, IUnitOfWork unitOfWork, IStudyTaskService studyTaskService, IMapper mapper, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
         _studyTaskService = studyTaskService;
         _mapper = mapper;
+        _taskPriorityService = taskPriorityService;
+        _taskLabelService = taskLabelService;
     }
 
     public ICollection<TaskPriority> TaskPriorities { get; set; }
@@ -48,18 +53,21 @@ public class IndexModel : PageModel
     {
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-        //user = null;
+        if (user == null) return Challenge();
 
-        //if (user == null) return Challenge();
-
-        StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
-        TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
-        TaskLabels = (await _unitOfWork.TaskLabel.GetAllAsync()).ToList();
+        await PopulateFields(user.Id);
 
         StudyTaskCreate = new StudyTaskCreate();
         StudyTaskUpdate = new StudyTaskUpdate();
 
         return Page();
+    }
+
+    public async Task PopulateFields(int userId)
+    {
+        StudyTasks = await _studyTaskService.GetAllAsync(userId);
+        TaskPriorities = await _taskPriorityService.GetAllAsync();
+        TaskLabels = await _taskLabelService.GetAllAsync(userId);
     }
 
     public async Task<IActionResult> OnPostCreateStudyTaskAsync()
@@ -68,9 +76,11 @@ public class IndexModel : PageModel
 
             await _studyTaskService.CreateAsync(StudyTaskCreate);
 
-            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+            ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+            if (user == null) return Challenge();
+
+            await PopulateFields(user.Id);
 
             return Partial("Partials/_UncompletedStudyTasks", this);
         }
@@ -84,9 +94,11 @@ public class IndexModel : PageModel
         {
             await _studyTaskService.RemoveAsync(id);
 
-            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+            ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+            if (user == null) return Challenge();
+
+            await PopulateFields(user.Id);
 
             return Partial("Partials/_AllStudyTasks", this);
         }
@@ -100,11 +112,13 @@ public class IndexModel : PageModel
         {
             await _studyTaskService.UpdateAsync(StudyTaskUpdate);
 
-            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+            ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+            if (user == null) return Challenge();
 
-            return Partial("Partials/_UncompletedStudyTasks", this);
+            await PopulateFields(user.Id);
+
+            return Partial("Partials/_AllStudyTasks", this);
         }
 
         return Page();
@@ -121,7 +135,11 @@ public class IndexModel : PageModel
 
             StudyTaskUpdate = _mapper.Map<StudyTaskUpdate>(studyTask);
 
-            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+            ApplicationUser? user = await _userService.GetCurrentUserAsync();
+
+            if (user == null) return Challenge();
+
+            await PopulateFields(user.Id);
 
             return Partial("Partials/_StudyTaskUpdate", this);
         }
@@ -135,9 +153,11 @@ public class IndexModel : PageModel
         {
             await _studyTaskService.CompleteAsync(id);
 
-            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+            ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+            if (user == null) return Challenge();
+
+            await PopulateFields(user.Id);
 
             return Partial("Partials/_AllStudyTasks", this);
         }
@@ -152,9 +172,11 @@ public class IndexModel : PageModel
         {
             await _studyTaskService.UncompleteAsync(id);
 
-            StudyTasks = (await _unitOfWork.StudyTask.GetAllAsync()).ToList();
+            ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-            TaskPriorities = (await _unitOfWork.TaskPriority.GetAllAsync()).ToList();
+            if (user == null) return Challenge();
+
+            await PopulateFields(user.Id);
 
             return Partial("Partials/_AllStudyTasks", this);
         }

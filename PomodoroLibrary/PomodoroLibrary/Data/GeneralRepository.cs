@@ -24,14 +24,21 @@ public class GeneralRepository<T> : IRepository<T> where T : class
         dbSet = _db.Set<T>();
     }
 
-    public async Task AddAsync(T model)
+    public async Task<T> AddAsync(T model)
     {
-        await dbSet.AddAsync(model);
+        return (await dbSet.AddAsync(model)).Entity;
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
     {
         IQueryable<T> query = dbSet;
+        return await query.ToListAsync();
+    }
+
+    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter)
+    {
+        IQueryable<T> query = dbSet;
+        query = query.Where(filter);
         return await query.ToListAsync();
     }
 

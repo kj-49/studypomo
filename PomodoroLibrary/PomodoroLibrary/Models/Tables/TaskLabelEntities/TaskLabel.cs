@@ -1,4 +1,5 @@
 ﻿using PomodoroLibrary.Models.Identity;
+using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,4 +15,6 @@ public class TaskLabel
     public string HexColor { get; set; }
     public int UserId { get; set; }
     public ApplicationUser User { get; set; }
+
+    public List<StudyTask> StudyTasks { get; set; } = [];
 }

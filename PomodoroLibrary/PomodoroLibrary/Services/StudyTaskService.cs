@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using PomodoroLibrary.Data.Interfaces;
 using PomodoroLibrary.Models.Identity;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
+using PomodoroLibrary.Models.Tables.StudyTaskLabelEntities;
 using PomodoroLibrary.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ public class StudyTaskService : IStudyTaskService
 
         var taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
 
+        if (taskPriority == null) throw new Exception("Task Priority not found");
+
         StudyTask studyTask = new StudyTask
         {
             User = user,
@@ -43,7 +46,25 @@ public class StudyTaskService : IStudyTaskService
             TaskPriority = taskPriority
         };
 
+        // Now add labels to task
+        if (studyTaskCreate.StudyLabelIds != null)
+        {
+            foreach (int labelId in studyTaskCreate.StudyLabelIds)
+            {
+                var label = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == labelId);
+                if (label != null)
+                {
+                    await _unitOfWork.StudyTaskLabel.AddAsync(new StudyTaskLabel
+                    {
+                        StudyTask = studyTask,
+                        TaskLabel = label
+                    });
+                }
+            }
+        }
+
         await _unitOfWork.StudyTask.AddAsync(studyTask);
+
         _unitOfWork.Complete();
     }
 
@@ -92,5 +113,12 @@ public class StudyTaskService : IStudyTaskService
 
         _unitOfWork.StudyTask.Update(studyTask);
         _unitOfWork.Complete();
+    }
+
+    public async Task<ICollection<StudyTask>> GetAllAsync(int userId)
+    {
+        IEnumerable<StudyTask> studyTasks = await _unitOfWork.StudyTask.GetAllAsync(u => u.User.Id == userId);
+
+        return studyTasks.ToList();
     }
 }

@@ -51,6 +51,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();
 builder.Services.AddScoped<ITaskLabelService, TaskLabelService>();
+builder.Services.AddScoped<ITaskPriorityService, TaskPriorityService>();
 //builder.Services.AddScoped<IStudyTaskRepository, StudyTaskRepository>();
 //builder.Services.AddScoped<ITaskPriorityRepository, TaskPriorityRepository>();
 #endregion

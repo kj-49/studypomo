@@ -37,4 +37,10 @@ public class TaskLabelService : ITaskLabelService
         await _unitOfWork.TaskLabel.AddAsync(taskLabel);
         _unitOfWork.Complete();
     }
+
+    public async Task<ICollection<TaskLabel>> GetAllAsync(int userId)
+    {
+        IEnumerable<TaskLabel> taskLabels = await _unitOfWork.TaskLabel.GetAllAsync(u => u.UserId == userId);
+        return taskLabels.ToList();
+    }
 }

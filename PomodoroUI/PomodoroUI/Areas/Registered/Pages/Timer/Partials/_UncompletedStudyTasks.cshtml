@@ -35,7 +35,11 @@ else
                             <div class="d-flex flex-column justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <h6 class="card-title mb-1 me-2">@task.Name</h6>
-                                    <span class="badge" style="background-color: @(task.TaskPriority.DisplayHexColor)">Priority: @task.TaskPriority.Level</span>
+                                    <span class="badge me-1" style="background-color: @(task.TaskPriority.DisplayHexColor)">Priority: @task.TaskPriority.Level</span>
+                                    @foreach (var label in task.TaskLabels)
+                                    {
+                                        <span class="badge me-1" style="background-color: @(label.HexColor)">@label.Name</span>
+                                    }
                                 </div>
                                 <small>Created @task.DateCreated.Humanize()</small>
                             </div>

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PomodoroLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class rebase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -188,6 +188,27 @@ namespace PomodoroLibrary.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TaskLabel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HexColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskLabel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TaskLabel_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StudySession",
                 columns: table => new
                 {
@@ -236,11 +257,35 @@ namespace PomodoroLibrary.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_StudyTask_TaskPriority_TaskPriorityId",
                         column: x => x.TaskPriorityId,
                         principalTable: "TaskPriority",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudyTaskLabel",
+                columns: table => new
+                {
+                    StudyTaskId = table.Column<int>(type: "int", nullable: false),
+                    TaskLabelId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudyTaskLabel", x => new { x.StudyTaskId, x.TaskLabelId });
+                    table.ForeignKey(
+                        name: "FK_StudyTaskLabel_StudyTask_StudyTaskId",
+                        column: x => x.StudyTaskId,
+                        principalTable: "StudyTask",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudyTaskLabel_TaskLabel_TaskLabelId",
+                        column: x => x.TaskLabelId,
+                        principalTable: "TaskLabel",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -323,6 +368,16 @@ namespace PomodoroLibrary.Migrations
                 name: "IX_StudyTask_UserId",
                 table: "StudyTask",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudyTaskLabel_TaskLabelId",
+                table: "StudyTaskLabel",
+                column: "TaskLabelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskLabel_UserId",
+                table: "TaskLabel",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -347,7 +402,7 @@ namespace PomodoroLibrary.Migrations
                 name: "StudySession");
 
             migrationBuilder.DropTable(
-                name: "StudyTask");
+                name: "StudyTaskLabel");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -356,10 +411,16 @@ namespace PomodoroLibrary.Migrations
                 name: "StudyType");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "StudyTask");
+
+            migrationBuilder.DropTable(
+                name: "TaskLabel");
 
             migrationBuilder.DropTable(
                 name: "TaskPriority");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

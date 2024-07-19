@@ -314,6 +314,21 @@ namespace PomodoroLibrary.Migrations
                     b.ToTable("StudyTask", (string)null);
                 });
 
+            modelBuilder.Entity("PomodoroLibrary.Models.Tables.StudyTaskLabelEntities.StudyTaskLabel", b =>
+                {
+                    b.Property<int>("StudyTaskId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaskLabelId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudyTaskId", "TaskLabelId");
+
+                    b.HasIndex("TaskLabelId");
+
+                    b.ToTable("StudyTaskLabel");
+                });
+
             modelBuilder.Entity("PomodoroLibrary.Models.Tables.StudyTypeEntities.StudyType", b =>
                 {
                     b.Property<int>("Id")
@@ -444,7 +459,7 @@ namespace PomodoroLibrary.Migrations
                     b.HasOne("PomodoroLibrary.Models.Identity.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -480,12 +495,31 @@ namespace PomodoroLibrary.Migrations
                     b.HasOne("PomodoroLibrary.Models.Identity.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("TaskPriority");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PomodoroLibrary.Models.Tables.StudyTaskLabelEntities.StudyTaskLabel", b =>
+                {
+                    b.HasOne("PomodoroLibrary.Models.Tables.StudyTaskEntities.StudyTask", "StudyTask")
+                        .WithMany()
+                        .HasForeignKey("StudyTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PomodoroLibrary.Models.Tables.LabelEntities.TaskLabel", "TaskLabel")
+                        .WithMany()
+                        .HasForeignKey("TaskLabelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StudyTask");
+
+                    b.Navigation("TaskLabel");
                 });
 #pragma warning restore 612, 618
         }

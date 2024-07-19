@@ -10,6 +10,7 @@
 <form id="study-task-edit-form" 
     hx-post
     hx-page="Index"
+    hx-page-handler="UpdateStudyTask"
     hx-swap="innerHTML"
     hx-target="#all-study-tasks"
     hx-on::after-request=" if(event.detail.successful) this.reset()">
@@ -38,7 +39,7 @@
         </div>
         <div>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button hx-page-handler="UpdateStudyTask" type="submit" id="submitButton" class="btn btn-primary">Save</button>
+            <button type="submit" id="submitButton" class="btn btn-primary">Save</button>
         </div>
     </div>
     @Html.AntiForgeryToken()
