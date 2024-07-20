@@ -9,7 +9,7 @@
     hx-post
     hx-page="Index"
     hx-page-handler="UpdateStudyTask"
-    hx-swap="innerHTML"
+    hx-swap="outerHTML"
     hx-target="#all-study-tasks"
     hx-on::after-request=" if(event.detail.successful) this.reset()">
     <div class="modal-body">
