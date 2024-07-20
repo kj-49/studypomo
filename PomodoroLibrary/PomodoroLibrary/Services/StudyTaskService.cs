@@ -119,6 +119,7 @@ public class StudyTaskService : IStudyTaskService
     }
 
     public async Task RemoveAllLabels(int studyTaskId)
+    
     {
         IEnumerable<StudyTaskLabel> studyTaskLabels = await _unitOfWork.StudyTaskLabel.GetAllAsync(u => u.StudyTask.Id == studyTaskId);
 

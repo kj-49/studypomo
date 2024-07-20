@@ -15,8 +15,7 @@ public class MappingProfile : Profile
     {
         CreateMap<StudyTask, StudyTaskUpdate>()
             .ForMember(dest => dest.TaskLabelIds, opt => opt.MapFrom(src => src.TaskLabels.Select(label => label.Id).ToList()))
-            .ReverseMap()
-            .ForMember(dest => dest.TaskLabels, opt => opt.MapFrom(src => src.TaskLabelIds.Select(id => new TaskLabel { Id = id }).ToList()));
+            .ReverseMap();
 
     }
 }

@@ -56,6 +56,9 @@ public class GeneralRepository<T> : IRepository<T> where T : class
 
     public void RemoveRange(IEnumerable<T> models)
     {
-        dbSet.RemoveRange(models);
+        if (models.Count() > 0)
+        {
+            dbSet.RemoveRange(models);
+        }
     }
 }
