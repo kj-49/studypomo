@@ -8,5 +8,5 @@ public class StudyTaskCreate
     public string Name { get; set; }
     [Display(Name = "Priority")]
     public int? TaskPriorityId { get; set; }
-    public List<int> StudyLabelIds { get; set; }
+    public List<int> TaskLabelIds { get; set; }
 }

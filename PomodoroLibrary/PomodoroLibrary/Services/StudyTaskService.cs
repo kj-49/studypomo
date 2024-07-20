@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using PomodoroLibrary.Data.Interfaces;
 using PomodoroLibrary.Models.Identity;
+using PomodoroLibrary.Models.Tables.LabelEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskLabelEntities;
 using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
@@ -46,9 +47,9 @@ public class StudyTaskService : IStudyTaskService
         };
 
         // Now add labels to task
-        if (studyTaskCreate.StudyLabelIds != null)
+        if (studyTaskCreate.TaskLabelIds != null)
         {
-            foreach (int labelId in studyTaskCreate.StudyLabelIds)
+            foreach (int labelId in studyTaskCreate.TaskLabelIds)
             {
                 var label = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == labelId);
                 if (label != null)
@@ -94,7 +95,35 @@ public class StudyTaskService : IStudyTaskService
 
         StudyTask updatedStudyTask = _mapper.Map(studyTaskUpdate, studyTask);
 
+        await RemoveAllLabels(studyTask.Id);
+
+        // Now add labels to task
+        if (studyTaskUpdate.TaskLabelIds != null)
+        {
+            foreach (int labelId in studyTaskUpdate.TaskLabelIds)
+            {
+                var label = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == labelId);
+                if (label != null)
+                {
+                    await _unitOfWork.StudyTaskLabel.AddAsync(new StudyTaskLabel
+                    {
+                        StudyTask = studyTask,
+                        TaskLabel = label
+                    });
+                }
+            }
+        }
+
         _unitOfWork.StudyTask.Update(updatedStudyTask);
+        _unitOfWork.Complete();
+    }
+
+    public async Task RemoveAllLabels(int studyTaskId)
+    {
+        IEnumerable<StudyTaskLabel> studyTaskLabels = await _unitOfWork.StudyTaskLabel.GetAllAsync(u => u.StudyTask.Id == studyTaskId);
+
+        _unitOfWork.StudyTaskLabel.RemoveRange(studyTaskLabels);
+
         _unitOfWork.Complete();
     }
 

@@ -9,7 +9,6 @@
     hx-swap="innerHTML"
     hx-target="#current-tasks"
     hx-on::after-request="if(event.detail.successful) { this.reset(); }"
-    x-on:htmx:after-request-window="console.log('HELLO')"
     x-data="{
         selectedLabels: [],
         toggleLabel(id) {
@@ -85,7 +84,7 @@
                             </template>
                         }
                         @*For model binding.*@
-                        <input type="hidden" name="StudyTaskCreate.StudyLabelIds" :value="labelId">
+                        <input type="hidden" name="StudyTaskCreate.TaskLabelIds" :value="labelId">
                     </div>
                 </template>
             </div>
