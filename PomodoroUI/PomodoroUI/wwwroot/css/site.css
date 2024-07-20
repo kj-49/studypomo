@@ -1,12 +1,3 @@
-:root {
-    --background-color: #171717;
-    --primary-color: #19a87e;
-    --secondary-color: #c3cdd6;
-    /* Github graph */
-    --square-size: 10px;
-    --square-gap: 3px;
-    --week-width: calc(var(--square-size) + var(--square-gap));
-}
 
 html {
   font-size: 14px;

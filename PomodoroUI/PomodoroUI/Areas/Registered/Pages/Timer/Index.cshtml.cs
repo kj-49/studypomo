@@ -106,6 +106,26 @@ public class IndexModel : PageModel
         return Page();
     }
 
+    public async Task<IActionResult> OnPostArchiveStudyTaskAsync(int id)
+    {
+        if (Request.IsHtmx())
+        {
+            RenderTasksOutOfBand = true;
+
+            await _studyTaskService.ArchiveAsync(id);
+
+            ApplicationUser? user = await _userService.GetCurrentUserAsync();
+
+            if (user == null) return Challenge();
+
+            await PopulateFields(user.Id);
+
+            return Partial("Partials/_AllStudyTasks", this);
+        }
+
+        return Page();
+    }
+
     public async Task<IActionResult> OnPostUpdateStudyTaskAsync()
     {
         if (Request.IsHtmx())

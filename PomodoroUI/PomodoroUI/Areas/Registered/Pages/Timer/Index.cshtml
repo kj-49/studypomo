@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    <div x-show="showEditModal" class="modal fade" id="study-task-edit-modal" tabindex="-1" aria-labelledby="taskEditModalLabel" aria-hidden="true">
+    <div class="modal fade" id="study-task-edit-modal" tabindex="-1" aria-labelledby="taskEditModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header mb-3">
@@ -43,28 +43,36 @@
             </div>
         </div>
     </div>
-
+    <div id="task-history">
+        @await Html.PartialAsync("Partials/_TaskHistory")
+    </div>
     <div class="mb-5">
-        <div class="d-flex">
-            <div class="me-2">
-                <input type="radio" class="btn-check" name="timer-options" value="25" id="pomodoro" autocomplete="off" checked>
-                <label class="btn btn-lg" for="pomodoro">Pomodoro</label>
-            </div>
-            <div class="me-2">
-                <input type="radio" class="btn-check" name="timer-options" value="5" id="short-break" autocomplete="off">
-                <label class="btn btn-lg" for="short-break">Short Break</label>
-            </div>
-            <div class="me-2">
-                <input type="radio" class="btn-check" name="timer-options" value="15" id="long-break" autocomplete="off">
-                <label class="btn btn-lg" for="long-break">Long Break</label>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex">
+                <div class="me-2">
+                    <input type="radio" class="btn-check" name="timer-options" value="25" id="pomodoro" autocomplete="off" checked>
+                    <label class="btn btn-lg" for="pomodoro">Pomodoro</label>
+                </div>
+                <div class="me-2">
+                    <input type="radio" class="btn-check" name="timer-options" value="5" id="short-break" autocomplete="off">
+                    <label class="btn btn-lg" for="short-break">Short Break</label>
+                </div>
+                <div class="me-2">
+                    <input type="radio" class="btn-check" name="timer-options" value="15" id="long-break" autocomplete="off">
+                    <label class="btn btn-lg" for="long-break">Long Break</label>
+                </div>
+                <div>
+                    <button class="btn btn-lg btn-primary me-2" id="startstop-button">Start</button>
+                </div>
+                <div>
+                    <button class="btn btn-lg btn-secondary d-none" id="reset-button">Reset</button>
+                </div>
             </div>
             <div>
-                <button class="btn btn-lg btn-primary me-2" id="startstop-button">Start</button>
-            </div>
-            <div>
-                <button class="btn btn-lg btn-secondary d-none" id="reset-button">Reset</button>
+                <a class="text-secondary" data-bs-toggle="modal" data-bs-target="#study-task-history"><i class="bi bi-clock-history me-1"></i> History</a>
             </div>
         </div>
+
         <p id="timer" class="timer">
             00:00
         </p>

@@ -1,0 +1,51 @@
+﻿@using Humanizer
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
+
+<div class="modal fade" id="study-task-history" tabindex="-1" aria-labelledby="taskModalHistoryLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header mb-3">
+                <h5 class="modal-title" id="taskModalHistoryLabel">History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="mb-1 px-3">
+                <small>Previously completed tasks.</small>
+            </div>
+            <hr class="text-opacity-50 mb-0" />
+            <div class="modal-body">
+                <ul class="list-group">
+                    @foreach (var task in Model.StudyTasks.Where(u => u.Archived))
+                    {
+                        <li class="list-group-item bg-body">
+                            <div class="d-flex justify-content-between align-items-center mb-0">
+                                <div class="d-flex align-items-baseline">
+                                    <div class="d-flex flex-column justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="card-title mb-1 me-2">@task.Name</h6>
+                                            @if (task.TaskPriority != null)
+                                            {
+                                                <span class="badge me-1" style="background-color: @(task.TaskPriority.DisplayHexColor)">Priority: @task.TaskPriority.Level</span>
+                                            }
+                                            @foreach (var label in task.TaskLabels)
+                                            {
+                                                <span class="badge me-1" style="background-color: @(label.HexColor)">@label.Name</span>
+                                            }
+                                        </div>
+                                        <small>Completed @task.DateCompleted.Humanize()</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

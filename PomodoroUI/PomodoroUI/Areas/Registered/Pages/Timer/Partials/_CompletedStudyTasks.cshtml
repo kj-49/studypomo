@@ -8,7 +8,7 @@
 @model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
 
 @{
-    var completedTasks = Model.StudyTasks.Where(u => u.Completed).ToList();
+    var completedTasks = Model.StudyTasks.Where(u => u.Completed && !u.Archived).ToList();
 }
 
 @if (completedTasks.Count == 0)

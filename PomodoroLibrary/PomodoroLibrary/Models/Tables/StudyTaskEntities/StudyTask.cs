@@ -20,6 +20,7 @@ public class StudyTask
     public DateTime? DateCompleted { get; set; }
     public int? TaskPriorityId { get; set; }
     public TaskPriority? TaskPriority { get; set; }
+    public bool Archived { get; set; }
 
     public List<TaskLabel> TaskLabels { get; } = [];
 }
