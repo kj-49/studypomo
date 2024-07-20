@@ -5,8 +5,6 @@
 
 @model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
 
-@await Html.PartialAsync("Partials/_TasksOutOfBounds")
-
 <form id="study-task-edit-form" 
     hx-post
     hx-page="Index"
@@ -22,12 +20,16 @@
             <span asp-validation-for="StudyTaskUpdate.Name" class="text-danger form-text"></span>
         </div>
         <div class="mb-2">
-            <label asp-for="StudyTaskCreate.TaskPriorityId" class="form-label">Priority:</label>
+            <label asp-for="StudyTaskUpdate.TaskPriorityId" class="form-label">Priority:</label>
+            <div class="form-check">
+                <input checked class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="" id="none-edit" />
+                <label class="form-check-label text-opacity-75" for="none-edit">None</label>
+            </div>
             @foreach (var priority in Model.TaskPriorities)
             {
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="@priority.Id" id="(@priority.Id)-edit" />
-                    <label class="form-check-label" for="(@priority.Id)-edit">@priority.Level</label>
+                    <input class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="@priority.Id" id="@(priority.Id)-edit" />
+                    <label class="form-check-label" for="@(priority.Id)-edit">@priority.Level</label>
                 </div>
             }
             <span asp-validation-for="StudyTaskCreate.TaskPriorityId" class="text-danger form-text"></span>

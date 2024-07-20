@@ -11,7 +11,6 @@ public class StudyTaskUpdate
     public int Id { get; set; }
     [Required]
     public string Name { get; set; }
-    [Required]
     [Display(Name = "Priority")]
-    public int TaskPriorityId { get; set; }
+    public int? TaskPriorityId { get; set; }
 }

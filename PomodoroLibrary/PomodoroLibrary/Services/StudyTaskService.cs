@@ -5,6 +5,7 @@ using PomodoroLibrary.Data.Interfaces;
 using PomodoroLibrary.Models.Identity;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskLabelEntities;
+using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
 using PomodoroLibrary.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -32,9 +33,7 @@ public class StudyTaskService : IStudyTaskService
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) throw new Exception("User not found");
 
-        var taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
-
-        if (taskPriority == null) throw new Exception("Task Priority not found");
+        TaskPriority? taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
 
         StudyTask studyTask = new StudyTask
         {

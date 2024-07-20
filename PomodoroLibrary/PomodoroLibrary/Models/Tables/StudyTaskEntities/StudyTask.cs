@@ -18,8 +18,8 @@ public class StudyTask
     public bool Completed { get; set; }
     public DateTime DateCreated { get; set; }
     public DateTime? DateCompleted { get; set; }
-    public int TaskPriorityId { get; set; }
-    public TaskPriority TaskPriority { get; set; }
+    public int? TaskPriorityId { get; set; }
+    public TaskPriority? TaskPriority { get; set; }
 
     public List<TaskLabel> TaskLabels { get; } = [];
 }

@@ -6,8 +6,7 @@ public class StudyTaskCreate
 {
     [Required]
     public string Name { get; set; }
-    [Required]
     [Display(Name = "Priority")]
-    public int TaskPriorityId { get; set; }
+    public int? TaskPriorityId { get; set; }
     public List<int> StudyLabelIds { get; set; }
 }
