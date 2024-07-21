@@ -16,7 +16,7 @@ using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
 using PomodoroLibrary.Services.Interfaces;
 using System.Runtime.CompilerServices;
 
-namespace PomodoroUI.Areas.Registered.Pages.Timer;
+namespace PomodoroUI.Pages.Timer;
 
 public class IndexModel : PageModel
 {

@@ -1,10 +1,10 @@
 ﻿@page
 @using PomodoroLibrary.Models.Tables.StudyTaskEntities
 @using PomodoroLibrary.Models.Utility
-@model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
+@model PomodoroUI.Pages.Timer.IndexModel
 @{
 }
-<div>
+<div class="mt-5">
     <div class="modal fade" id="study-task-create-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -88,7 +88,7 @@
 
     <partial name="_ValidationScriptsPartial" />
 
-    <script src="~/Areas/Registered/Pages/Timer/Index.cshtml.js" asp-append-version="true"></script>
+    <script src="~/Pages/Timer/Index.cshtml.js" asp-append-version="true"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function (event) {

@@ -1,19 +1,16 @@
 ﻿@using PomodoroLibrary.Models.Utility
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 
-@model PomodoroUI.Areas.Registered.Pages.Timer.IndexModel
+@model PomodoroUI.Pages.Timer.IndexModel
 
-<form id="study-task-edit-form" 
+<form id="study-task-create-form" 
     hx-post
     hx-page="Index"
-    hx-page-handler="UpdateStudyTask"
-    hx-swap="outerHTML"
-    hx-target="#all-study-tasks"
-    hx-on::after-request=" if(event.detail.successful) this.reset()"
+    hx-page-handler="CreateStudyTask"
+    hx-swap="innerHTML"
+    hx-target="#current-tasks"
+    hx-on::after-request="if(event.detail.successful) { this.reset(); }"
     x-data="{
-        selectedLabels: @Json.Serialize(Model.StudyTaskUpdate.TaskLabelIds),
+        selectedLabels: [],
         toggleLabel(id) {
             if (this.selectedLabels.includes(id)) {
                 this.selectedLabels=this.selectedLabels.filter(labelId => labelId !== id);
@@ -24,33 +21,29 @@
         clearSelectedLabels() {
             this.selectedLabels = [];
         }
-    }">
+    }"
+    x-on:clear-labels.window="clearSelectedLabels()">
     <div class="modal-body">
-        <input hidden asp-for="StudyTaskUpdate.Id" />
         <div class="mb-2">
-            <label asp-for="StudyTaskUpdate.Name" class="form-label">Task:</label>
-            <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Name" />
-            <span asp-validation-for="StudyTaskUpdate.Name" class="text-danger form-text"></span>
+            <label asp-for="StudyTaskCreate.Name" class="form-label">Task:</label>
+            <input class="form-control form-control-sm" asp-for="StudyTaskCreate.Name" />
+            <span asp-validation-for="StudyTaskCreate.Name" class="text-danger form-text"></span>
         </div>
         <div class="mb-2">
-            <label asp-for="StudyTaskUpdate.TaskPriorityId" class="form-label">Priority:</label>
-            <div class="form-check">
-                <input checked class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="" id="none-edit" />
-                <label class="form-check-label text-opacity-75" for="none-edit">None</label>
-            </div>
+            <label asp-for="StudyTaskCreate.TaskPriorityId" class="form-label">Priority:</label>
             @foreach (var priority in Model.TaskPriorities)
             {
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="@priority.Id" id="@(priority.Id)-edit" />
-                    <label class="form-check-label" for="@(priority.Id)-edit">@priority.Level</label>
+                    <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriorityId" value="@priority.Id" id="@(priority.Id)-create" />
+                    <label class="form-check-label" for="@(priority.Id)-create">@priority.Level</label>
                 </div>
             }
-            <span asp-validation-for="StudyTaskUpdate.TaskPriorityId" class="text-danger form-text"></span>
+            <span asp-validation-for="StudyTaskCreate.TaskPriorityId" class="text-danger form-text"></span>
         </div>
         <div class="mb-2">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <label asp-for="StudyTaskUpdate.Name" class="form-label me-2 my-0">Labels:</label>
+                    <label asp-for="StudyTaskCreate.Name" class="form-label me-2 my-0">Labels:</label>
                     <div class="dropdown">
                         <a class="text-secondary text-opacity-75" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Choose <i class="bi bi-chevron-expand"></i>
@@ -91,20 +84,15 @@
                             </template>
                         }
                         @*For model binding.*@
-                        <input type="hidden" name="StudyTaskUpdate.TaskLabelIds" :value="labelId">
+                        <input type="hidden" name="StudyTaskCreate.TaskLabelIds" :value="labelId">
                     </div>
                 </template>
             </div>
         </div>
     </div>
-    <div class="modal-footer d-flex justify-content-between">
-        <div>
-            <button class="btn btn-danger" hx-post hx-page-handler="ArchiveStudyTask" hx-route-id="@Model.StudyTaskUpdate.Id" data-bs-dismiss="modal">Archive</button>
-        </div>
-        <div>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" id="submitButton" class="btn btn-primary">Save</button>
-        </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" id="submitButton" class="btn btn-primary">Add</button>
     </div>
     @Html.AntiForgeryToken()
 </form>

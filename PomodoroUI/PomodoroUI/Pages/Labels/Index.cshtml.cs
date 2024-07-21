@@ -6,7 +6,7 @@ using PomodoroLibrary.Models.Tables.TaskLabelEntities;
 using PomodoroLibrary.Services.Interfaces;
 using System.Runtime.CompilerServices;
 
-namespace PomodoroUI.Areas.Registered.Pages.Labels;
+namespace PomodoroUI.Pages.Labels;
 
 public class IndexModel : PageModel
 {
