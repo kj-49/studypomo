@@ -29,23 +29,43 @@ public class GeneralRepository<T> : IRepository<T> where T : class
         return (await dbSet.AddAsync(model)).Entity;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties)
     {
         IQueryable<T> query = dbSet;
+
+        foreach (var includeProperty in includeProperties)
+        {
+            query = query.Include(includeProperty);
+        }
+
         return await query.ToListAsync();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter)
+    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties)
     {
         IQueryable<T> query = dbSet;
+
         query = query.Where(filter);
+
+        foreach (var includeProperty in includeProperties)
+        {
+            query = query.Include(includeProperty);
+        }
+
         return await query.ToListAsync();
     }
 
-    public async Task<T?> GetAsync(Expression<Func<T, bool>> filter)
+    public async Task<T?> GetAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties)
     {
         IQueryable<T> query = dbSet;
+
         query = query.Where(filter);
+
+        foreach (var includeProperty in includeProperties)
+        {
+            query = query.Include(includeProperty);
+        }
+
         return await query.FirstOrDefaultAsync();
     }
 
@@ -56,7 +76,7 @@ public class GeneralRepository<T> : IRepository<T> where T : class
 
     public void RemoveRange(IEnumerable<T> models)
     {
-        if (models.Count() > 0)
+        if (models.Any())
         {
             dbSet.RemoveRange(models);
         }

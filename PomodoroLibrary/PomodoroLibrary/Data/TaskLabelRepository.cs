@@ -18,6 +18,7 @@ namespace PomodoroLibrary.Data
 
         public TaskLabelRepository(ApplicationDbContext db) : base(db)
         {
+            _db = db;
         }
 
         public void Update(TaskLabel model)

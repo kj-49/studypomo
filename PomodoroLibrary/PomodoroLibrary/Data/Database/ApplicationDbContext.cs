@@ -30,11 +30,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.Entity<StudyTask>(studyTask =>
         {
             studyTask
-                .ToTable(nameof(StudyTask))
-                .Navigation(u => u.TaskPriority).AutoInclude();
-
-            studyTask
-                .Navigation(u => u.TaskLabels).AutoInclude();
+                .ToTable(nameof(StudyTask));
 
             studyTask
                   .HasMany(e => e.TaskLabels)

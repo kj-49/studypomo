@@ -15,9 +15,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="mb-1 px-3">
-                <small>Previously completed tasks.</small>
+                <small>Archived tasks.</small>
             </div>
             <hr class="text-opacity-50 mb-0" />
+            @if (Model.StudyTasks.Where(u => u.Archived).Count() == 0)
+            {
+                <div class="modal-body">
+                    <p>No tasks have been archived.</p>
+                </div>
+            }
+            else
+            {
             <div class="modal-body">
                 <ul class="list-group">
                     @foreach (var task in Model.StudyTasks.Where(u => u.Archived))
@@ -46,6 +54,7 @@
                     }
                 </ul>
             </div>
+            }
         </div>
     </div>
 </div>

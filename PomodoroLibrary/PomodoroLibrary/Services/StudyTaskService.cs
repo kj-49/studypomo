@@ -156,7 +156,12 @@ public class StudyTaskService : IStudyTaskService
 
     public async Task<ICollection<StudyTask>> GetAllAsync(int userId)
     {
-        IEnumerable<StudyTask> studyTasks = await _unitOfWork.StudyTask.GetAllAsync(u => u.User.Id == userId);
+        IEnumerable<StudyTask> studyTasks = await _unitOfWork.StudyTask.GetAllAsync(
+            u => u.User.Id == userId,
+            t => t.TaskPriority,
+            t => t.User,
+            t => t.TaskLabels
+        );
 
         return studyTasks.ToList();
     }

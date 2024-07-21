@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PomodoroLibrary.Models.Tables.LabelEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
+using PomodoroLibrary.Models.Tables.TaskLabelEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ public class MappingProfile : Profile
         CreateMap<StudyTask, StudyTaskUpdate>()
             .ForMember(dest => dest.TaskLabelIds, opt => opt.MapFrom(src => src.TaskLabels.Select(label => label.Id).ToList()))
             .ReverseMap();
+
+        CreateMap<TaskLabel, TaskLabelUpdate>();
 
     }
 }

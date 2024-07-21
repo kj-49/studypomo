@@ -9,7 +9,6 @@ let currentInterval = null;
 
 function init() {
     addEventListeners();
-    addSquares();
 }
 
 function addEventListeners() {
@@ -96,14 +95,6 @@ function setTimerText(minutes, seconds) {
     let timerEl = document.getElementById(TIMER_ELEMENT_ID);
 
     timerEl.textContent = String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
-}
-
-function addSquares() {
-    const squares = document.querySelector('.squares');
-    for (var i = 1; i < 365; i++) {
-        const level = Math.floor(Math.random() * 3);
-        squares.insertAdjacentHTML('beforeend', `<li data-level="${level}"></li>`);
-    }
 }
 
 function getSelectedValue() {

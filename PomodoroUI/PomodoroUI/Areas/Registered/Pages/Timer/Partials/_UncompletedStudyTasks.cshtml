@@ -37,7 +37,7 @@ else
                                     <h6 class="card-title mb-1 me-2">@task.Name</h6>
                                     @if (task.TaskPriority != null)
                                     {
-                                        <span class="badge me-1" style="background-color: @(task.TaskPriority.DisplayHexColor)">Priority: @task.TaskPriority.Level</span>
+                                        <span class="badge me-1" style="background-color: @(task.TaskPriority.DisplayHexColor)">Priority: <span class="fw-normal">@task.TaskPriority.Level</span></span>
                                     }
                                     @foreach (var label in task.TaskLabels)
                                     {

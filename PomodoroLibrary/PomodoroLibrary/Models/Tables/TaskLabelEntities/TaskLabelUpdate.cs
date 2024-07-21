@@ -1,14 +1,14 @@
-﻿using PomodoroLibrary.Models.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PomodoroLibrary.Models.Tables.LabelEntities;
+namespace PomodoroLibrary.Models.Tables.TaskLabelEntities;
 
-public class TaskLabelCreate
+public class TaskLabelUpdate
 {
+    public int Id { get; set; }
     public string Name { get; set; }
     public string? Description { get; set; }
     public string HexColor { get; set; }
