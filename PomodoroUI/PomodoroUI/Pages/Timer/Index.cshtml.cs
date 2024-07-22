@@ -149,7 +149,7 @@ public class IndexModel : PageModel
         
         if (Request.IsHtmx())
         {
-            StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(u => u.Id == id);
+            StudyTask? studyTask = await _studyTaskService.GetAsync(id);
 
             if (studyTask == null) return NotFound();
 

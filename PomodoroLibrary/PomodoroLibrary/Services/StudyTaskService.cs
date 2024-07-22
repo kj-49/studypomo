@@ -165,4 +165,19 @@ public class StudyTaskService : IStudyTaskService
 
         return studyTasks.ToList();
     }
+
+    public async Task<StudyTask> GetAsync(int id)
+    {
+        StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(
+            u => u.Id == id,
+            t => t.TaskLabels
+        );
+
+        if (studyTask == null)
+        {
+            throw new Exception("Study Task not found");
+        }
+
+        return studyTask;
+    }
 }

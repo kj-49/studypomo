@@ -2,111 +2,178 @@ const TIMER_ELEMENT_ID = 'timer';
 const PROGRESS_BAR_ID = 'progress-bar';
 const STARTSTOP_BUTTON_ID = 'startstop-button';
 const RESET_BUTTON_ID = 'reset-button';
-let timerOn = false;
-let secondsLeft = null;
-let timerDuration = null;
-let currentInterval = null;
+const SESSION_TIMER_STATE_KEY = 'timerState';
+const RADIO_GROUP_ID = 'timer-options';
+
+let state = {
+    timerOn: false,
+    secondsLeft: null,
+    timerDuration: null,
+    currentInterval: null
+}
 
 function init() {
     addEventListeners();
+    restoreTimerState();
 }
 
 function addEventListeners() {
-
-    document.getElementById(STARTSTOP_BUTTON_ID).addEventListener('click', function () {
-        console.log('timeron: ', timerOn);
-        let button = document.getElementById(STARTSTOP_BUTTON_ID);
-        button.classList.toggle('btn-primary');
-        button.classList.toggle('btn-danger');
-
-        if (!timerOn) { // Start timer
-
-            // Hide reset button.
-            document.getElementById(RESET_BUTTON_ID).classList.add('d-none');
-
-            button.textContent = 'Stop';
-            let minutes = document.querySelector('input[name="timer-options"]:checked').value;
-            timerDuration = minutes * 60;
-            secondsLeft = secondsLeft ?? minutes * 60;
-            console.log('sec',secondsLeft);
-            startTimer(function () {
-                
-            });
-            
-        } else { // Timer stopped
-
-            // Show reset button.
-            document.getElementById(RESET_BUTTON_ID).classList.remove('d-none');
-
-            clearInterval(currentInterval);
-            timerOn = false;
-            button.textContent = 'Start';
-        }
-
-    });
-
-    document.getElementById(RESET_BUTTON_ID).addEventListener('click', function () {
-        resetTimer();
-    });
-
-    let radios = document.querySelectorAll('input[name="timer-options"]');
-    radios.forEach(radio => {
+    document.getElementById(STARTSTOP_BUTTON_ID).addEventListener('click', toggleTimer);
+    document.getElementById(RESET_BUTTON_ID).addEventListener('click', resetTimer);
+    document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
         radio.addEventListener('change', function () {
-            resetTimer();
-            setTimerText(getSelectedValue(), 0);
+            handleTimerOptionChange(this);
         });
     });
 
     closeOnSubmit('study-task-create-form', 'study-task-create-modal');
     closeOnSubmit('study-task-edit-form', 'study-task-edit-modal');
 
+    window.addEventListener('beforeunload', handleBeforeUnload);
 }
 
 
-function startTimer(onTimerFinished) {
-    timerOn = true;
-    let minutes;
-    let seconds;
-    let progressEl = document.getElementById(PROGRESS_BAR_ID);
-    currentInterval = setInterval(function () {
-        minutes = String(parseInt(secondsLeft / 60, 10)).padStart(2, '0');
-        seconds = String(parseInt(secondsLeft % 60, 10)).padStart(2, '0');
+function toggleTimer() {
+    if (state.timerOn) {
+        stopTimer();
+    } else {
+        startTimer();
+    }
+    updateButtonState();
+}
 
-        setTimerText(minutes, seconds);
 
-        progressEl.style.width = `${(secondsLeft/timerDuration)*100}%`;
+function startTimer() {
+    if (state.currentInterval) {
+        clearInterval(state.currentInterval);
+    }
 
-        if (--secondsLeft < 0) {
-            clearInterval(currentInterval);
-            timerOn = false;
-            onTimerFinished();
+    state.timerOn = true;
+    const minutes = parseInt(document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`).value, 10);
+    state.timerDuration = minutes * 60;
+    state.secondsLeft = state.secondsLeft ?? state.timerDuration;
+
+    if (state.secondsLeft == state.timerDuration) {
+        state.secondsLeft--;
+    }
+
+    state.currentInterval = setInterval(() => {
+        updateDisplay();
+        if (--state.secondsLeft < 0) {
+            stopTimer();
         }
     }, 1000);
 }
 
-function resetTimer() {
-    clearInterval(currentInterval);
-    secondsLeft = null;
-    timerDuration = null;
-    setTimerText(getSelectedValue(), 0);
+
+function stopTimer() {
+    clearInterval(state.currentInterval);
+    state.timerOn = false;
 }
+
+
+function resetTimer() {
+    stopTimer();
+    state.secondsLeft = state.timerDuration;
+    updateDisplay();
+}
+
+function setDuration(minutes) {
+    state.timerDuration = minutes * 60;
+    resetTimer();
+    return;
+}
+
+function updateButtonState() {
+    const button = document.getElementById(STARTSTOP_BUTTON_ID);
+
+    if (state.timerOn) {
+        button.classList.add('btn-danger');
+        button.classList.remove('btn-primary');
+        button.textContent = 'Stop';
+    } else {
+        button.classList.remove('btn-danger');
+        button.classList.add('btn-primary');
+        button.textContent = 'Start';
+    }
+}
+
+
+function updateDisplay() {
+    const minutes = String(Math.floor(state.secondsLeft / 60)).padStart(2, '0');
+    const seconds = String(state.secondsLeft % 60).padStart(2, '0');
+    setTimerText(minutes, seconds);
+
+    const progressEl = document.getElementById(PROGRESS_BAR_ID);
+    progressEl.style.width = `${(state.secondsLeft / state.timerDuration) * 100}%`;
+}
+
 
 function setTimerText(minutes, seconds) {
-    let timerEl = document.getElementById(TIMER_ELEMENT_ID);
-
-    timerEl.textContent = String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
+    document.getElementById(TIMER_ELEMENT_ID).textContent = `${minutes}:${seconds}`;
 }
+
 
 function getSelectedValue() {
     return document.querySelector('input[name="timer-options"]:checked').value;
 }
 
-function resetCreateTaskForm() {
 
-    let form = document.getElementById('study-task-create-form');
-
-    form.reset();
-
-    console.log(this.selectedselectedLabels);
-
+function handleTimerOptionChange(radioButton) {
+    setDuration(radioButton.value);
+    updateButtonState();
+    updateDisplay();
 }
+
+
+function handleBeforeUnload(event) {
+    saveTimerState(state);
+}
+
+
+function saveTimerState(state) {
+    sessionStorage.setItem(SESSION_TIMER_STATE_KEY, JSON.stringify(state));
+}
+
+
+function restoreTimerState() {
+    const savedState = sessionStorage.getItem(SESSION_TIMER_STATE_KEY);
+    if (savedState) {
+        try {
+            state = JSON.parse(savedState);
+
+            console.log('Parsed state:', JSON.parse(savedState));
+
+            // Check if values are valid
+            if (state.timerOn != null && state.secondsLeft != null && state.timerDuration != null) {
+
+                // Select the correct radio button based on timerDuration
+                document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
+                    if (parseInt(radio.value, 10) * 60 === state.timerDuration) {
+                        radio.checked = true;
+                    }
+                });
+
+                stopTimer();
+
+                updateDisplay();
+
+            } else {
+                console.log('Saved state values are invalid');
+                let minutes = getSelectedValue();
+                setDuration(minutes);
+                updateDisplay();
+            }
+        } catch (e) {
+            console.error('Error parsing saved state:', e); 
+        }
+    } else {
+        console.log('No saved state found');
+        let minutes = getSelectedValue();
+        setDuration(minutes);
+        updateDisplay();
+    }
+}
+
+
+init();
