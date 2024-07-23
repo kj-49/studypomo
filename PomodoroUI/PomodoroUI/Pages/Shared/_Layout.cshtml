@@ -26,7 +26,7 @@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm mb-3 py-3">
                 <div class="container">
-                    <a x-bind:class="theme == 'dark' ? 'navbar-brand text-light' : 'navbar-brand text-dark'" asp-page="/Timer/Index">
+                    <a class="navbar-brand" :class="theme == 'dark' ? 'text-light' : 'text-dark'" asp-page="/Timer/Index">
                         <h4>studypomo.</h4>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -38,10 +38,10 @@
                         </ul>
 
                         <div class="dropdown">
-                            <i x-bind:class="theme == 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars-fill'" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                            <i class="me-1" :class="theme == 'dark' ? 'bi bi-moon-stars' : 'bi bi-sun-fill'" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false"></i>
                             <ul class="dropdown-menu" aria-labelledby="themeDropdown">
-                                <li><a class="dropdown-item" href="#" x-on:click="setTheme('light')"><i class="bi bi-sun"></i> Light</a></li>
-                                <li><a class="dropdown-item" href="#" x-on:click="setTheme('dark')"><i class="bi bi-moon-stars-fill"></i> Dark</a></li>
+                                <li><a class="dropdown-item" href="#" x-on:click="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</a></li>
+                                <li><a class="dropdown-item" href="#" x-on:click="setTheme('dark')"><i class="bi bi-moon-stars"></i> Dark</a></li>
                             </ul>
                         </div>
                         <div class="d-none d-sm-block mt-1 h-100 mx-3">
