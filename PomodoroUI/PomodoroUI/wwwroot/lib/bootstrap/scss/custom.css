@@ -761,12 +761,12 @@ progress {
 }
 @media (min-width: 1200px) {
   .container-xl, .container-lg, .container-md, .container-sm, .container {
-    max-width: 1140px;
+    max-width: 1000px;
   }
 }
 @media (min-width: 1400px) {
   .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
-    max-width: 1320px;
+    max-width: 1100px;
   }
 }
 :root {
@@ -11850,24 +11850,5 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
-/*.nav-link {
-    color: $primary;
-    font-weight: 600;
-}
-.nav-link:hover {
-    color: $success;
-}
-h1, h2, h3, h4, h5, h6 {
-    color: $secondary;
-}
-a {
-    color: $primary;
-}
-a:hover {
-    color: $success;
-}*/
-/*:root {
-    --bs-body-color: #c3cdd6;
-}*/
 
 /*# sourceMappingURL=custom.css.map */

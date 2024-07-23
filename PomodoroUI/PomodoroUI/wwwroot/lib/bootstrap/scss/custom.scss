@@ -1,3 +1,5 @@
+
+
 // scss-docs-start theme-color-variables
 // Override Bootstrap variables with your custom values
 $primary: #19a87e; // Green
@@ -7,34 +9,21 @@ $success: #20c997; // A custom teal color
 
 $link-decoration: none;
 
+// Import Bootstrap functions and variables first
+@import "../bootstrap-5.3.2/scss/functions";
+@import "../bootstrap-5.3.2/scss/variables";
 
+
+$container-max-widths: ( 
+    sm: 540px,
+    md: 720px, 
+    lg: 960px, 
+    xl: 1000px, 
+    xxl: 1100px
+);
 
 
 @import "../bootstrap-5.3.2/scss/bootstrap.scss";
-
-// Classes go after import.
-/*.nav-link {
-    color: $primary;
-    font-weight: 600;
-}
-.nav-link:hover {
-    color: $success;
-}
-h1, h2, h3, h4, h5, h6 {
-    color: $secondary;
-}
-a {
-    color: $primary;
-}
-a:hover {
-    color: $success;
-}*/
-
-/*:root {
-    --bs-body-color: #c3cdd6;
-}*/
-
-
 
 
 $enable-negative-margins: true;
