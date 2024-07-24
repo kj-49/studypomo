@@ -10,6 +10,7 @@ using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using PomodoroLibrary.Models.Utility;
 using PomodoroLibrary.Services;
 using PomodoroLibrary.Services.Interfaces;
+using PomodoroUI.Middleware;
 using VnLibrary.Services.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,14 @@ builder.Services.AddRazorPages(options =>
         .AuthorizeAreaFolder("Registered", "/"); // Require admin or master for Admin Area
 
 });
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // Make the session cookie essential
+    options.IdleTimeout = TimeSpan.FromMinutes(20); // Set session timeout
+});
+
 
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
@@ -81,5 +90,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.UseSession();
+app.UseMiddleware<PreferredThemeMiddleware>();
 
 app.Run();

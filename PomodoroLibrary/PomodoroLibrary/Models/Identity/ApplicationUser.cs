@@ -9,4 +9,5 @@ namespace PomodoroLibrary.Models.Identity;
 
 public class ApplicationUser : IdentityUser<int>
 {
+    public string? PreferredTheme { get; set; }
 }

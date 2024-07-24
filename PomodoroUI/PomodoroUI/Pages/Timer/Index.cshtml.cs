@@ -1,11 +1,13 @@
 
 using AutoMapper;
 using Htmx;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using PomodoroLibrary.Data;
 using PomodoroLibrary.Data.Interfaces;
@@ -203,6 +205,19 @@ public class IndexModel : PageModel
 
         return Page();
 
+    }
+
+    public async Task<IActionResult> OnPostSetPreferredThemeAsync(string theme)
+    {
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+
+        if (user == null) NotFound();
+
+        user.PreferredTheme = theme;
+
+        _unitOfWork.Complete();
+
+        return new OkResult();
     }
 
 }

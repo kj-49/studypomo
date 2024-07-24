@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en" x-data="{
-    theme: localStorage.getItem('theme') || 'dark',
+    theme: localStorage.getItem('theme') || '@Context.Session.GetString("theme")',
     setTheme(newTheme) {
         this.theme = newTheme;
         localStorage.setItem('theme', newTheme);
@@ -9,6 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="htmx-config" includeAspNetAntiforgeryToken="true" />
     <title>studypomo.</title>
     <style>
         /* Hide content until Alpine.js applies the theme */
@@ -40,8 +41,8 @@
                         <div class="dropdown">
                             <i class="me-1" :class="theme == 'dark' ? 'bi bi-moon-stars' : 'bi bi-sun-fill'" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false"></i>
                             <ul class="dropdown-menu" aria-labelledby="themeDropdown">
-                                <li><a class="dropdown-item" href="#" x-on:click="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</a></li>
-                                <li><a class="dropdown-item" href="#" x-on:click="setTheme('dark')"><i class="bi bi-moon-stars"></i> Dark</a></li>
+                                <li><a class="dropdown-item" hx-post hx-swap="none" hx-page="Index" hx-page-handler="SetPreferredTheme" hx-route-theme="light" x-on:click="setTheme('light')"><i class="bi bi-sun-fill"></i> Light</a></li>
+                                <li><a class="dropdown-item" hx-post hx-swap="none" hx-page="Index" hx-page-handler="SetPreferredTheme" hx-route-theme="dark" x-on:click="setTheme('dark')"><i class="bi bi-moon-stars"></i> Dark</a></li>
                             </ul>
                         </div>
                         <div class="d-none d-sm-block mt-1 h-100 mx-3">
