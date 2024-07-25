@@ -102,9 +102,6 @@ function updateButtonState() {
 function updateDisplay() {
 
     const minutes = String(Math.floor(state.secondsLeft / 60));
-    if (minutes == 0) {
-        const minutes = '00';
-    }
     
     const seconds = String(state.secondsLeft % 60).padStart(2, '0');
     setTimerText(minutes, seconds);

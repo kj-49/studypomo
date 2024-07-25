@@ -23,13 +23,13 @@
                         <div class="col-md-3">
                             <span class="badge" style="background-color: @(Model.TaskLabels[i].HexColor)">@Model.TaskLabels[i].Name</span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="d-none d-md-block col-md-4">
                             <span class="text-muted">@Model.TaskLabels[i].Description</span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="d-none d-lg-block col-md-2">
                             <span class="text-muted">@Model.TaskLabels[i].StudyTasks.Count() tasks</span>
                         </div>
-                        <div class="col-md-3 text-end">
+                        <div class="col-md-3 text-end text-nowrap">
                             <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#editLabelModal-@Model.TaskLabels[i].Id">Edit</button>
                             <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteLabelModal-@Model.TaskLabels[i].Id">Delete</button>
                         </div>
