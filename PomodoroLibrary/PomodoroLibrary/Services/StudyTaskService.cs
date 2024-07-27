@@ -36,15 +36,7 @@ public class StudyTaskService : IStudyTaskService
 
         TaskPriority? taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
 
-        StudyTask studyTask = new StudyTask
-        {
-            User = user,
-            Name = studyTaskCreate.Name,
-            Completed = false,
-            DateCreated = DateTime.UtcNow,
-            DateCompleted = null,
-            TaskPriority = taskPriority
-        };
+        StudyTask studyTask = studyTaskCreate.ToEntity(user.Id);
 
         // Now add labels to task
         if (studyTaskCreate.TaskLabelIds != null)
@@ -93,7 +85,7 @@ public class StudyTaskService : IStudyTaskService
 
         if (studyTask == null) throw new Exception("Study Task not found");
 
-        StudyTask updatedStudyTask = _mapper.Map(studyTaskUpdate, studyTask);
+        StudyTask updatedStudyTask = studyTaskUpdate.ToEntity(studyTask);
 
         await RemoveAllLabels(studyTask.Id);
 

@@ -21,6 +21,7 @@ public class StudyTask
     public int? TaskPriorityId { get; set; }
     public TaskPriority? TaskPriority { get; set; }
     public bool Archived { get; set; }
+    public DateTime? Deadline { get; set; }
 
     public List<TaskLabel> TaskLabels { get; } = [];
 }
