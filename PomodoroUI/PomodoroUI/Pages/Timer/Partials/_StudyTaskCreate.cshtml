@@ -54,6 +54,12 @@
                             Choose <i class="bi bi-chevron-expand"></i>
                         </a>
                         <ul class="dropdown-menu">
+                            <li class="dropdown-item">
+                                @*Create new label*@
+                                <a asp-page="../Labels/Index" class="text-opacity-75">
+                                    Create New <i class="bi bi-plus"></i>
+                                </a>
+                            </li>
                             @foreach (var label in Model.TaskLabels)
                             {
                                 <li>
@@ -70,12 +76,6 @@
                             }
                         </ul>
                     </div>
-                </div>
-                <div>
-                    @*Create new label*@
-                    <a asp-page="../Labels/Index" class="text-opacity-75">
-                        Create New <i class="bi bi-plus"></i>
-                    </a>
                 </div>
             </div>
 

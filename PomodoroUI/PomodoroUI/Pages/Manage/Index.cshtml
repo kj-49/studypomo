@@ -1,4 +1,60 @@
 ﻿@page
+@using Humanizer
 @model PomodoroUI.Pages.Manage.IndexModel
 @{
 }
+
+<div>
+    <h5>All Tasks</h5>
+</div>
+
+@if (Model.StudyTasks.Count == 0)
+{
+    <p>No Completed tasks.</p>
+}
+else
+{
+    <form hx-post
+          hx-page="Index">
+        <ul class="list-group">
+            @foreach (var task in Model.StudyTasks)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center mb-0">
+                        <div class="d-flex flex-column justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex">
+                                    @if (task.Completed)
+                                    {
+                                        <i class="bi bi-record-circle me-2 text-success"></i>
+                                    } else
+                                    {
+                                        <i class="bi bi-record-circle me-2 text-danger"></i>
+                                    }
+                                    <h6 class="card-title fw-normal mb-1 me-2">@task.Name</h6>
+                                </div>
+                                
+                                @if (task.TaskPriority != null)
+                                {
+                                    <span class="badge me-1" style="background-color: @(task.TaskPriority.DisplayHexColor)">Priority: @task.TaskPriority.Level</span>
+                                }
+                                @foreach (var label in task.TaskLabels)
+                                {
+                                    <span class="badge me-1" style="background-color: @(label.HexColor)">@label.Name</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <a class="btn btn-link text-primary p-0" data-bs-toggle="modal" data-bs-target="#study-task-edit-modal" hx-get hx-page="Index" hx-page-handler="StudyTaskUpdate" hx-route-id="@task.Id" hx-swap="innerHTML" hx-target="#study-task-edit-form">
+                                <i class="bi bi-three-dots"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </li>
+            }
+        </ul>
+        @Html.AntiForgeryToken()
+    </form>
+}
+

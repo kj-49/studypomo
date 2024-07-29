@@ -46,19 +46,19 @@
     <div id="task-history">
         @await Html.PartialAsync("Partials/_TaskHistory")
     </div>
-    <div class="mb-5">
+    <div class="mb-5" x-data="{ progressColor: null }">
         <div class="d-flex justify-content-between">
             <div class="d-flex">
                 <div class="me-2">
-                    <input type="radio" class="btn-check" name="timer-options" value="25" id="pomodoro" autocomplete="off" checked>
+                    <input x-on:click="progressColor = null" type="radio" class="btn-check" name="timer-options" value="25" id="pomodoro" autocomplete="off" checked>
                     <label class="btn btn-lg" for="pomodoro">Pomodoro</label>
                 </div>
                 <div class="me-2">
-                    <input type="radio" class="btn-check" name="timer-options" value="5" id="short-break" autocomplete="off">
+                    <input x-on:click="progressColor = '#85daff'" type="radio" class="btn-check" name="timer-options" value="5" id="short-break" autocomplete="off">
                     <label class="btn btn-lg" for="short-break">Short Break</label>
                 </div>
                 <div class="me-2">
-                    <input type="radio" class="btn-check" name="timer-options" value="15" id="long-break" autocomplete="off">
+                    <input x-on:click="progressColor = '#328cd1'" type="radio" class="btn-check" name="timer-options" value="15" id="long-break" autocomplete="off">
                     <label class="btn btn-lg" for="long-break">Long Break</label>
                 </div>
                 <div>
@@ -72,12 +72,12 @@
                 <a href="#" class="text-muted" data-bs-toggle="modal" data-bs-target="#study-task-history"><i class="bi bi-clock-history me-1"></i> History</a>
             </div>
         </div>
-
+            
         <p id="timer" class="timer">
             00:00
         </p>
         <div class="progress">
-            <div class="progress-bar" id="progress-bar" role="progressbar" width="100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar" :style="{ backgroundColor: progressColor }" id="progress-bar" role="progressbar"  aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
     </div>
 
