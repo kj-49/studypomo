@@ -47,3 +47,20 @@ function closeOnSubmit(formId, modalId) {
         }
     });
 }
+
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+}
+document.addEventListener(
+    "keydown",
+    (e) => {
+        if (e.keyCode === 36) {
+            toggleFullScreen();
+        }
+    },
+    false,
+);
