@@ -17,6 +17,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     {
     }
 
+    public ApplicationDbContext() { }
+
     public DbSet<StudyTask> StudyTasks { get; set; }
     public DbSet<TaskPriority> TaskPriorities { get; set; }
     public DbSet<StudySession> StudySessions { get; set; }
