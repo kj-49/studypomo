@@ -17,8 +17,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
 
-var t = builder.Configuration.GetConnectionString("Default");
-
 // Add services to the container.
 builder.Services.AddRazorPages(options =>
 {
@@ -26,7 +24,7 @@ builder.Services.AddRazorPages(options =>
 
     options.Conventions
         .AuthorizeFolder("/") // Require auth for all paths
-        .AuthorizeAreaFolder("Registered", "/"); // Require admin or master for Admin Area
+        .AuthorizeAreaFolder("Registered", "/");
 
 });
 
@@ -46,7 +44,7 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 
 // Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("Default"), new MySqlServerVersion(new Version(8, 0, 33))));
+    options.UseMySql(builder.Configuration.GetConnectionString("Pomodoro"), new MySqlServerVersion(new Version(8, 0, 33))));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
