@@ -13,6 +13,7 @@ public interface IUnitOfWork
     IUserRepository User { get; }
     ITaskLabelRepository TaskLabel { get; }
     IStudyTaskLabelRepository StudyTaskLabel { get; }
+    ICourseRepository Course { get; }
 
     int Complete();
 }

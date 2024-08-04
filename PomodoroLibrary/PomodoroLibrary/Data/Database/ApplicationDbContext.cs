@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PomodoroLibrary.Models.Identity;
+using PomodoroLibrary.Models.Tables.CourseEntities;
 using PomodoroLibrary.Models.Tables.LabelEntities;
 using PomodoroLibrary.Models.Tables.StudySessionEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
@@ -24,10 +25,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<StudySession> StudySessions { get; set; }
     public DbSet<StudyType> StudyTypes { get; set; }
     public DbSet<TaskLabel> TaskLabels { get; set; }
+    public DbSet<Course> Courses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<Course>(course =>
+        {
+            course.ToTable(nameof(Course));
+        });
 
         builder.Entity<StudyTask>(studyTask =>
         {

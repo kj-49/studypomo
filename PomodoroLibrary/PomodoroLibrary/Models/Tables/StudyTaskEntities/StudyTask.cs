@@ -1,4 +1,5 @@
 ﻿using PomodoroLibrary.Models.Identity;
+using PomodoroLibrary.Models.Tables.CourseEntities;
 using PomodoroLibrary.Models.Tables.LabelEntities;
 using PomodoroLibrary.Models.Tables.TaskPriorityEntities;
 using System;
@@ -22,6 +23,8 @@ public class StudyTask
     public TaskPriority? TaskPriority { get; set; }
     public bool Archived { get; set; }
     public DateTime? Deadline { get; set; }
+    public int? CourseId { get; set; }
+    public Course? Course { get; set; }
 
     public List<TaskLabel> TaskLabels { get; } = [];
 }

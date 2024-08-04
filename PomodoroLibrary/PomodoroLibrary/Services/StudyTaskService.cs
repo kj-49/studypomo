@@ -31,8 +31,8 @@ public class StudyTaskService : IStudyTaskService
 
     public async Task CreateAsync(StudyTaskCreate studyTaskCreate)
     {
-        ApplicationUser? user = await _userService.GetCurrentUserAsync();
-        if (user == null) throw new Exception("User not found");
+            ApplicationUser? user = await _userService.GetCurrentUserAsync();
+            if (user == null) throw new Exception("User not found");
 
         TaskPriority? taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
 

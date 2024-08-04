@@ -15,6 +15,7 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository User { get; private set; }
     public ITaskLabelRepository TaskLabel { get; private set; }
     public IStudyTaskLabelRepository StudyTaskLabel { get; private set; }
+    public ICourseRepository Course { get; private set; }
 
     private ApplicationDbContext _db;
 
@@ -26,6 +27,7 @@ public class UnitOfWork : IUnitOfWork
         User = new UserRepository(_db);
         TaskLabel = new TaskLabelRepository(_db);
         StudyTaskLabel = new StudyTaskLabelRepository(_db);
+        Course = new CourseRepository(_db);
     }
 
     public int Complete()
