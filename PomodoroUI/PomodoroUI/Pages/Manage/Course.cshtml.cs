@@ -46,6 +46,6 @@ public class CourseModel : PageModel
 
     public async Task OnPostAsync()
     {
-
+        
     }
 }

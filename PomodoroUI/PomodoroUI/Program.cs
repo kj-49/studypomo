@@ -93,4 +93,6 @@ app.MapRazorPages();
 app.UseSession();
 app.UseMiddleware<PreferredThemeMiddleware>();
 
+
+
 app.Run();

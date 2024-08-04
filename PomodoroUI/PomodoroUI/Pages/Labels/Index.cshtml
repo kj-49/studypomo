@@ -139,7 +139,7 @@
                         <div x-show="!isValid" class="text-danger">Invalid color format. Please enter a valid hex color.</div>
                         <span asp-validation-for="TaskLabelCreate.HexColor" class="text-danger form-text"></span>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" x-show="name.trim() !== ''">
                         <span>Preview:</span>
                         <span class="badge" :style="'background-color: ' + color" x-text="name"></span>
                     </div>

@@ -1,9 +1,5 @@
-
-
-// scss-docs-start theme-color-variables
 // Override Bootstrap variables with your custom values
 $primary: #19a87e; // Green
-//$secondary: #c3cdd6; // A shade of gray
 $info: #c3e3d3;
 $success: #20c997; // A custom teal color
 
@@ -13,17 +9,11 @@ $link-decoration: none;
 @import "../bootstrap-5.3.2/scss/functions";
 @import "../bootstrap-5.3.2/scss/variables";
 
+// Override container max-widths
+$container-max-widths: ( sm: 540px, md: 720px, lg: 960px, xl: 1000px );
 
-$container-max-widths: ( 
-    sm: 540px,
-    md: 720px, 
-    lg: 960px, 
-    xl: 1000px
-);
-
-
+// Import Bootstrap
 @import "../bootstrap-5.3.2/scss/bootstrap.scss";
-
 
 $enable-negative-margins: true;
 
@@ -31,6 +21,284 @@ $enable-negative-margins: true;
 
 $font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
+$color-mode-type: data;
+
+// Define custom button styles
+@mixin util-button {
+    appearance: none;
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+    box-sizing: border-box;
+    color: #24292E;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    list-style: none;
+    position: relative;
+    transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+    word-wrap: break-word;
+    font-size: 1rem;
+
+    &:focus,
+    &:active {
+        // Ensure border and shadow stay consistent on focus and active states
+        border: 1px solid rgba(27, 31, 35, 0.15);
+        box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+        outline: none; // Remove default outline
+    }
+}
+
+@include color-mode(light) {
+    // Apply custom button styles to standard Bootstrap buttons
+    .btn:not(.btn-outline):not(.btn-link) {
+        @include util-button;
+        padding: 6px 12px;
+        background-color: #FAFBFC;
+
+
+        &.btn-clean {
+
+            &:hover {
+                background-color: darken(#FAFBFC, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 12%);
+            }
+        }
 
 
 
+        &.btn-primary {
+            background-color: $primary;
+            border-color: $primary;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($primary, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-success {
+            background-color: $success;
+            border-color: $success;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($success, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-info {
+            background-color: $info;
+            border-color: $info;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($info, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-secondary {
+            background-color: $secondary;
+            border-color: $secondary;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($secondary, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-warning {
+            background-color: $warning;
+            border-color: $warning;
+            color: #212529;
+
+            &:hover {
+                background-color: darken($warning, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-danger {
+            background-color: $danger;
+            border-color: $danger;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($danger, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-light {
+            background-color: $light;
+            border-color: $light;
+            color: #212529;
+
+            &:hover {
+                background-color: darken($light, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-dark {
+            background-color: $dark;
+            border-color: $dark;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($dark, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+    }
+    // Ensure btn-sm works
+    .btn-sm:not(.btn-outline):not(.btn-link) {
+        @include util-button;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 0.2rem;
+    }
+    // Ensure btn-lg works
+    .btn-lg:not(.btn-outline):not(.btn-link) {
+        @include util-button;
+        padding: 0.5rem 1rem;
+        font-size: 1.25rem;
+        border-radius: 0.5rem;
+    }
+}
+
+
+// Dark mode styles
+@include color-mode(dark) {
+    // Apply custom button styles to standard Bootstrap buttons
+    .btn:not(.btn-outline):not(.btn-link) {
+        @include util-button;
+        padding: 6px 12px;
+        background-color: #FAFBFC;
+
+
+        &.btn-clean {
+            background-color: $list-group-bg; // Lighter shade for dark mode
+            color: $list-group-color; // Light text color for dark mode
+            border-color: $list-group-border-color; // Adjust border color for dark mode
+
+            &:hover {
+                border-color: lighten(rgba(255, 255, 255, 0.2), 10%);
+            }
+        }
+
+
+
+        &.btn-primary {
+            background-color: $primary;
+            border-color: $primary;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($primary, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-success {
+            background-color: $success;
+            border-color: $success;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($success, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-info {
+            background-color: $info;
+            border-color: $info;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($info, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-secondary {
+            background-color: $secondary;
+            border-color: $secondary;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($secondary, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-warning {
+            background-color: $warning;
+            border-color: $warning;
+            color: #212529;
+
+            &:hover {
+                background-color: darken($warning, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-danger {
+            background-color: $danger;
+            border-color: $danger;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($danger, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-light {
+            background-color: $light;
+            border-color: $light;
+            color: #212529;
+
+            &:hover {
+                background-color: darken($light, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+
+        &.btn-dark {
+            background-color: $dark;
+            border-color: $dark;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($dark, 3%);
+                border-color: darken(rgba(27, 31, 35, 0.15), 6%);
+            }
+        }
+    }
+    // Ensure btn-sm works
+    .btn-sm:not(.btn-outline):not(.btn-link) {
+        @include util-button;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 0.2rem;
+    }
+    // Ensure btn-lg works
+    .btn-lg:not(.btn-outline):not(.btn-link) {
+        @include util-button;
+        padding: 0.5rem 1rem;
+        font-size: 1.25rem;
+        border-radius: 0.5rem;
+    }
+}

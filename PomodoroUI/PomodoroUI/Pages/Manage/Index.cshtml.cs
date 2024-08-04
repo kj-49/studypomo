@@ -19,8 +19,9 @@ public class IndexModel : PageModel
         _courseService = courseService;
     }
 
-    public ICollection<StudyTask> StudyTasks { get; set; }
     public ICollection<Course> Courses { get; set; }
+    [BindProperty]
+    public CourseCreate CourseCreate { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -28,9 +29,15 @@ public class IndexModel : PageModel
 
         if (user == null) return Challenge();
 
-        StudyTasks = await _studyTaskService.GetAllAsync(user.Id);
         Courses = await _courseService.GetAllAsync(user.Id);
 
         return Page();
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        await _courseService.CreateAsync(CourseCreate);
+
+        return RedirectToPage();
     }
 }

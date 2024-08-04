@@ -15,7 +15,7 @@
                 <div class="mb-1 px-3">
                     <small>Add important tasks you want to complete during this session.</small>
                 </div>
-                <hr class="text-opacity-50 mb-0" />
+                <hr class="text-secondary mb-0" />
                 <div>
                     <div>
                         @await Html.PartialAsync("Partials/_StudyTaskCreate")
@@ -34,7 +34,7 @@
                 <div class="mb-1 px-3">
                     <small>Add important tasks you want to complete during this session.</a></small>
                 </div>
-                <hr class="text-opacity-50 mb-0" />
+                <hr class="text-secondary mb-0" />
                 <div>
                     <div id="study-task-edit-form">
                         @await Html.PartialAsync("Partials/_StudyTaskUpdate")
@@ -52,15 +52,15 @@
             <div class="d-flex">
                 <div class="me-2">
                     <input x-on:click="progressColor = '#328cd1'" type="radio" class="btn-check" name="timer-options" value="25" id="pomodoro" autocomplete="off" data-color="#328cd1" checked>
-                    <label class="btn btn-lg" for="pomodoro">Pomodoro</label>
+                    <label class="btn btn-outline btn-lg" for="pomodoro">Pomodoro</label>
                 </div>
                 <div class="me-2">
                     <input x-on:click="progressColor = '#85daff'" type="radio" class="btn-check" name="timer-options" value="5" id="short-break" autocomplete="off" data-color="#85daff">
-                    <label class="btn btn-lg" for="short-break">Short Break</label>
+                    <label class="btn btn-outline btn-lg" for="short-break">Short Break</label>
                 </div>
                 <div class="me-2">
                     <input x-on:click="progressColor = '#a77bc9'" type="radio" class="btn-check" name="timer-options" value="15" id="long-break" autocomplete="off" data-color="#a77bc9">
-                    <label class="btn btn-lg" for="long-break">Long Break</label>
+                    <label class="btn btn-outline btn-lg" for="long-break">Long Break</label>
                 </div>
                 <div>
                     <button class="btn btn-lg btn-primary me-2" id="startstop-button">Start</button>
