@@ -1,4 +1,5 @@
-﻿using PomodoroLibrary.Models.Tables.LabelEntities;
+﻿using Humanizer;
+using PomodoroLibrary.Models.Tables.LabelEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskLabelEntities;
 using PomodoroLibrary.Models.Tables.TaskLabelEntities;
 using System;
@@ -42,4 +43,16 @@ public static class StudyTaskExtensions
 
         return existingStudyTask;
     }
+
+    public static string Status(this StudyTask studyTask)
+    {
+        if (studyTask.Completed)
+        {
+            return $"Completed {studyTask.DateCompleted.Humanize()}";
+        } else
+        {
+            return $"Created {studyTask.DateCreated.Humanize()}";
+        }
+    }
+
 }

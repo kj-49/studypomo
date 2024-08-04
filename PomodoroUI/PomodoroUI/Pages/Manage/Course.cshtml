@@ -1,5 +1,5 @@
 ﻿@page "{id:int}"
-@using Humanizer
+@using PomodoroLibrary.Models.Tables.StudyTaskEntities
 @model PomodoroUI.Pages.Manage.CourseModel
 @{
     ViewData["Title"] = Model.Course.Name;
@@ -268,7 +268,7 @@
         </h2>
         <p class="text-muted mb-0">@Model.Course.Description</p>
     </div>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-create-modal">New Task</button>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-create-modal"><i class="bi bi-plus-lg"></i> New Task</button>
 </div>
 
 
@@ -276,9 +276,9 @@
     <div class="col">
         <ul class="list-group">
             <li class="list-group-item">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center mb-1">
                     <span class="todo-circle me-2"></span>
-                    <h5 class="mb-1">Todo</h5>
+                    <h5 class="mb-0">Todo</h5>
                 </div>
                 <small class="text-muted">Task has not been worked on yet</small>
             </li>
@@ -308,7 +308,7 @@
                                         <span class="badge me-1" style="background-color: @(label.HexColor)">@label.Name</span>
                                     }
                                 </div>
-                                <small>Created @task.DateCreated.Humanize()</small>
+                                <small>@task.Status()</small>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -325,9 +325,9 @@
     <div class="col">
         <ul class="list-group">
             <li class="list-group-item">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center mb-1">
                     <span class="done-circle me-2"></span>
-                    <h5 class="mb-1">Done</h5>
+                    <h5 class="mb-0">Done</h5>
                 </div>
                 <small class="text-muted">Task that have been completed</small>
             </li>
@@ -357,7 +357,7 @@
                                         <span class="badge me-1" style="background-color: @(label.HexColor)">@label.Name</span>
                                     }
                                 </div>
-                                <small>Created @task.DateCreated.Humanize()</small>
+                                <small>@task.Status()</small>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
