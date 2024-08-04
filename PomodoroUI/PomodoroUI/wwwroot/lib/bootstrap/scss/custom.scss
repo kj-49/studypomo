@@ -180,12 +180,9 @@ $color-mode-type: data;
 
 // Dark mode styles
 @include color-mode(dark) {
-    // Apply custom button styles to standard Bootstrap buttons
+        // Apply custom button styles to standard Bootstrap buttons
     .btn:not(.btn-outline):not(.btn-link) {
         @include util-button;
-        padding: 6px 12px;
-        background-color: #FAFBFC;
-
 
         &.btn-clean {
             background-color: $list-group-bg; // Lighter shade for dark mode
