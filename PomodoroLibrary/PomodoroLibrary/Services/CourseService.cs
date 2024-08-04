@@ -47,13 +47,17 @@ public class CourseService : ICourseService
 
     public async Task<ICollection<Course>> GetAllAsync(int userId)
     {
-        IEnumerable<Course> courses = await _unitOfWork.Course.GetAllAsync(u => u.UserId == userId);
+        IEnumerable<Course> courses = await _unitOfWork.Course.GetAllAsync(
+            filter: u => u.UserId == userId,
+            includeProperties: t => t.StudyTasks);
         return courses.ToList();
     }
 
     public async Task<Course> GetAsync(int id)
     {
-        Course? course = await _unitOfWork.Course.GetAsync(u => u.Id == id);
+        Course? course = await _unitOfWork.Course.GetAsync(
+            filter: u => u.Id == id,
+            includeProperties: t => t.StudyTasks);
         if (course == null) throw new Exception("Course not found");
         return course;
     }
