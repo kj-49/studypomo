@@ -14,6 +14,7 @@ public class StudyTaskUpdate
     [Display(Name = "Priority")]
     public int? TaskPriorityId { get; set; }
     public DateTime? Deadline { get; set; }
+    public int? CourseId { get; set; }
 
     public List<int> TaskLabelIds { get; set; }
 }

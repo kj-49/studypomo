@@ -1,3 +1,4 @@
+using Htmx;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PomodoroLibrary.Models.Identity;
@@ -15,19 +16,23 @@ public class CourseModel : PageModel
     private readonly ITaskPriorityService _taskPriorityService;
     private readonly ITaskLabelService _taskLabelService;
     private readonly IUserService _userService;
+    private readonly IStudyTaskService _studyTaskService;
 
-    public CourseModel(ICourseService courseService, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService, IUserService userService)
+    public CourseModel(ICourseService courseService, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService, IUserService userService, IStudyTaskService studyTaskService)
     {
         _courseService = courseService;
         _taskPriorityService = taskPriorityService;
         _taskLabelService = taskLabelService;
         _userService = userService;
+        _studyTaskService = studyTaskService;
     }
 
     public Course Course { get; set; }
 
     [BindProperty]
     public StudyTaskCreate StudyTaskCreate { get; set; }
+    [BindProperty]
+    public StudyTaskUpdate StudyTaskUpdate { get; set; }
     public ICollection<TaskPriority> TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
 
@@ -44,8 +49,17 @@ public class CourseModel : PageModel
         return Page();
     }
 
-    public async Task OnPostAsync()
+    public async Task<IActionResult> OnPostCreateStudyTaskAsync()
     {
-        
+        await _studyTaskService.CreateAsync(StudyTaskCreate);
+
+        return RedirectToPage(new { id = StudyTaskCreate.CourseId });
+    }
+
+    public async Task<IActionResult> OnPostUpdateStudyTaskAsync()
+    {
+        await _studyTaskService.UpdateAsync(StudyTaskUpdate);
+
+        return RedirectToPage( new { id = StudyTaskUpdate.CourseId });
     }
 }

@@ -59,8 +59,6 @@ $color-mode-type: data;
     // Apply custom button styles to standard Bootstrap buttons
     .btn:not(.btn-outline):not(.btn-link) {
         @include util-button;
-        padding: 6px 12px;
-        background-color: #FAFBFC;
 
 
         &.btn-clean {
@@ -190,11 +188,9 @@ $color-mode-type: data;
             border-color: $list-group-border-color; // Adjust border color for dark mode
 
             &:hover {
-                border-color: lighten(rgba(255, 255, 255, 0.2), 10%);
+                border-color: lighten(rgba(255, 255, 255, 0.2), 6%);
             }
         }
-
-
 
         &.btn-primary {
             background-color: $primary;

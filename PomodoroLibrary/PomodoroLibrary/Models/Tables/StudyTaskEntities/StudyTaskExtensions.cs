@@ -23,6 +23,7 @@ public static class StudyTaskExtensions
         studyTask.TaskPriorityId = studyTaskCreate.TaskPriorityId;
         studyTask.Archived = false;
         studyTask.Deadline = studyTaskCreate.Deadline;
+        studyTask.CourseId = studyTaskCreate.CourseId;
 
         return studyTask;
     }
@@ -37,6 +38,7 @@ public static class StudyTaskExtensions
         existingStudyTask.Name = studyTaskUpdate.Name;
         existingStudyTask.TaskPriorityId = studyTaskUpdate.TaskPriorityId;
         existingStudyTask.Deadline = studyTaskUpdate.Deadline;
+        existingStudyTask.CourseId = studyTaskUpdate.CourseId;
 
         return existingStudyTask;
     }

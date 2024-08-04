@@ -31,6 +31,11 @@
             <input class="form-control form-control-sm" asp-for="StudyTaskCreate.Name" />
             <span asp-validation-for="StudyTaskCreate.Name" class="text-danger form-text"></span>
         </div>
+        <div class="mb-2">
+            <label asp-for="StudyTaskCreate.CourseId" class="form-label">Course:</label>
+            <input class="form-control form-control-sm" asp-for="StudyTaskCreate.CourseId" />
+            <span asp-validation-for="StudyTaskCreate.CourseId" class="text-danger form-text"></span>
+        </div>
         <a x-show="hideMoreOptions" x-on:click="hideMoreOptions = false" class="text-muted" data-bs-toggle="collapse" href="#extra-options" role="button" aria-expanded="false" aria-controls="extra-options">
             <i class="bi bi-plus"></i> More options
         </a>

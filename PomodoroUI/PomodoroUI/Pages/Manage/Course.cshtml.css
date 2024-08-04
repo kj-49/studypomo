@@ -1,0 +1,27 @@
+﻿.todo-circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 3px solid #28a745;
+    background-color: rgba(40, 167, 69, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 16px;
+    color: #28a745;
+}
+
+.done-circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 3px solid #007bff;
+    background-color: rgba(0, 123, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 16px;
+    color: #007bff;
+}
