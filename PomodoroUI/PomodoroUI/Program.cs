@@ -28,6 +28,8 @@ builder.Services.AddRazorPages(options =>
 
 });
 
+builder.Services.AddRazorComponents();
+
 builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;

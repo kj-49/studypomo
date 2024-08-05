@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualBasic;
 using PomodoroLibrary.Models.Tables.CourseEntities;
 using PomodoroLibrary.Models.Tables.StudyTaskEntities;
 using PomodoroLibrary.Services.Interfaces;
@@ -22,6 +23,7 @@ public class IndexModel : PageModel
     public ICollection<Course> Courses { get; set; }
     [BindProperty]
     public CourseCreate CourseCreate { get; set; }
+    public ICollection<StudyTask> StudyTasks { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -30,6 +32,7 @@ public class IndexModel : PageModel
         if (user == null) return Challenge();
 
         Courses = await _courseService.GetAllAsync(user.Id);
+        StudyTasks = await _studyTaskService.GetAllAsync(user.Id);
 
         return Page();
     }

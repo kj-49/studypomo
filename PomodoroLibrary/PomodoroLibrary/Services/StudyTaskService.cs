@@ -146,14 +146,22 @@ public class StudyTaskService : IStudyTaskService
         _unitOfWork.Complete();
     }
 
-    public async Task<ICollection<StudyTask>> GetAllAsync(int userId)
+    public async Task<ICollection<StudyTask>> GetAllAsync(int userId, bool activeOnly)
     {
+
         IEnumerable<StudyTask> studyTasks = await _unitOfWork.StudyTask.GetAllAsync(
             u => u.User.Id == userId,
             t => t.TaskPriority,
             t => t.User,
             t => t.TaskLabels
         );
+
+        studyTasks = studyTasks.Where(t => t.User.Id == userId);
+
+        if (activeOnly)
+        {
+            studyTasks = studyTasks.Where(t => !t.Archived);
+        }
 
         return studyTasks.ToList();
     }
