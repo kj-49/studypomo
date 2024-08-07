@@ -72,7 +72,7 @@
                                         <a class="dropdown-item" href="#"
                                            x-on:click.prevent.stop="toggleLabel(@label.Id)">
                                             <div class="d-flex justify-content-between align-items-center">
-                                                <span class="badge" style="background-color: @(label.HexColor)">@label.Name</span>
+                                                <badge text="@label.Name" color="@label.HexColor"></badge>
                                                 <i class="bi"
                                                    :class="selectedLabels.includes(@label.Id) ? 'bi-check' :''">
                                                 </i>
@@ -91,7 +91,7 @@
                             @foreach (var label in Model.TaskLabels)
                             {
                                 <template x-if="labelId === @label.Id">
-                                    <span class="badge me-1" style="background-color: @label.HexColor">@label.Name</span>
+                                    <badge text="@label.Name" color="@label.HexColor"></badge>
                                 </template>
                             }
                             @*For model binding.*@
