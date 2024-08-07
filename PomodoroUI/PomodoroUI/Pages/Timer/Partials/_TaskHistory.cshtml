@@ -38,11 +38,11 @@
                                             <h6 class="card-title mb-1 me-2">@task.Name</h6>
                                             @if (task.TaskPriority != null)
                                             {
-                                                <span class="badge me-1" style="background-color: @(task.TaskPriority.DisplayHexColor)">Priority: @task.TaskPriority.Level</span>
+                                                <badge priority="true" text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
                                             }
                                             @foreach (var label in task.TaskLabels)
                                             {
-                                                <span class="badge me-1" style="background-color: @(label.HexColor)">@label.Name</span>
+                                                <badge text="@label.Name" color="@label.HexColor"></badge>
                                             }
                                         </div>
                                         <small>Completed @task.DateCompleted.Humanize()</small>
