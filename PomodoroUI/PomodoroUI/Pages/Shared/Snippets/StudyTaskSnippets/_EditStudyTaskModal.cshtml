@@ -1,16 +1,10 @@
-﻿@page "{id:int}"
-@using PomodoroLibrary.Models.Tables.StudyTaskEntities
-@using PomodoroUI.ViewModels
-@model PomodoroUI.Pages.Manage.Courses.IndexModel
-@{
-    ViewData["Title"] = Model.Course.Name;
-}
+﻿@model PomodoroUI.ViewModels.EditStudyTaskVM
 
-<div class="modal fade" id="study-task-create-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+<div class="modal fade" id="@StudyTaskModalHelper.GetEditModalId(Model.StudyTask.Id)" tabindex="-1" aria-labelledby="taskEditModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header mb-3">
-                <h5 class="modal-title" id="taskModalLabel">Create a Task</h5>
+                <h5 class="modal-title" id="taskEditModalLabel">Edit Task</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="mb-1 px-3">
@@ -19,55 +13,59 @@
             <hr class="text-secondary mb-0" />
             <div>
                 <div>
-                    <form method="post" 
-                        asp-page-handler="CreateStudyTask"
-                        x-data="{
-                          selectedLabels: [],
+                    <form method="post"
+                          x-data="{
+                          selectedLabels: @Json.Serialize(Model.StudyTask.TaskLabels.Select(u => u.Id)),
                           toggleLabel(id) {
                           if (this.selectedLabels.includes(id)) {
-                            this.selectedLabels=this.selectedLabels.filter(labelId => labelId !== id);
-                          } else {
-                            this.selectedLabels.push(id);
-                          }
+                          this.selectedLabels=this.selectedLabels.filter(labelId =>
+                        labelId !== id);
+                        } else {
+                        this.selectedLabels.push(id);
+                        }
                         },
                         clearSelectedLabels() {
-                          this.selectedLabels = [];
+                        this.selectedLabels = [];
                         },
-                          hideMoreOptions: true
+                        hideMoreOptions: true
                         }"
-                        x-on:submit="hideMoreOptions = true"
-                        x-on:clear-labels.window="clearSelectedLabels()">
+                        >
                         <div class="modal-body">
-                            <input hidden class="form-control form-control-sm" asp-for="StudyTaskCreate.CourseId" value="@Model.Course.Id" />
+                            <input hidden asp-for="StudyTaskUpdate.Id" value="@Model.StudyTask.Id" />
+                            <input hidden asp-for="StudyTaskUpdate.CourseId" value="@Model.StudyTask.Course?.Id" />
                             <div class="mb-2">
-                                <label asp-for="StudyTaskCreate.Name" class="form-label">Task:</label>
-                                <input class="form-control form-control-sm" asp-for="StudyTaskCreate.Name" />
-                                <span asp-validation-for="StudyTaskCreate.Name" class="text-danger form-text"></span>
+                                <label asp-for="StudyTaskUpdate.Name" class="form-label">Task:</label>
+                                <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Name" value="@Model.StudyTask.Name" />
+                                <span asp-validation-for="StudyTaskUpdate.Name" class="text-danger form-text"></span>
                             </div>
-                            <a x-show="hideMoreOptions" x-on:click="hideMoreOptions = false" class="text-muted" data-bs-toggle="collapse" href="#extra-options" role="button" aria-expanded="false" aria-controls="extra-options">
+                            <a x-show="hideMoreOptions" x-on:click="hideMoreOptions = false" class="text-muted" data-bs-toggle="collapse" href="#extra-options-edit-@(Model.StudyTask.Id)" role="button" aria-expanded="false" aria-controls="extra-options-edit">
                                 <i class="bi bi-plus"></i> More options
                             </a>
-                            <div class="collapse" :class="hideMoreOptions ? 'hide' : 'show'" id="extra-options">
+                            <div class="collapse" :class="hideMoreOptions ? 'hide' : 'show'" id="extra-options-edit-@(Model.StudyTask.Id)">
                                 <div class="mb-2">
-                                    <label asp-for="StudyTaskCreate.TaskPriorityId" class="form-label">Priority:</label>
+                                    <label asp-for="StudyTaskUpdate.TaskPriorityId" class="form-label">Priority:</label>
+                                    <div class="form-check">
+                                        <input checked class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="" id="none-edit-@(Model.StudyTask.Id)" />
+                                        <label class="form-check-label text-opacity-75" for="none-edit-@(Model.StudyTask.Id)">None</label>
+                                    </div>
                                     @foreach (var priority in Model.TaskPriorities)
                                     {
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriorityId" value="@priority.Id" id="@(priority.Id)-create" />
-                                            <label class="form-check-label" for="@(priority.Id)-create">@priority.Level</label>
+                                            <input class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="@priority.Id" id="@(priority.Id)-edit-@(Model.StudyTask.Id)" />
+                                            <label class="form-check-label" for="@(priority.Id)-edit-@(Model.StudyTask.Id)">@priority.Level</label>
                                         </div>
                                     }
-                                    <span asp-validation-for="StudyTaskCreate.TaskPriorityId" class="text-danger form-text"></span>
+                                    <span asp-validation-for="StudyTaskUpdate.TaskPriorityId" class="text-danger form-text"></span>
                                 </div>
                                 <div class="mb-2">
-                                    <label asp-for="StudyTaskCreate.Deadline" class="form-label">Deadline:</label>
-                                    <input class="form-control form-control-sm" asp-for="StudyTaskCreate.Deadline" />
-                                    <span asp-validation-for="StudyTaskCreate.Deadline" class="text-danger form-text"></span>
+                                    <label asp-for="StudyTaskUpdate.Deadline" class="form-label">Deadline:</label>
+                                    <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" value="@Model.StudyTask.Deadline?.ToString("yyyy-MM-ddTHH:mm")" />
+                                    <span asp-validation-for="StudyTaskUpdate.Deadline" class="text-danger form-text"></span>
                                 </div>
                                 <div class="mb-2">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex align-items-center">
-                                            <label asp-for="StudyTaskCreate.Name" class="form-label me-2 my-0">Labels:</label>
+                                            <label asp-for="StudyTaskUpdate.Name" class="form-label me-2 my-0">Labels:</label>
                                             <div class="dropdown">
                                                 <a class="text-muted" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                     Choose <i class="bi bi-chevron-expand"></i>
@@ -108,17 +106,21 @@
                                                     </template>
                                                 }
                                                 @*For model binding.*@
-                                                <input type="hidden" name="StudyTaskCreate.TaskLabelIds" :value="labelId">
+                                                <input type="hidden" name="StudyTaskUpdate.TaskLabelIds" :value="labelId">
                                             </div>
                                         </template>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" id="submitButton" class="btn btn-primary">Add</button>
+                        <div class="modal-footer d-flex justify-content-between">
+                            <div>
+                                <button class="btn btn-danger" formmethod="post" asp-page-handler="ArchiveStudyTask" asp-route-courseId="@Model.StudyTask.Course?.Id" asp-route-studyTaskId="@Model.StudyTask.Id" data-bs-dismiss="modal">Archive</button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button asp-page-handler="UpdateStudyTask" type="submit" class="btn btn-primary">Save</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -126,36 +128,3 @@
         </div>
     </div>
 </div>
-
-@foreach (var task in Model.Course.StudyTasks)
-{
-    @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM 
-    {
-        StudyTask = task,
-        StudyTaskUpdate = new StudyTaskUpdate(),
-        TaskLabels = Model.TaskLabels,
-        TaskPriorities = Model.TaskPriorities
-    })
-}
-
-
-
-<div class="d-flex justify-content-between align-items-end mb-3">
-    <div>
-        <h2>
-            @Model.Course.Name
-        </h2>
-        <p class="text-muted mb-0">@Model.Course.Description</p>
-    </div>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-create-modal"><i class="bi bi-plus-lg"></i> New Task</button>
-</div>
-
-
-@await Html.PartialAsync("Partials/_Tasks")
-
-
-
-@section Scripts {
-
-    <partial name="_ValidationScriptsPartial" />
-}

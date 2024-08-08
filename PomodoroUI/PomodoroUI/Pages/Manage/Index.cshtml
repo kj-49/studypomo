@@ -1,5 +1,8 @@
 ﻿@page
 @using Humanizer
+@using PomodoroLibrary.Models.Tables.StudyTaskEntities
+@using PomodoroUI.Pages.Shared.Snippets.StudyTaskSnippets
+@using PomodoroUI.ViewModels
 @model PomodoroUI.Pages.Manage.IndexModel
 @{
 }
@@ -144,15 +147,29 @@
                                     <badge text="@task.Course.Name" color="@task.Course.HexColor"></badge>
                                 }
                             </div>
-                            <div class="col-md-2 text-end text-nowrap">
-                                @* <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#editLabelModal-@Model.TaskLabels[i].Id">Edit</button>
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteLabelModal-@Model.TaskLabels[i].Id">Delete</button> *@
+                            <div class="col-md-2">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <a class="btn btn-link text-secondary p-0" data-bs-toggle="modal" data-bs-target="@($"#{StudyTaskModalHelper.GetEditModalId(task.Id)}")">
+                                        <i class="bi bi-three-dots"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </li>
             }
         </ul>
+        // Render the edit modal for each task
+        @foreach (var task in Model.StudyTasks)
+        {
+            @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM
+            {
+                StudyTask = task,
+                StudyTaskUpdate = new StudyTaskUpdate(),
+                TaskLabels = Model.TaskLabels,
+                TaskPriorities = Model.TaskPriorities
+            })
+        }
     }
 </div>
 

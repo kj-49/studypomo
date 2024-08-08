@@ -31,8 +31,6 @@ public class IndexModel : PageModel
 
     [BindProperty]
     public StudyTaskCreate StudyTaskCreate { get; set; }
-    [BindProperty]
-    public StudyTaskUpdate StudyTaskUpdate { get; set; }
     public ICollection<TaskPriority> TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
 
@@ -61,11 +59,11 @@ public class IndexModel : PageModel
         return RedirectToPage(new { id = StudyTaskCreate.CourseId });
     }
 
-    public async Task<IActionResult> OnPostUpdateStudyTaskAsync()
+    public async Task<IActionResult> OnPostUpdateStudyTaskAsync(StudyTaskUpdate studyTaskUpdate)
     {
-        await _studyTaskService.UpdateAsync(StudyTaskUpdate);
+        await _studyTaskService.UpdateAsync(studyTaskUpdate);
 
-        return RedirectToPage(new { id = StudyTaskUpdate.CourseId });
+        return RedirectToPage(new { id = studyTaskUpdate.CourseId });
     }
 
     public async Task<IActionResult> OnPostCompleteTaskAsync(int studyTaskId, int courseId)
