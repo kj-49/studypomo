@@ -1,0 +1,56 @@
+﻿.task-timeline {
+    margin: 0px 0px 20px 0px;
+    padding: 0px;
+}
+
+.timeline {
+    position: relative;
+    height: 50px; /* Adjusted height to accommodate labels */
+}
+
+.timeline-bar {
+    position: absolute;
+    top: 25px; /* Adjusted to leave space for labels */
+    width: 100%;
+    height: 6px;
+    background-color: #d6d6d6; /* Light gray background for the bar */
+    border-radius: 3px;
+}
+
+.timeline-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 6px;
+    border-radius: 3px 0 0 3px;
+}
+
+.timeline-circle {
+    position: absolute;
+    top: -4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.timeline-finish {
+    position: absolute;
+    top: -4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.timeline-labels {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px; /* Adjusted margin for better spacing */
+    z-index: 2; /* Ensure labels are above the timeline */
+}
