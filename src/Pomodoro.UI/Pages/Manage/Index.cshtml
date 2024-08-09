@@ -1,0 +1,179 @@
+﻿@page
+@using Humanizer
+@using Pomodoro.Library.Models.Tables.StudyTaskEntities
+@using Pomodoro.UI.Pages.Shared.Snippets.StudyTaskSnippets
+@using Pomodoro.UI.ViewModels
+@model Pomodoro.UI.Pages.Manage.IndexModel
+@{
+}
+
+<div class="modal fade" id="course-create-modal" tabindex="-1" aria-labelledby="courseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header mb-3">
+                <h5 class="modal-title" id="courseModalLabel">Add a Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="mb-1 px-3">
+                <small>Fill in the fields below to start adding tasks to this course.</small>
+            </div>
+            <hr class="text-secondary mb-0" />
+            <form method="post">
+                <div class="modal-body" x-data="{ name: '', color: '#385091', isValid: true }">
+                    <div class="mb-3">
+                        <label asp-for="CourseCreate.Name" class="form-label"></label>
+                        <input x-model="name" asp-for="CourseCreate.Name" class="form-control form-control-sm" />
+                        <span asp-validation-for="CourseCreate.Name" class="text-danger form-text"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="CourseCreate.Description" class="form-label"></label>
+                        <input asp-for="CourseCreate.Description" class="form-control form-control-sm" />
+                        <span asp-validation-for="CourseCreate.Description" class="text-danger form-text"></span>
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="CourseCreate.HexColor" class="form-label">Color</label>
+                        <div class="input-group input-group-sm">
+                            <button x-on:click="color = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'); isValid = true" type="button" class="btn btn-secondary mb-3"><i class="bi bi-arrow-counterclockwise"></i></button>
+                            <input x-model="color" x-on:input="isValid = isValidHexColor(color)" type="text" id="user-color" class="form-control mb-3" placeholder="Enter a color (e.g., #ff5733)" asp-for="CourseCreate.HexColor">
+                        </div>
+                        <div x-show="!isValid" class="text-danger">Invalid color format. Please enter a valid hex color.</div>
+                        <span asp-validation-for="CourseCreate.HexColor" class="text-danger form-text"></span>
+                    </div>
+                    <div class="mb-3" x-show="name.trim() !== ''">
+                        <span>Preview:</span>
+                        <span class="badge" :style="'background-color: ' + color" x-text="name"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="submitButton" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="mb-2">
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <h5 class="mb-0">Courses</h5>
+        <button data-bs-toggle="modal" data-bs-target="#course-create-modal" class="btn btn-secondary"><i class="bi bi-plus-lg"></i> Add Course</button>
+    </div>
+
+    @if (Model.Courses.Count == 0)
+    {
+        <p>No courses added.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var course in Model.Courses)
+            {
+                <div class="col-md-4 mb-4">
+                    <a asp-page="/Manage/Courses/Index" asp-route-id="@course.Id" class="text-decoration-none">
+                        <div class="card h-100 card-hover" style="border-left: 5px solid @course.HexColor;">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h5 class="card-title fw-bold">@course.Name</h5>
+                                    <p class="card-text">@course.Description</p>
+                                </div>
+
+                                <div class="mt-3 d-flex align-items-center justify-content-between">
+                                    <small class="text-muted">Incomplete Tasks: @(course.StudyTasks.Count(t => !t.Completed))</small>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+<div class="mb-2">
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <h5 class="mb-0">Tasks Due Next</h5>
+        @* <a class="btn btn-primary" asp-page="/Timer/Index"><i class="bi bi-clock me-2"></i>Start Study Session</a> *@
+    </div>
+
+    @if (Model.StudyTasks.Count == 0)
+    {
+        <p>No tasks available.</p>
+    }
+    else
+    {
+        <ul class="list-group">
+            <li class="list-group-item bg-body-tertiary">
+                <div class="row align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="col-md-5">
+                            <span><strong>Task</strong></span>
+                        </div>
+                        <div class="d-none d-md-block col-md-4">
+                            <span><strong>Due</strong></span>
+                        </div>
+                        <div class="d-none d-lg-block col-md-1">
+                            <span><strong>Course</strong></span>
+                        </div>
+                        <div class="col-md-2 text-end text-nowrap">
+                            <span><strong>Actions</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            @foreach (var task in Model.StudyTasks
+               .Where(t => !t.Completed)
+               .OrderBy(t => t.Deadline == null)
+               .ThenBy(t => t.Deadline)
+               .Take(5))
+            {
+                <li class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="col-md-5">
+                                <study-task-link task="@task"></study-task-link>
+                                @foreach(var label in task.TaskLabels)
+                                {
+                                    <badge text="@label.Name" color="@label.HexColor"></badge>
+                                }
+                            </div>
+                            <div class="d-none d-md-block col-md-4">
+                                <span class="text-muted">@task.Deadline.Humanize()</span>
+                            </div>
+                            <div class="d-none d-lg-block col-md-1">
+                                @if (task.Course != null)
+                                {
+                                    <badge text="@task.Course.Name" color="@task.Course.HexColor"></badge>
+                                }
+                            </div>
+                            <div class="col-md-2">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <a class="btn btn-link text-secondary p-0" data-bs-toggle="modal" data-bs-target="@($"#{StudyTaskModalHelper.GetEditModalId(task.Id)}")">
+                                        <i class="bi bi-three-dots"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        // Render the edit modal for each task
+        @foreach (var task in Model.StudyTasks)
+        {
+            @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM
+            {
+                StudyTask = task,
+                StudyTaskUpdate = new StudyTaskUpdate(),
+                TaskLabels = Model.TaskLabels,
+                TaskPriorities = Model.TaskPriorities
+            })
+        }
+    }
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+}
