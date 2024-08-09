@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model Pomodoro.UI.Pages.Timer.IndexModel
+
+@if (Model.RenderTasksOutOfBand)
+{
+    <div id="task-history" hx-swap-oob="true">
+        @await Html.PartialAsync("Partials/_TaskHistory")
+    </div>
+}
+
+
+<div id="all-study-tasks" class="row gx-5">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-end mb-3" style="height: 40px">
+            <div class="d-flex h-100 align-items-end">
+                <div class="d-flex mb-0 me-4">
+                    <h5>Tasks</h5>
+                    @* <a class="my-0" asp-page="/Manage/Index">Manage</a> *@
+                </div>
+                <small class="btn btn-link m-0 p-0" style="display: none">Complete Checked</small>
+            </div>
+            <div>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-create-modal">Add Task</button>
+            </div>
+        </div>
+        <div id="current-tasks">
+            @await Html.PartialAsync("Partials/_UncompletedStudyTasks")
+        </div>
+
+    </div>
+    @if (Model.StudyTasks.Any(u => u.Completed && !u.Archived))
+    {
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-end mb-3" style="height: 40px">
+                <h5 class="mb-0 me-2">Completed Tasks</h5>
+            </div>
+            <div id="completed-tasks">
+                @await Html.PartialAsync("Partials/_CompletedStudyTasks")
+            </div>
+        </div>
+    }
+</div>
