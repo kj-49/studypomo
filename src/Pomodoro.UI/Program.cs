@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Pomodoro.Library.Authorization;
 using Pomodoro.Library.Data;
 using Pomodoro.Library.Data.Database;
 using Pomodoro.Library.Data.Interfaces;
@@ -43,6 +44,11 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions =>
     googleOptions.ClientId = builder.Configuration.GetSection("Google:ClientId").Value;
     googleOptions.ClientSecret = builder.Configuration.GetSection("Google:ClientSecret").Value;
 });
+
+// Resouce authorization handlers
+builder.Services.AddAuthorizationHandlers();
+
+
 
 // Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

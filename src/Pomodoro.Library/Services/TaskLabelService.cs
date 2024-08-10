@@ -69,4 +69,12 @@ public class TaskLabelService : ITaskLabelService
         _unitOfWork.TaskLabel.Remove(taskLabel);
         _unitOfWork.Complete();
     }
+
+    public async Task<TaskLabel?> GetAsync(int id)
+    {
+        TaskLabel? taskLabel = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == id);
+        if (taskLabel == null) throw new Exception("Task label not found");
+
+        return taskLabel;
+    }
 }

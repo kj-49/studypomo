@@ -26,13 +26,15 @@ public class UserService : IUserService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ApplicationUser?> GetCurrentUserAsync()
+    public async Task<ApplicationUser> GetCurrentUserAsync()
     {
         ClaimsPrincipal? principle = _http?.HttpContext?.User;
 
         if (principle == null) return null;
 
         ApplicationUser? user = await _userManager.GetUserAsync(principle);
+
+        if (user == null) throw new Exception("User not found.");
 
         return user;
     }
