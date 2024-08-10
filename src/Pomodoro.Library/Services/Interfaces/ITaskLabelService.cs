@@ -12,6 +12,7 @@ public interface ITaskLabelService
 {
     Task CreateAsync(TaskLabelCreate taskLabelCreate);
     Task<ICollection<TaskLabel>> GetAllAsync(int userId);
+    Task<TaskLabel> GetAsync(int id);
     Task RemoveAsync(int id);
     Task UpdateAsync(TaskLabelUpdate taskLabelUpdate);
 }

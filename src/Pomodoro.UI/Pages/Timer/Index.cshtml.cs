@@ -1,6 +1,7 @@
 
 using AutoMapper;
 using Htmx;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
+using Pomodoro.Library.Authorization;
 using Pomodoro.Library.Data;
 using Pomodoro.Library.Data.Interfaces;
 using Pomodoro.Library.Models.Identity;
@@ -28,8 +30,9 @@ public class IndexModel : PageModel
     private readonly ITaskPriorityService _taskPriorityService;
     private readonly ITaskLabelService _taskLabelService;
     private readonly IMapper _mapper;
+    private readonly IAuthorizationService _authorizationService;
 
-    public IndexModel(IUserService userService, IUnitOfWork unitOfWork, IStudyTaskService studyTaskService, IMapper mapper, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService)
+    public IndexModel(IUserService userService, IUnitOfWork unitOfWork, IStudyTaskService studyTaskService, IMapper mapper, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService, IAuthorizationService authorizationService)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
@@ -37,6 +40,7 @@ public class IndexModel : PageModel
         _mapper = mapper;
         _taskPriorityService = taskPriorityService;
         _taskLabelService = taskLabelService;
+        _authorizationService = authorizationService;
     }
 
     public ICollection<TaskPriority> TaskPriorities { get; set; }
@@ -74,13 +78,30 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostCreateStudyTaskAsync()
     {
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) return Challenge();
+
+        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Create);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+            else
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+        }
+
         if (Request.IsHtmx()) {
 
             await _studyTaskService.CreateAsync(StudyTaskCreate);
-
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
-
-            if (user == null) return Challenge();
 
             await PopulateFields(user.Id);
 
@@ -92,13 +113,30 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostRemoveStudyTaskAsync(int id)
     {
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) return Challenge();
+
+        StudyTask studyTask = await _studyTaskService.GetAsync(id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Delete);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+            else
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+        }
+
         if (Request.IsHtmx())
         {
             await _studyTaskService.RemoveAsync(id);
-
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
-
-            if (user == null) return Challenge();
 
             await PopulateFields(user.Id);
 
@@ -110,15 +148,32 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostArchiveStudyTaskAsync(int id)
     {
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) return Challenge();
+
+        StudyTask studyTask = await _studyTaskService.GetAsync(id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+            else
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+        }
+
         if (Request.IsHtmx())
         {
             RenderTasksOutOfBand = true;
 
             await _studyTaskService.ArchiveAsync(id);
-
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
-
-            if (user == null) return Challenge();
 
             await PopulateFields(user.Id);
 
@@ -148,18 +203,30 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnGetStudyTaskUpdateAsync(int id)
     {
-        
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) return Challenge();
+
+        StudyTask studyTask = await _studyTaskService.GetAsync(id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+            else
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+        }
+
         if (Request.IsHtmx())
         {
-            StudyTask? studyTask = await _studyTaskService.GetAsync(id);
-
-            if (studyTask == null) return NotFound();
-
             StudyTaskUpdate = _mapper.Map<StudyTaskUpdate>(studyTask);
-
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
-
-            if (user == null) return Challenge();
 
             await PopulateFields(user.Id);
 
@@ -171,13 +238,30 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostCompleteTaskAsync(int id)
     {
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) return Challenge();
+
+        StudyTask studyTask = await _studyTaskService.GetAsync(id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+            else
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+        }
+
         if (Request.IsHtmx())
         {
             await _studyTaskService.CompleteAsync(id);
-
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
-
-            if (user == null) return Challenge();
 
             await PopulateFields(user.Id);
 
@@ -190,13 +274,30 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostUncompleteTaskAsync(int id)
     {
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) return Challenge();
+
+        StudyTask studyTask = await _studyTaskService.GetAsync(id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+            else
+            {
+                // TODO: Show status message.
+                return Content("");
+            }
+        }
+
         if (Request.IsHtmx())
         {
             await _studyTaskService.UncompleteAsync(id);
-
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
-
-            if (user == null) return Challenge();
 
             await PopulateFields(user.Id);
 
@@ -211,7 +312,7 @@ public class IndexModel : PageModel
     {
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-        if (user == null) NotFound();
+        if (user == null) return NotFound();
 
         user.PreferredTheme = theme;
 
