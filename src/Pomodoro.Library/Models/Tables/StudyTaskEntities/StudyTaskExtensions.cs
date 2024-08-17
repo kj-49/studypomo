@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Pomodoro.Library.Models.Tables.LabelEntities;
 using Pomodoro.Library.Models.Tables.StudyTaskLabelEntities;
 using Pomodoro.Library.Models.Tables.TaskLabelEntities;
@@ -55,4 +56,22 @@ public static class StudyTaskExtensions
         }
     }
 
+    /// <summary>
+    /// Get the next StudyTasks to be completed.
+    /// </summary>
+    /// <param name="studyTasks"></param>
+    /// <param name="amount"></param>
+    /// <returns></returns>
+    public static IEnumerable<StudyTask> Next(this IEnumerable<StudyTask> studyTasks, int amount,bool includeArchived = false)
+    {
+        if (!includeArchived)
+        {
+            studyTasks = studyTasks.Where(t => !t.Archived);
+        }
+
+        return studyTasks
+            .OrderBy(t => t.Deadline == null)
+            .ThenBy(t => t.Deadline)
+            .Take(amount);
+    }
 }

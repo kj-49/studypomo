@@ -122,11 +122,7 @@
                     </div>
                 </div>
             </li>
-            @foreach (var task in Model.StudyTasks
-               .Where(t => !t.Completed)
-               .OrderBy(t => t.Deadline == null)
-               .ThenBy(t => t.Deadline)
-               .Take(5))
+            @foreach (var task in Model.StudyTasks.Next(5))
             {
                 <li class="list-group-item">
                     <div class="row align-items-center">

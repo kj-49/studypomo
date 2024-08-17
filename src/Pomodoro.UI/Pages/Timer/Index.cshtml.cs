@@ -71,7 +71,7 @@ public class IndexModel : PageModel
 
     public async Task PopulateFields(int userId)
     {
-        StudyTasks = await _studyTaskService.GetAllAsync(userId);
+        StudyTasks = (await _studyTaskService.GetAllAsync(userId)).Next(5).ToList();
         TaskPriorities = await _taskPriorityService.GetAllAsync();
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
     }
