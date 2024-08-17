@@ -13,7 +13,7 @@ public class StudyTaskLinkTagHelper : TagHelper
     {
         output.TagName = "a";
 
-        output.Attributes.SetAttribute("class", "me-1 text-body");
+        output.Attributes.SetAttribute("class", "me-1");
         output.Attributes.SetAttribute("href", $"/Manage/Tasks/{Task.Id}");
 
         // Modify the text if priority is set

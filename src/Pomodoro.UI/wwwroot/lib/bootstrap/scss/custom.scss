@@ -12,6 +12,8 @@ $link-decoration: none;
 // Override container max-widths
 $container-max-widths: ( sm: 540px, md: 720px, lg: 960px, xl: 1000px );
 
+$link-color: $body-color;
+
 // Import Bootstrap
 @import "../bootstrap-5.3.2/scss/bootstrap.scss";
 
@@ -294,4 +296,11 @@ $color-mode-type: data;
         font-size: 1.25rem;
         border-radius: 0.5rem;
     }
+}
+
+
+
+a:hover {
+    color: #0969da;
+    font-weight: 400;
 }
