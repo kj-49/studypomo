@@ -34,7 +34,7 @@ else
                             </div>
                             <div class="d-flex flex-column justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <h6 class="card-title mb-1 me-2">@task.Name</h6>
+                                    <study-task-link task="@task" bold="true"></study-task-link>
                                     @if (task.TaskPriority != null)
                                     {
                                         <badge priority="true" text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>

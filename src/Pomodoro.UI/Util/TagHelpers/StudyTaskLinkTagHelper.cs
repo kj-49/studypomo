@@ -8,12 +8,19 @@ namespace Pomodoro.UI.Util.TagHelpers;
 public class StudyTaskLinkTagHelper : TagHelper
 {
     public StudyTask Task { get; set; }
+    public bool Bold { get; set; }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         output.TagName = "a";
 
-        output.Attributes.SetAttribute("class", "me-1 text-body");
+        if (Bold)
+        {
+            output.Attributes.SetAttribute("class", "me-2 fw-semibold");
+        } else
+        {
+            output.Attributes.SetAttribute("class", "me-2");
+        }
         output.Attributes.SetAttribute("href", $"/Manage/Tasks/{Task.Id}");
 
         // Modify the text if priority is set

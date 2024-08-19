@@ -35,6 +35,8 @@ public class IndexModel : PageModel
 
     [BindProperty]
     public StudyTaskCreate StudyTaskCreate { get; set; }
+    [BindProperty]
+    public CourseUpdate CourseUpdate { get; set; }
     public ICollection<TaskPriority> TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
 
@@ -215,6 +217,29 @@ public class IndexModel : PageModel
         await _studyTaskService.ArchiveAsync(studyTaskId);
 
         return RedirectToPage(new { id = courseId });
+    }
+
+    public async Task<IActionResult> OnPostUpdateCourseAsync()
+    {
+        Course course = await _courseService.GetAsync(CourseUpdate.Id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, course, Operations.Update);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
+        await _courseService.UpdateAsync(CourseUpdate);
+
+        return RedirectToPage(new { id = CourseUpdate.Id });
     }
 
 }

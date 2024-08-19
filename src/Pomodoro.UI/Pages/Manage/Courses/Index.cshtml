@@ -6,6 +6,50 @@
     ViewData["Title"] = Model.Course.Name;
 }
 
+<div class="modal fade" id="course-edit-modal" tabindex="-1" aria-labelledby="courseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header mb-3">
+                <h5 class="modal-title" id="courseModalLabel">Edit Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdateCourse">
+                <input type="hidden" asp-for="CourseUpdate.Id" value="@Model.Course.Id" />
+                <div class="modal-body" x-data="{ name: '@(Model.Course.Name)', color: '#385091', isValid: true }">
+                    <div class="mb-3">
+                        <label asp-for="CourseUpdate.Name" class="form-label"></label>
+                        <input x-model="name" asp-for="CourseUpdate.Name" value="@Model.Course.Name" class="form-control form-control-sm" />
+                        <span asp-validation-for="CourseUpdate.Name" class="text-danger form-text"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="CourseUpdate.Description" class="form-label"></label>
+                        <input asp-for="CourseUpdate.Description" value="@Model.Course.Description" class="form-control form-control-sm" />
+                        <span asp-validation-for="CourseUpdate.Description" class="text-danger form-text"></span>
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="CourseUpdate.HexColor" class="form-label">Color</label>
+                        <div class="input-group input-group-sm">
+                            <button x-on:click="color = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'); isValid = true" type="button" class="btn btn-secondary mb-3"><i class="bi bi-arrow-counterclockwise"></i></button>
+                            <input x-model="color" x-on:input="isValid = isValidHexColor(color)" type="text" id="user-color" class="form-control mb-3" placeholder="Enter a color (e.g., #ff5733)" asp-for="CourseUpdate.HexColor" value="@Model.Course.HexColor">
+                        </div>
+                        <div x-show="!isValid" class="text-danger">Invalid color format. Please enter a valid hex color.</div>
+                        <span asp-validation-for="CourseUpdate.HexColor" class="text-danger form-text"></span>
+                    </div>
+                    <div class="mb-3" x-show="name.trim() !== ''">
+                        <span>Preview:</span>
+                        <span class="badge" :style="'background-color: ' + color" x-text="name"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="submitButton" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="study-task-create-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -142,9 +186,15 @@
 
 <div class="d-flex justify-content-between align-items-end mb-3">
     <div>
-        <h2>
-            @Model.Course.Name
-        </h2>
+        <div class="d-flex align-items-center">
+            <h2>
+                @Model.Course.Name
+            </h2>
+            <a class="btn btn-link" data-bs-toggle="modal" data-bs-target="#course-edit-modal">
+                <i class="bi bi-pencil text-muted"></i>
+            </a>
+        </div>
+
         <p class="text-muted mb-0">@Model.Course.Description</p>
     </div>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-create-modal"><i class="bi bi-plus-lg"></i> New Task</button>
