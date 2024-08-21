@@ -1,0 +1,52 @@
+﻿@page
+@model Pomodoro.UI.Areas.Identity.Pages.Account.Manage.IndexModel
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="row">
+    <div class="col-12 col-lg-4 col-md-6">
+        <h5 class="mb-4">Settings</h5>
+
+        <!-- Timezone Settings -->
+        <form>
+            <div class="mb-4">
+                <label for="timezone" class="form-label fw-semibold">Timezone</label>
+                <select id="timezone" class="form-select form-select-sm">
+                    <option value="UTC" selected>UTC</option>
+                    <!-- Add more timezone options here -->
+                </select>
+                <div class="form-text">Set your preferred timezone for displaying times.</div>
+            </div>
+
+            <!-- Password Change -->
+            <div class="mb-4">
+                <label for="currentPassword" class="form-label fw-semibold">Current Password</label>
+                <input type="password" id="currentPassword" class="form-control form-control-sm" placeholder="Enter current password">
+            </div>
+
+            <div class="mb-4">
+                <label for="newPassword" class="form-label fw-semibold">New Password</label>
+                <input type="password" id="newPassword" class="form-control form-control-sm" placeholder="Enter new password">
+            </div>
+
+            <div class="mb-4">
+                <label for="confirmPassword" class="form-label fw-semibold">Confirm New Password</label>
+                <input type="password" id="confirmPassword" class="form-control form-control-sm" placeholder="Confirm new password">
+            </div>
+            <button type="button" class="btn btn-primary btn-sm">Change Password</button>
+        </form>
+
+        <!-- Additional Settings -->
+        <form class="mt-4">
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Additional Settings</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="emailNotifications">
+                    <label class="form-check-label" for="emailNotifications">Enable Email Notifications</label>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm">Save Settings</button>
+        </form>
+    </div>
+</div>
