@@ -242,4 +242,48 @@ public class IndexModel : PageModel
         return RedirectToPage(new { id = CourseUpdate.Id });
     }
 
+
+    public async Task<IActionResult> OnGetProgressStatsAsync(int courseId)
+    {
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+
+        if (user == null) return Challenge();
+
+        Course course = await _courseService.GetAsync(courseId);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, course, Operations.Read);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
+        var completedTasks = course.StudyTasks
+            .Where(t => t.DateCompleted.HasValue)
+            .GroupBy(t => t.DateCompleted.Value.Date)
+            .Select(g => new
+            {
+                Date = g.Key,
+                Count = g.Count()
+            })
+            .OrderBy(g => g.Date)
+            .ToList();
+
+        // Prepare the data for the chart
+        var data = completedTasks.Select(ct => new
+        {
+            Date = ct.Date.ToString("yyyy-MM-dd"),  // Format the date as needed
+            Count = ct.Count
+        });
+
+        return new JsonResult(data);
+
+    }
 }
