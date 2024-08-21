@@ -17,7 +17,7 @@
             </div>
             <form method="post" asp-page-handler="UpdateCourse">
                 <input type="hidden" asp-for="CourseUpdate.Id" value="@Model.Course.Id" />
-                <div class="modal-body" x-data="{ name: '@(Model.Course.Name)', color: '#385091', isValid: true }">
+                <div class="modal-body" x-data="{ name: '@(Model.Course.Name)', color: '@(Model.Course.HexColor)', isValid: true }">
                     <div class="mb-3">
                         <label asp-for="CourseUpdate.Name" class="form-label"></label>
                         <input x-model="name" asp-for="CourseUpdate.Name" value="@Model.Course.Name" class="form-control form-control-sm" />
