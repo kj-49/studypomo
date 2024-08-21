@@ -5,6 +5,7 @@ namespace Pomodoro.Library.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<ApplicationUser?> GetCurrentUserAsync();
+        Task<ApplicationUser> GetCurrentUserAsync();
+        Task<bool> IsExternallyAuthenticated(ApplicationUser user);
     }
 }

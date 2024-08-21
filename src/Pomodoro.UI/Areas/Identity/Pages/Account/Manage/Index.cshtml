@@ -18,23 +18,25 @@
                 </select>
                 <div class="form-text">Set your preferred timezone for displaying times.</div>
             </div>
+            @if (!Model.IsExternallyAuthenticated)
+            {
+                <!-- Password Change -->
+                <div class="mb-4">
+                    <label for="currentPassword" class="form-label fw-semibold">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-control form-control-sm" placeholder="Enter current password">
+                </div>
 
-            <!-- Password Change -->
-            <div class="mb-4">
-                <label for="currentPassword" class="form-label fw-semibold">Current Password</label>
-                <input type="password" id="currentPassword" class="form-control form-control-sm" placeholder="Enter current password">
-            </div>
+                <div class="mb-4">
+                    <label for="newPassword" class="form-label fw-semibold">New Password</label>
+                    <input type="password" id="newPassword" class="form-control form-control-sm" placeholder="Enter new password">
+                </div>
 
-            <div class="mb-4">
-                <label for="newPassword" class="form-label fw-semibold">New Password</label>
-                <input type="password" id="newPassword" class="form-control form-control-sm" placeholder="Enter new password">
-            </div>
-
-            <div class="mb-4">
-                <label for="confirmPassword" class="form-label fw-semibold">Confirm New Password</label>
-                <input type="password" id="confirmPassword" class="form-control form-control-sm" placeholder="Confirm new password">
-            </div>
-            <button type="button" class="btn btn-primary btn-sm">Change Password</button>
+                <div class="mb-4">
+                    <label for="confirmPassword" class="form-label fw-semibold">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-control form-control-sm" placeholder="Confirm new password">
+                </div>
+                <button type="button" class="btn btn-primary btn-sm">Change Password</button>
+            }
         </form>
 
         <!-- Additional Settings -->

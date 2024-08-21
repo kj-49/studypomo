@@ -39,4 +39,15 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<bool> IsExternallyAuthenticated(ApplicationUser user)
+    {
+        IList<UserLoginInfo> userLogins = await _userManager.GetLoginsAsync(user);
+
+        if (userLogins.Count > 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
