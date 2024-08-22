@@ -1,5 +1,6 @@
 using Htmx;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Pomodoro.Library.Authorization;
@@ -9,10 +10,11 @@ using Pomodoro.Library.Models.Tables.LabelEntities;
 using Pomodoro.Library.Models.Tables.StudyTaskEntities;
 using Pomodoro.Library.Models.Tables.TaskPriorityEntities;
 using Pomodoro.Library.Services.Interfaces;
+using Pomodoro.UI.Util.PageModels;
 
 namespace Pomodoro.UI.Pages.Manage.Courses;
 
-public class IndexModel : PageModel
+public class IndexModel : BaseModel
 {
     private readonly ICourseService _courseService;
     private readonly ITaskPriorityService _taskPriorityService;
@@ -21,7 +23,12 @@ public class IndexModel : PageModel
     private readonly IStudyTaskService _studyTaskService;
     private readonly IAuthorizationService _authorizationService;
 
-    public IndexModel(ICourseService courseService, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService, IUserService userService, IStudyTaskService studyTaskService, IAuthorizationService authorizationService)
+    public IndexModel(ICourseService courseService,
+        ITaskPriorityService taskPriorityService,
+        ITaskLabelService taskLabelService,
+        IUserService userService,
+        IStudyTaskService studyTaskService,
+        IAuthorizationService authorizationService)
     {
         _courseService = courseService;
         _taskPriorityService = taskPriorityService;

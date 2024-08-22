@@ -9,4 +9,5 @@ namespace Pomodoro.Library.Data.Interfaces;
 
 public interface IUserRepository : IRepository<ApplicationUser>
 {
+    void Update(ApplicationUser model);
 }

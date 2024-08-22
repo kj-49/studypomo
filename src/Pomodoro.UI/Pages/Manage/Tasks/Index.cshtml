@@ -18,10 +18,14 @@
             }
         </div>
         <div class="timeline-labels">
-            <small class="text-body-tertiary">Created: @task.DateCreated.ToString("MM/dd/yyyy")</small>
+            <small class="text-body-tertiary">Created: 
+                <local-time utc="@task.DateCreated" format="yyyy/MM/dd"></local-time>
+            </small>
             @if (task.Deadline.HasValue)
             {
-                <small class="text-body-tertiary">Due: @task.Deadline.Value.ToString("MM/dd/yyyy")</small>
+                <small class="text-body-tertiary">Due:
+                    <local-time utc="@task.Deadline.Value" format="yyyy/MM/dd"></local-time>
+                </small>
             }
             else
             {

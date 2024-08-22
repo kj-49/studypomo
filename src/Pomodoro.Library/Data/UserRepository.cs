@@ -11,7 +11,15 @@ namespace Pomodoro.Library.Data;
 
 public class UserRepository : GeneralRepository<ApplicationUser>, IUserRepository
 {
+    private readonly ApplicationDbContext _db;
+
     public UserRepository(ApplicationDbContext db) : base(db)
     {
+        _db = db;
+    }
+
+    public void Update(ApplicationUser model)
+    {
+        _db.Update(model);
     }
 }   
