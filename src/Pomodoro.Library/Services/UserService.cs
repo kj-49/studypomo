@@ -26,6 +26,16 @@ public class UserService : IUserService
         _unitOfWork = unitOfWork;
     }
 
+    public async Task<ApplicationUser> GetCurrentUserAsync(ClaimsPrincipal cliamsPrinciple)
+    {
+        ApplicationUser? user = await _userManager.GetUserAsync(cliamsPrinciple);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+        return user;
+    }
+
     public async Task<ApplicationUser> GetCurrentUserAsync()
     {
         ClaimsPrincipal? principle = _http?.HttpContext?.User;
@@ -49,5 +59,11 @@ public class UserService : IUserService
         }
 
         return false;
+    }
+
+    public void UpdateUser(ApplicationUser user)
+    {
+        _unitOfWork.User.Update(user);
+        _unitOfWork.Complete();
     }
 }

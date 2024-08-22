@@ -1,1 +1,1 @@
-﻿
+﻿global using Pomodoro.UI.Util;

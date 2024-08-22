@@ -17,22 +17,32 @@ using Pomodoro.Library.Models.Identity;
 using Pomodoro.Library.Models.Tables.LabelEntities;
 using Pomodoro.Library.Models.Tables.StudyTaskEntities;
 using Pomodoro.Library.Models.Tables.TaskPriorityEntities;
+using Pomodoro.Library.Services;
 using Pomodoro.Library.Services.Interfaces;
+using Pomodoro.UI.Util.PageModels;
 using System.Runtime.CompilerServices;
 
 namespace Pomodoro.UI.Pages.Timer;
 
-public class IndexModel : PageModel
+public class IndexModel : BaseModel
 {
-    private readonly IUserService _userService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IStudyTaskService _studyTaskService;
     private readonly ITaskPriorityService _taskPriorityService;
     private readonly ITaskLabelService _taskLabelService;
     private readonly IMapper _mapper;
     private readonly IAuthorizationService _authorizationService;
+    private readonly IUserService _userService;
 
-    public IndexModel(IUserService userService, IUnitOfWork unitOfWork, IStudyTaskService studyTaskService, IMapper mapper, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService, IAuthorizationService authorizationService)
+    public IndexModel(
+        IUserService userService,
+        IUnitOfWork unitOfWork,
+        IStudyTaskService studyTaskService,
+        IMapper mapper,
+        ITaskPriorityService taskPriorityService,
+        ITaskLabelService taskLabelService,
+        IAuthorizationService authorizationService,
+        UserManager<ApplicationUser> userManager)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
