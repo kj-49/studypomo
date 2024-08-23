@@ -1,4 +1,5 @@
-﻿@model Pomodoro.UI.ViewModels.EditStudyTaskVM
+﻿@using Pomodoro.Library.Services
+@model Pomodoro.UI.ViewModels.EditStudyTaskVM
 
 <div class="modal fade" id="@StudyTaskModalHelper.GetEditModalId(Model.StudyTask.Id)" tabindex="-1" aria-labelledby="taskEditModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -59,7 +60,15 @@
                                 </div>
                                 <div class="mb-2">
                                     <label asp-for="StudyTaskUpdate.Deadline" class="form-label">Deadline:</label>
-                                    <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" value="@Model.StudyTask.Deadline?.ToString("yyyy-MM-ddTHH:mm")" />
+
+                                    @if (Model.StudyTask.Deadline.HasValue)
+                                    {
+                                        string deadline = TimeService.ConvertToUserTime(Model.StudyTask.Deadline.Value, Model.TimeZone).ToString("yyyy-MM-ddTHH:mm");
+                                        <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" value="@deadline" />
+                                    } else
+                                    {
+                                        <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" />
+                                    }
                                     <span asp-validation-for="StudyTaskUpdate.Deadline" class="text-danger form-text"></span>
                                 </div>
                                 <div class="mb-2">

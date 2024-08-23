@@ -28,9 +28,9 @@ public static class TimeService
         return tzi;
     }
 
-    public static DateTime ConvertToUserTime(DateTime utcTime,  TimeZoneInfo timeZoneInfo)
+    public static DateTime ConvertToUserTime(DateTime utcTime, TimeZoneInfo userTimeZoneInfo)
     {
-        return TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZoneInfo);
+        return TimeZoneInfo.ConvertTimeFromUtc(utcTime, userTimeZoneInfo);
     }
 
     public static DateTime ConvertToUserTime(DateTime utcTime, string timeZoneId)
@@ -38,6 +38,11 @@ public static class TimeService
         TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
 
         return TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZoneInfo);
+    }
+
+    public static DateTime ConvertFromUserTime(DateTime userTime, TimeZoneInfo userTimeZoneInfo)
+    {
+        return TimeZoneInfo.ConvertTimeToUtc(userTime, userTimeZoneInfo);
     }
 
 }

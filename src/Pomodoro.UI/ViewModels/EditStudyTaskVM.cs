@@ -6,6 +6,8 @@ namespace Pomodoro.UI.ViewModels;
 
 public class EditStudyTaskVM
 {
+    public TimeZoneInfo TimeZone { get; set; }
+
     public StudyTask StudyTask { get; set; }
     public StudyTaskUpdate StudyTaskUpdate { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }

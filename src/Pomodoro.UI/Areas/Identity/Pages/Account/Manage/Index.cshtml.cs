@@ -42,6 +42,16 @@ public class IndexModel : BaseModel
     [BindProperty]
     public PasswordModel PasswordInput { get; set; }
 
+    protected override async Task<TimeZoneInfo> ResolveTimeZone()
+    {
+        ApplicationUser? user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+
+        return TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC);
+    }
 
     public async Task<IActionResult> OnGetAsync()
     {

@@ -7,6 +7,7 @@ using Pomodoro.Library.Models.Tables.LabelEntities;
 using Pomodoro.Library.Models.Tables.StudyTaskEntities;
 using Pomodoro.Library.Models.Tables.StudyTaskLabelEntities;
 using Pomodoro.Library.Models.Tables.TaskPriorityEntities;
+using Pomodoro.Library.Models.Utility;
 using Pomodoro.Library.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -31,12 +32,12 @@ public class StudyTaskService : IStudyTaskService
 
     public async Task CreateAsync(StudyTaskCreate studyTaskCreate)
     {
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
-            if (user == null) throw new Exception("User not found");
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) throw new Exception("User not found");
 
         TaskPriority? taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
 
-        StudyTask studyTask = studyTaskCreate.ToEntity(user.Id);
+        StudyTask studyTask = studyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC));
 
         // Now add labels to task
         if (studyTaskCreate.TaskLabelIds != null)
@@ -81,11 +82,13 @@ public class StudyTaskService : IStudyTaskService
 
     public async Task UpdateAsync(StudyTaskUpdate studyTaskUpdate)
     {
+        ApplicationUser user = await _userService.GetCurrentUserAsync();
+
         StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(u => u.Id == studyTaskUpdate.Id);
 
         if (studyTask == null) throw new Exception("Study Task not found");
 
-        StudyTask updatedStudyTask = studyTaskUpdate.ToEntity(studyTask);
+        StudyTask updatedStudyTask = studyTaskUpdate.ToEntity(TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC), studyTask);
 
         await RemoveAllLabels(studyTask.Id);
 

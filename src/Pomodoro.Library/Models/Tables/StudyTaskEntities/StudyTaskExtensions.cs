@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Pomodoro.Library.Models.Tables.LabelEntities;
 using Pomodoro.Library.Models.Tables.StudyTaskLabelEntities;
 using Pomodoro.Library.Models.Tables.TaskLabelEntities;
+using Pomodoro.Library.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Pomodoro.Library.Models.Tables.StudyTaskEntities;
 
 public static class StudyTaskExtensions
 {
-    public static StudyTask ToEntity(this StudyTaskCreate studyTaskCreate, int userId)
+    public static StudyTask ToEntity(this StudyTaskCreate studyTaskCreate, int userId, TimeZoneInfo userTimeZone)
     {
         StudyTask studyTask = new StudyTask();
 
@@ -24,13 +25,13 @@ public static class StudyTaskExtensions
         studyTask.DateCompleted = null;
         studyTask.TaskPriorityId = studyTaskCreate.TaskPriorityId;
         studyTask.Archived = false;
-        studyTask.Deadline = studyTaskCreate.Deadline;
+        studyTask.Deadline = studyTaskCreate.Deadline == null ? null : TimeService.ConvertFromUserTime(studyTaskCreate.Deadline.Value, userTimeZone);
         studyTask.CourseId = studyTaskCreate.CourseId;
 
         return studyTask;
     }
 
-    public static StudyTask ToEntity(this StudyTaskUpdate studyTaskUpdate, StudyTask? existingStudyTask = null)
+    public static StudyTask ToEntity(this StudyTaskUpdate studyTaskUpdate, TimeZoneInfo userTimeZone, StudyTask? existingStudyTask = null)
     {
         if (existingStudyTask == null)
         {
@@ -39,7 +40,7 @@ public static class StudyTaskExtensions
 
         existingStudyTask.Name = studyTaskUpdate.Name;
         existingStudyTask.TaskPriorityId = studyTaskUpdate.TaskPriorityId;
-        existingStudyTask.Deadline = studyTaskUpdate.Deadline;
+        existingStudyTask.Deadline = studyTaskUpdate.Deadline == null ? null : TimeService.ConvertFromUserTime(studyTaskUpdate.Deadline.Value, userTimeZone);
         existingStudyTask.CourseId = studyTaskUpdate.CourseId;
 
         return existingStudyTask;

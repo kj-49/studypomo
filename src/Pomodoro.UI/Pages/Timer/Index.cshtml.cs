@@ -33,6 +33,7 @@ public class IndexModel : BaseModel
     private readonly IMapper _mapper;
     private readonly IAuthorizationService _authorizationService;
     private readonly IUserService _userService;
+    private readonly UserManager<ApplicationUser> _userManager; 
 
     public IndexModel(
         IUserService userService,
@@ -51,6 +52,7 @@ public class IndexModel : BaseModel
         _taskPriorityService = taskPriorityService;
         _taskLabelService = taskLabelService;
         _authorizationService = authorizationService;
+        _userManager = userManager;
     }
 
     public ICollection<TaskPriority> TaskPriorities { get; set; }
@@ -64,6 +66,19 @@ public class IndexModel : BaseModel
     public ICollection<TaskLabel> TaskLabels { get; set; }
 
     public bool RenderTasksOutOfBand { get; set; }
+
+
+    protected override async Task<TimeZoneInfo> ResolveTimeZone()
+    {
+        ApplicationUser? user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+
+        return TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC);
+    }
+
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -91,7 +106,7 @@ public class IndexModel : BaseModel
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) return Challenge();
 
-        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id);
+        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC));
 
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Create);
 
@@ -330,5 +345,4 @@ public class IndexModel : BaseModel
 
         return new OkResult();
     }
-
 }
