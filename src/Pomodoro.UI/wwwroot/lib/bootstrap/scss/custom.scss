@@ -300,33 +300,33 @@ $color-mode-type: data;
 }
 
 
-
 a:hover {
     color: #0969da;
     font-weight: 400;
 }
 
-// Custom class for list group item hover and active effects
 .list-group-item.custom-hover {
-    color: $body-tertiary-color; // Default text color
+    color: $secondary; // Default text color
     cursor: pointer; // Pointer cursor on hover
     transition: color 0.1s ease-in-out, border-color 0.1s ease-in-out; // Smooth transition for color and border
     // Ensure all nested text elements adopt the default color
     * {
-        color: $body-tertiary-color;
+        color: $secondary;
         transition: color 0.1s ease-in-out; // Smooth transition for nested elements
     }
 }
 
 .list-group-item.custom-hover:hover,
 .list-group-item.custom-hover:active {
-    color: $body-color; // Hover and active text color
-    cursor: pointer; // Ensure pointer cursor remains on hover and active states
-    // Ensure all nested text elements adopt the hover/active color
+    color: $list-group-color; // Revert text color to the default theme body color
+    cursor: pointer; // Keep pointer cursor for consistency
+    // Ensure all nested text elements revert to the theme's default body color
     * {
-        color: $body-color;
+        color: $list-group-color;
     }
 }
+
+
 
 
 
