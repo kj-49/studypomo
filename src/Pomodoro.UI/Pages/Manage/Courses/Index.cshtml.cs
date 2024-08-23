@@ -22,13 +22,15 @@ public class IndexModel : BaseModel
     private readonly IUserService _userService;
     private readonly IStudyTaskService _studyTaskService;
     private readonly IAuthorizationService _authorizationService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public IndexModel(ICourseService courseService,
         ITaskPriorityService taskPriorityService,
         ITaskLabelService taskLabelService,
         IUserService userService,
         IStudyTaskService studyTaskService,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService,
+        UserManager<ApplicationUser> userManager)
     {
         _courseService = courseService;
         _taskPriorityService = taskPriorityService;
@@ -36,6 +38,7 @@ public class IndexModel : BaseModel
         _userService = userService;
         _studyTaskService = studyTaskService;
         _authorizationService = authorizationService;
+        _userManager = userManager;
     }
 
     public Course Course { get; set; }
@@ -46,6 +49,17 @@ public class IndexModel : BaseModel
     public CourseUpdate CourseUpdate { get; set; }
     public ICollection<TaskPriority> TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
+
+    protected override async Task<TimeZoneInfo> ResolveTimeZone()
+    {
+        ApplicationUser? user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+
+        return TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC);
+    }
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
@@ -71,6 +85,8 @@ public class IndexModel : BaseModel
 
         await PopulateFields(userId: user.Id, courseId: id);
 
+        await InitializeTimeZoneAsync();
+
         return Page();
     }
 
@@ -87,7 +103,7 @@ public class IndexModel : BaseModel
         if (user == null) return Challenge();
 
         // Need to ensure the created task is for a CourseId that the current user owns.
-        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id);
+        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC));
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Create);
 
         if (!authResult.Succeeded)

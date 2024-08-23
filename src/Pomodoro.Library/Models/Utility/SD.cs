@@ -8,5 +8,5 @@ namespace Pomodoro.Library.Models.Utility;
 
 public class SD
 {
-
+    public const string UTC = "UTC";
 }

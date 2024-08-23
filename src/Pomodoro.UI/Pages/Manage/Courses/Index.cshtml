@@ -177,6 +177,7 @@
 {
     @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM 
     {
+        TimeZone = Model.TimeZone,
         StudyTask = task,
         StudyTaskUpdate = new StudyTaskUpdate(),
         TaskLabels = Model.TaskLabels,
