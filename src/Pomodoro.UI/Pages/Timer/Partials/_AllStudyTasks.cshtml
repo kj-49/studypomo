@@ -20,14 +20,12 @@
             <div class="d-flex h-100 align-items-end">
                 <div class="d-flex mb-0 me-4">
                     <h5>Tasks</h5>
-                    @* <a class="my-0" asp-page="/Manage/Index">Manage</a> *@
                 </div>
-                <small class="btn btn-link m-0 p-0" style="display: none">Complete Checked</small>
-            </div>
-            <div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#study-task-create-modal">Add Task</button>
             </div>
         </div>
+        @if (Model.StudyTasks.Count == 0)
+        {
+        }
         <div id="current-tasks">
             @await Html.PartialAsync("Partials/_UncompletedStudyTasks")
         </div>
