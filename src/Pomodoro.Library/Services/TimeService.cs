@@ -10,9 +10,9 @@ namespace Pomodoro.Library.Services;
 
 public static class TimeService
 {
-    public static IDictionary<string, string> GetIanaTimeZones()
+    public static IDictionary<string, string> GetTimeZones()
     {
-        var tzs = TZNames.GetDisplayNames("en-US", useIanaZoneIds: true);
+        var tzs = TZNames.GetDisplayNames("en-US");
         return tzs;
     }
 

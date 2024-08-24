@@ -1,6 +1,8 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pomodoro.Library.Authorization;
 using Pomodoro.Library.Data;
@@ -47,8 +49,6 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 
 // Resouce authorization handlers
 builder.Services.AddAuthorizationHandlers();
-
-
 
 // Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -101,6 +101,9 @@ app.MapRazorPages();
 app.UseSession();
 app.UseMiddleware<PreferredThemeMiddleware>();
 
-
+app.MapGet("/api/", () => {
+    var a = "test";
+    return Results.Ok();
+});
 
 app.Run();

@@ -37,7 +37,7 @@ public class StudyTaskService : IStudyTaskService
 
         TaskPriority? taskPriority = await _unitOfWork.TaskPriority.GetAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
 
-        StudyTask studyTask = studyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC));
+        StudyTask studyTask = studyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC));
 
         // Now add labels to task
         if (studyTaskCreate.TaskLabelIds != null)
@@ -88,7 +88,7 @@ public class StudyTaskService : IStudyTaskService
 
         if (studyTask == null) throw new Exception("Study Task not found");
 
-        StudyTask updatedStudyTask = studyTaskUpdate.ToEntity(TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC), studyTask);
+        StudyTask updatedStudyTask = studyTaskUpdate.ToEntity(TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC), studyTask);
 
         await RemoveAllLabels(studyTask.Id);
 

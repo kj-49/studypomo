@@ -26,7 +26,13 @@
     <link rel="stylesheet" href="~/Pomodoro.UI.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body x-init="document.body.style.visibility = 'visible';">
+<body x-init="document.body.style.visibility = 'visible';"
+      hx-post="/?handler=UpdateTimeZone"
+      hx-trigger="load from:window delay:100ms"
+      hx-include="#timezone-input"
+      hx-swap="none">
+    <!-- Hidden input to store the client's timezone -->
+    <input type="hidden" id="timezone-input" name="ianaTimeZone" value="test">
     <div class="content-wrapper">
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm mb-3 py-3">
@@ -83,6 +89,17 @@
     <script src="https://unpkg.com/htmx.org@2.0.1" integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            // Detect the client's timezone
+            var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            console.log(`Timezone detected: ${timezone}`);
+            // Set the value of the hidden input
+            document.getElementById("timezone-input").value = timezone;
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -10,6 +10,6 @@ namespace Pomodoro.Library.Models.Identity;
 public class ApplicationUser : IdentityUser<int>
 {
     public string? PreferredTheme { get; set; }
-    public string? IanaTimeZone { get; set; }
-    public bool TimeZoneChosen { get; set; }
+    public string? TimeZoneId { get; set; }
+    public bool SetTimeZoneAutomatically { get; set; }
 }
