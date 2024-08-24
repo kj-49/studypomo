@@ -14,16 +14,10 @@
 {
     <div id="all-study-tasks" class="row">
         <div class="col-12 mb-3">
+            <h5 class="mb-3">Tasks</h5>
             <form hx-post
                   hx-page="Index">
                 <ul class="list-group">
-                    <li class="list-group-item">
-                        <div class="d-flex align-items-center mb-1">
-                            <span class="todo-circle me-2"></span>
-                            <h5 class="mb-0">Todo</h5>
-                        </div>
-                        <small class="text-muted">Task has not been worked on yet</small>
-                    </li>
                     @foreach (var task in uncompletedTasks)
                     {
                         <li class="list-group-item">
@@ -63,59 +57,71 @@
 
                         </li>
                     }
+                    <li class="list-group-item custom-hover">
+                        <a data-bs-toggle="modal" data-bs-target="#study-task-create-modal" class="d-flex justify-content-between align-items-center mb-0">
+                            <div class="d-flex align-items-baseline">
+                                <div>
+                                    <i class="bi bi-plus me-2"></i>
+                                </div>
+                                <div class="d-flex flex-column justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <span class="fw-semibold ext-decoration-none">Add New Task</span>
+                                    </div>
+                                    <small>Status...</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
                 </ul>
             </form>
         </div>
         <div class="col-12">
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <div class="d-flex align-items-center mb-1">
-                        <span class="done-circle me-2"></span>
-                        <h5 class="mb-0">Done</h5>
-                    </div>
-                    <small class="text-muted">Task that have been completed</small>
-                </li>
-                @foreach (var task in completedTasks)
-                {
-                    <li class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-center mb-0">
-                            <div class="d-flex align-items-baseline">
-                                <div>
-                                    <input checked
-                                           hx-post
-                                           hx-page-handler="UncompleteTask"
-                                           hx-route-studyTaskId="@task.Id"
-                                           hx-route-courseId="@Model.Course.Id"
-                                           hx-swap="outerHTML"
-                                           hx-target="#all-study-tasks"
-                                           type="checkbox"
-                                           class="form-check-input me-2 mt-1" />
-                                </div>
-                                <div class="d-flex flex-column justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <study-task-link task="@task" bold="true"></study-task-link>
-                                        @if (task.TaskPriority != null)
-                                        {
-                                            <badge priority="true" text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
-                                        }
-                                        @foreach (var label in task.TaskLabels)
-                                        {
-                                            <badge text="@label.Name" color="@label.HexColor"></badge>
-                                        }
+            @if (completedTasks.Count > 0)
+            {
+                <h5 class="mb-3">Completed Tasks</h5>
+                <ul class="list-group">
+                    @foreach (var task in completedTasks)
+                    {
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center mb-0">
+                                <div class="d-flex align-items-baseline">
+                                    <div>
+                                        <input checked
+                                               hx-post
+                                               hx-page-handler="UncompleteTask"
+                                               hx-route-studyTaskId="@task.Id"
+                                               hx-route-courseId="@Model.Course.Id"
+                                               hx-swap="outerHTML"
+                                               hx-target="#all-study-tasks"
+                                               type="checkbox"
+                                               class="form-check-input me-2 mt-1" />
                                     </div>
-                                    <small>@task.Status()</small>
+                                    <div class="d-flex flex-column justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <study-task-link task="@task" bold="true"></study-task-link>
+                                            @if (task.TaskPriority != null)
+                                            {
+                                                <badge priority="true" text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
+                                            }
+                                            @foreach (var label in task.TaskLabels)
+                                            {
+                                                <badge text="@label.Name" color="@label.HexColor"></badge>
+                                            }
+                                        </div>
+                                        <small>@task.Status()</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <a class="btn btn-link text-primary p-0" data-bs-toggle="modal" data-bs-target="@($"#{StudyTaskModalHelper.GetEditModalId(task.Id)}")">
+                                        <i class="bi bi-three-dots"></i>
+                                    </a>
                                 </div>
                             </div>
-                            <div class="d-flex align-items-center">
-                                <a class="btn btn-link text-primary p-0" data-bs-toggle="modal" data-bs-target="@($"#{StudyTaskModalHelper.GetEditModalId(task.Id)}")">
-                                    <i class="bi bi-three-dots"></i>
-                                </a>
-                            </div>
-                        </div>
 
-                    </li>
-                }
-            </ul>
+                        </li>
+                    }
+                </ul>
+            }
         </div>
     </div>
 }
