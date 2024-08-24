@@ -177,7 +177,7 @@ public class IndexModel : BaseModel
 
             await PopulateFields(userId: user.Id, courseId: courseId);
 
-            return Partial("Partials/_Tasks", this);
+            return Partial("Partials/_Dynamic", this);
         }
 
         return Page();
@@ -213,7 +213,7 @@ public class IndexModel : BaseModel
 
             await PopulateFields(userId: user.Id, courseId: courseId);
 
-            return Partial("Partials/_Tasks", this);
+            return Partial("Partials/_Dynamic", this);
         }
 
         return Page();
