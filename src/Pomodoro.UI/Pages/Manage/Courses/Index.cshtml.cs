@@ -31,6 +31,7 @@ public class IndexModel : BaseModel
         IStudyTaskService studyTaskService,
         IAuthorizationService authorizationService,
         UserManager<ApplicationUser> userManager)
+        : base(userService)
     {
         _courseService = courseService;
         _taskPriorityService = taskPriorityService;
@@ -58,7 +59,7 @@ public class IndexModel : BaseModel
             throw new Exception("User not found.");
         }
 
-        return TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC);
+        return TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC);
     }
 
     public async Task<IActionResult> OnGetAsync(int id)
@@ -103,7 +104,7 @@ public class IndexModel : BaseModel
         if (user == null) return Challenge();
 
         // Need to ensure the created task is for a CourseId that the current user owns.
-        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC));
+        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC));
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Create);
 
         if (!authResult.Succeeded)

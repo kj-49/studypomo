@@ -26,7 +26,7 @@ public class LocalTimeTagHelper : TagHelper
     {
         var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
 
-        var ianaTimeZone = user?.IanaTimeZone;
+        var ianaTimeZone = user?.TimeZoneId;
 
         if (ianaTimeZone != null)
         {

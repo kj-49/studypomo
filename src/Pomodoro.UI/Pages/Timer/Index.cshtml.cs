@@ -44,6 +44,7 @@ public class IndexModel : BaseModel
         ITaskLabelService taskLabelService,
         IAuthorizationService authorizationService,
         UserManager<ApplicationUser> userManager)
+        : base(userService)
     {
         _userService = userService;
         _unitOfWork = unitOfWork;
@@ -76,7 +77,7 @@ public class IndexModel : BaseModel
             throw new Exception("User not found.");
         }
 
-        return TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC);
+        return TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC);
     }
 
 
@@ -106,7 +107,7 @@ public class IndexModel : BaseModel
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) return Challenge();
 
-        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC));
+        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC));
 
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Create);
 

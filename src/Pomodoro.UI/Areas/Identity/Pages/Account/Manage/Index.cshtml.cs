@@ -11,6 +11,7 @@ using Pomodoro.Library.Services.Interfaces;
 using Pomodoro.UI.Util.PageModels;
 using System.ComponentModel.DataAnnotations;
 using TimeZoneConverter;
+using TimeZoneNames;
 
 namespace Pomodoro.UI.Areas.Identity.Pages.Account.Manage;
 
@@ -26,6 +27,7 @@ public class IndexModel : BaseModel
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         ILogger<IndexModel> logger)
+        : base(userService)
     {
         _userService = userService;
         _userManager = userManager;
@@ -37,7 +39,9 @@ public class IndexModel : BaseModel
     public SelectList TimeZones { get; set; }
 
     [BindProperty]
-    public string? IanaTimeZone { get; set; }
+    public string? TimeZoneId { get; set; }
+    [BindProperty]
+    public bool SetTimeZoneAutomatically { get; set; }
 
     [BindProperty]
     public PasswordModel PasswordInput { get; set; }
@@ -50,7 +54,7 @@ public class IndexModel : BaseModel
             throw new Exception("User not found.");
         }
 
-        return TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC);
+        return TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC);
     }
 
     public async Task<IActionResult> OnGetAsync()
@@ -59,9 +63,11 @@ public class IndexModel : BaseModel
 
         IsExternallyAuthenticated = await _userService.IsExternallyAuthenticated(user);
 
-        TimeZones = TimeService.GetIanaTimeZones().ToSelectList();
+        TimeZones = TimeService.GetTimeZones().ToSelectList();
 
-        IanaTimeZone = user.IanaTimeZone;
+        TimeZoneId = user.TimeZoneId;
+
+        SetTimeZoneAutomatically = user.SetTimeZoneAutomatically;
 
         return Page();
     }
@@ -70,8 +76,12 @@ public class IndexModel : BaseModel
     {
         ApplicationUser user = await _userService.GetCurrentUserAsync();
 
-        user.IanaTimeZone = IanaTimeZone;
-        user.TimeZoneChosen = true;
+        user.SetTimeZoneAutomatically = SetTimeZoneAutomatically;
+
+        if (!user.SetTimeZoneAutomatically)
+        {
+            user.TimeZoneId = TimeZoneId;
+        }
 
         _userService.UpdateUser(user);
 

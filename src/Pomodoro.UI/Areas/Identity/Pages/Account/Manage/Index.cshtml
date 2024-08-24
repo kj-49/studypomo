@@ -8,10 +8,14 @@
     <div class="col-12 col-lg-4 col-md-6">
         <h5 class="mb-4">Settings</h5>
 
-        <form method="post" asp-page-handler="SaveSettings" class="mb-4">
+        <form method="post" asp-page-handler="SaveSettings" class="mb-4" x-data="{ automatic: @Json.Serialize(Model.SetTimeZoneAutomatically) }">
             <div class="mb-4">
                 <label for="timezone" class="form-label fw-semibold">Timezone</label>
-                <select asp-for="IanaTimeZone" asp-items="@Model.TimeZones" id="timezone" class="form-select form-select-sm">
+                <div class="form-check form-switch mb-2">
+                    <input asp-for="SetTimeZoneAutomatically" type="checkbox" class="form-check-input" x-model="automatic" id="autoTimezone">
+                    <label class="form-check-label" for="autoTimezone">Set Automatically</label>
+                </div>
+                <select asp-for="TimeZoneId" asp-items="@Model.TimeZones" id="timezone" class="form-select form-select-sm" :disabled="automatic">
                     <option value="UTC" selected>UTC</option>
                 </select>
                 <div class="form-text">Set your preferred timezone for displaying times.</div>
@@ -33,29 +37,30 @@
                 <div class="mb-4">
                     <div class="mb-4">
                         <label asp-for="PasswordInput.OldPassword" class="form-label fw-semibold">Current Password</label>
-                        <input asp-for="PasswordInput.OldPassword" type="password" class="form-control form-control-sm" autocomplete="current-password" aria-required="true" placeholder="Please enter your old password.">
+                        <input asp-for="PasswordInput.OldPassword" type="password" class="form-control form-control-sm" autocomplete="off" aria-required="true" placeholder="Please enter your old password.">
                         <span asp-validation-for="PasswordInput.OldPassword" class="text-danger form-text"></span>
                     </div>
 
                     <div class="mb-4">
                         <label asp-for="PasswordInput.NewPassword" class="form-label fw-semibold">New Password</label>
-                        <input asp-for="PasswordInput.NewPassword" type="password" class="form-control form-control-sm" autocomplete="new-password" aria-required="true" placeholder="Please enter your new password.">
+                        <input asp-for="PasswordInput.NewPassword" type="password" class="form-control form-control-sm" autocomplete="off" aria-required="true" placeholder="Please enter your new password.">
                         <span asp-validation-for="PasswordInput.NewPassword" class="text-danger form-text"></span>
                     </div>
 
                     <div class="mb-4">
                         <label asp-for="PasswordInput.ConfirmPassword" class="form-label fw-semibold">Confirm New Password</label>
-                        <input asp-for="PasswordInput.ConfirmPassword" type="password" class="form-control form-control-sm" autocomplete="new-password" aria-required="true" placeholder="Please confirm your new password.">
+                        <input asp-for="PasswordInput.ConfirmPassword" type="password" class="form-control form-control-sm" autocomplete="off" aria-required="true" placeholder="Please confirm your new password.">
                         <span asp-validation-for="PasswordInput.ConfirmPassword" class="text-danger form-text"></span>
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm">Change Password</button>
                 </div>
             </form>
         }
-        
+
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+

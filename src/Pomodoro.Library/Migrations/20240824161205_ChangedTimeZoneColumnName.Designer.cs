@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pomodoro.Library.Data.Database;
 
@@ -11,9 +12,11 @@ using Pomodoro.Library.Data.Database;
 namespace Pomodoro.Library.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240824161205_ChangedTimeZoneColumnName")]
+    partial class ChangedTimeZoneColumnName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,7 +208,7 @@ namespace Pomodoro.Library.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("SetTimeZoneAutomatically")
+                    b.Property<bool>("TimeZoneChosen")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("TimeZoneId")

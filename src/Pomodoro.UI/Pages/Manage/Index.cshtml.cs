@@ -21,7 +21,13 @@ public class IndexModel : BaseModel
     private readonly ITaskLabelService _taskLabelService;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public IndexModel(IStudyTaskService studyTaskService, IUserService userService, ICourseService courseService, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService, UserManager<ApplicationUser> userManager)
+    public IndexModel(IStudyTaskService studyTaskService,
+        IUserService userService,
+        ICourseService courseService,
+        ITaskPriorityService taskPriorityService,
+        ITaskLabelService taskLabelService,
+        UserManager<ApplicationUser> userManager)
+        : base (userService)
     {
         _studyTaskService = studyTaskService;
         _userService = userService;
@@ -48,7 +54,7 @@ public class IndexModel : BaseModel
             throw new Exception("User not found.");
         }
 
-        return TimeZoneInfo.FindSystemTimeZoneById(user.IanaTimeZone ?? SD.UTC);
+        return TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC);
     }
 
     public async Task<IActionResult> OnGetAsync()
