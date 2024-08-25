@@ -13,7 +13,7 @@ $link-decoration: none;
 $container-max-widths: ( sm: 540px, md: 720px, lg: 960px, xl: 1000px );
 
 $link-color: $body-color;
-$dropdown-link-active-bg: $body-bg;
+$dropdown-link-active-bg: $dropdown-bg;
 
 // Import Bootstrap
 @import "../bootstrap-5.3.2/scss/bootstrap.scss";
