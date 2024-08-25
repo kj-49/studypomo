@@ -41,9 +41,20 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
-                        <a class="btn btn-link text-primary p-0" data-bs-toggle="modal" data-bs-target="#study-task-edit-modal" hx-get hx-page="Index" hx-page-handler="StudyTaskUpdate" hx-route-id="@task.Id" hx-swap="innerHTML" hx-target="#study-task-edit-form">
-                            <i class="bi bi-three-dots"></i>
-                        </a>
+                        <form hx-swap="outerHTML"
+                              hx-target="#all-study-tasks">
+                            <div class="dropdown">
+                                <i style="cursor: pointer" class="text-secondary bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a style="cursor: pointer" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#study-task-edit-modal" hx-get hx-page="Index" hx-page-handler="StudyTaskUpdate" hx-route-id="@task.Id" hx-swap="innerHTML" hx-target="#study-task-edit-form">Edit</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer" class="dropdown-item" hx-post hx-page-handler="ArchiveStudyTask" hx-route-id="@task.Id">Delete</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
                     </div>
                 </div>
                     

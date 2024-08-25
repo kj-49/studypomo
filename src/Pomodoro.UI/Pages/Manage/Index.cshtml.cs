@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.VisualBasic;
+using Pomodoro.Library.Authorization;
 using Pomodoro.Library.Models.Identity;
 using Pomodoro.Library.Models.Tables.CourseEntities;
 using Pomodoro.Library.Models.Tables.LabelEntities;
@@ -20,14 +22,16 @@ public class IndexModel : BaseModel
     private readonly ITaskPriorityService _taskPriorityService;
     private readonly ITaskLabelService _taskLabelService;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IAuthorizationService _authorizationService;
 
     public IndexModel(IStudyTaskService studyTaskService,
         IUserService userService,
         ICourseService courseService,
         ITaskPriorityService taskPriorityService,
         ITaskLabelService taskLabelService,
-        UserManager<ApplicationUser> userManager)
-        : base (userService)
+        UserManager<ApplicationUser> userManager,
+        IAuthorizationService authorizationService)
+        : base(userService)
     {
         _studyTaskService = studyTaskService;
         _userService = userService;
@@ -35,6 +39,7 @@ public class IndexModel : BaseModel
         _taskPriorityService = taskPriorityService;
         _taskLabelService = taskLabelService;
         _userManager = userManager;
+        _authorizationService = authorizationService;
     }
 
     public ICollection<Course> Courses { get; set; }
@@ -74,12 +79,37 @@ public class IndexModel : BaseModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostCreateStudyTaskAsync()
     {
         await _courseService.CreateAsync(CourseCreate);
 
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnPostArchiveStudyTaskAsync(int studyTaskId)
+    {
+        StudyTask studyTask = await _studyTaskService.GetAsync(studyTaskId);
+
+        // Authorize
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Read);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
+        await _studyTaskService.ArchiveAsync(studyTaskId);
+
+        return RedirectToPage();
+    }
+
 
     public async Task<IActionResult> OnPostUpdateStudyTaskAsync(StudyTaskUpdate studyTaskUpdate)
     {
