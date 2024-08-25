@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Pomodoro.Library.Data.Interfaces;
 using Pomodoro.Library.Data.Database;
 using Pomodoro.Library.Models.Tables.StudyTaskEntities;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Pomodoro.Library.Data;
 

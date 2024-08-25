@@ -149,16 +149,27 @@ public class StudyTaskService : IStudyTaskService
         _unitOfWork.Complete();
     }
 
-    public async Task<ICollection<StudyTask>> GetAllAsync(int userId)
+    public async Task<ICollection<StudyTask>> GetAllAsync(int userId, bool includeArchived = false)
     {
-        IEnumerable<StudyTask> studyTasks = await _unitOfWork.StudyTask.GetAllAsync(
-            u => u.User.Id == userId,
-            t => t.TaskPriority,
-            t => t.User,
-            t => t.TaskLabels
-        );
-
-        return studyTasks.ToList();
+        if (includeArchived)
+        {
+            IEnumerable<StudyTask> studyTasks = await _unitOfWork.StudyTask.GetAllAsync(
+                u => u.User.Id == userId,
+                t => t.TaskPriority,
+                t => t.User,
+                t => t.TaskLabels
+            );
+            return studyTasks.ToList();
+        } else
+        {
+            IEnumerable<StudyTask> studyTasks = await _unitOfWork.StudyTask.GetAllAsync(
+                u => u.User.Id == userId && !u.Archived,
+                t => t.TaskPriority,
+                t => t.User,
+                t => t.TaskLabels
+            );
+            return studyTasks.ToList();
+        }
     }
 
     public async Task<StudyTask> GetAsync(int id)

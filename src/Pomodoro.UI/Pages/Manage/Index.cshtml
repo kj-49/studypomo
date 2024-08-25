@@ -71,7 +71,7 @@
                             </div>
 
                             <div class="mt-3 d-flex align-items-center justify-content-between">
-                                <small class="text-muted">Incomplete Tasks: @(course.StudyTasks.Count(t => !t.Completed))</small>
+                                <small class="text-muted">Incomplete Tasks: @(course.StudyTasks.Count(t => !t.Completed && !t.Archived))</small>
                             </div>
                         </div>
                     </div>
