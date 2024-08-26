@@ -9,7 +9,7 @@
 @model Pomodoro.UI.Pages.Timer.IndexModel
 
 @{
-    var completedTasks = Model.StudyTasks.Where(u => u.Completed && !u.Archived).ToList();
+    var completedTasks = Model.StudyTasks.Where(u => u.Completed && !u.Archived && u.DateCompleted!.Value.Date == DateTime.UtcNow.Date).ToList();
 }
 
 @if (completedTasks.Count == 0)
