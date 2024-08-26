@@ -12,7 +12,9 @@ public class StudyTaskLinkTagHelper : TagHelper
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        output.TagName = "a";
+        //output.TagName = "a";
+        //output.Attributes.SetAttribute("href", $"/Manage/Tasks/{Task.Id}");
+        output.TagName = "span";
 
         if (Bold)
         {
@@ -21,7 +23,7 @@ public class StudyTaskLinkTagHelper : TagHelper
         {
             output.Attributes.SetAttribute("class", "me-2");
         }
-        output.Attributes.SetAttribute("href", $"/Manage/Tasks/{Task.Id}");
+        
 
         // Modify the text if priority is set
         string displayText = Task.Name;
