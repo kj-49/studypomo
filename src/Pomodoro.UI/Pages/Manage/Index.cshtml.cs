@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.VisualBasic;
 using Pomodoro.Library.Authorization;
 using Pomodoro.Library.Models.Identity;
@@ -46,7 +47,7 @@ public class IndexModel : BaseModel
     [BindProperty]
     public CourseCreate CourseCreate { get; set; }
 
-    public ICollection<TaskPriority> TaskPriorities { get; set; }
+    public SelectList TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
 
     public ICollection<StudyTask> StudyTasks { get; set; }
@@ -71,7 +72,7 @@ public class IndexModel : BaseModel
         Courses = await _courseService.GetAllAsync(user.Id);
         StudyTasks = await _studyTaskService.GetAllAsync(user.Id);
 
-        TaskPriorities = await _taskPriorityService.GetAllAsync();
+        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
         TaskLabels = await _taskLabelService.GetAllAsync(user.Id);
 
         await InitializeTimeZoneAsync();

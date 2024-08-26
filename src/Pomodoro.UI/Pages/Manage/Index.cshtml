@@ -1,8 +1,10 @@
 ﻿@page
+@using AutoMapper
 @using Humanizer
 @using Pomodoro.Library.Models.Tables.StudyTaskEntities
 @using Pomodoro.UI.Pages.Shared.Snippets.StudyTaskSnippets
 @using Pomodoro.UI.ViewModels
+@inject IMapper mapper
 @model Pomodoro.UI.Pages.Manage.IndexModel
 @{
 }
@@ -132,6 +134,10 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="col-md-5">
                                 <study-task-link task="@task"></study-task-link>
+                                @if (task.TaskPriority != null)
+                                {
+                                    <badge priority="true" text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
+                                }
                                 @foreach (var label in task.TaskLabels)
                                 {
                                     <badge text="@label.Name" color="@label.HexColor"></badge>
@@ -168,14 +174,12 @@
         </ul>
         @foreach (var task in Model.StudyTasks)
         {
-            @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM
-            {
-                TimeZone = Model.TimeZone,
-                StudyTask = task,
-                StudyTaskUpdate = new StudyTaskUpdate(),
-                TaskLabels = Model.TaskLabels,
-                TaskPriorities = Model.TaskPriorities
-            })
+            @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM(
+                Model.TimeZone,
+                mapper.Map<StudyTaskUpdate>(task),
+                Model.TaskLabels,
+                Model.TaskPriorities
+            ))
         }
     </div>
 }

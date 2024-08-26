@@ -1,7 +1,7 @@
 ﻿@using Pomodoro.Library.Services
 @model Pomodoro.UI.ViewModels.EditStudyTaskVM
 
-<div class="modal fade" id="@StudyTaskModalHelper.GetEditModalId(Model.StudyTask.Id)" tabindex="-1" aria-labelledby="taskEditModalLabel" aria-hidden="true">
+<div class="modal fade" id="@StudyTaskModalHelper.GetEditModalId(Model.StudyTaskUpdate.Id)" tabindex="-1" aria-labelledby="taskEditModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header mb-3">
@@ -16,7 +16,7 @@
                 <div>
                     <form method="post"
                           x-data="{
-                          selectedLabels: @Json.Serialize(Model.StudyTask.TaskLabels.Select(u => u.Id)),
+                          selectedLabels: @Json.Serialize(Model.StudyTaskUpdate.TaskLabelIds),
                           toggleLabel(id) {
                           if (this.selectedLabels.includes(id)) {
                           this.selectedLabels=this.selectedLabels.filter(labelId =>
@@ -32,38 +32,30 @@
                         }"
                         >
                         <div class="modal-body">
-                            <input hidden asp-for="StudyTaskUpdate.Id" value="@Model.StudyTask.Id" />
-                            <input hidden asp-for="StudyTaskUpdate.CourseId" value="@Model.StudyTask.Course?.Id" />
+                            <input hidden asp-for="StudyTaskUpdate.Id" />
+                            <input hidden asp-for="StudyTaskUpdate.CourseId" />
                             <div class="mb-2">
                                 <label asp-for="StudyTaskUpdate.Name" class="form-label">Task:</label>
-                                <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Name" value="@Model.StudyTask.Name" />
+                                <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Name" />
                                 <span asp-validation-for="StudyTaskUpdate.Name" class="text-danger form-text"></span>
                             </div>
-                            <a x-show="hideMoreOptions" x-on:click="hideMoreOptions = false" class="text-muted" data-bs-toggle="collapse" href="#extra-options-edit-@(Model.StudyTask.Id)" role="button" aria-expanded="false" aria-controls="extra-options-edit">
+                            <a x-show="hideMoreOptions" x-on:click="hideMoreOptions = false" class="text-muted" data-bs-toggle="collapse" href="#extra-options-edit-@(Model.StudyTaskUpdate.Id)" role="button" aria-expanded="false" aria-controls="extra-options-edit">
                                 <i class="bi bi-plus"></i> More options
                             </a>
-                            <div class="collapse" :class="hideMoreOptions ? 'hide' : 'show'" id="extra-options-edit-@(Model.StudyTask.Id)">
+                            <div class="collapse" :class="hideMoreOptions ? 'hide' : 'show'" id="extra-options-edit-@(Model.StudyTaskUpdate.Id)">
                                 <div class="mb-2">
                                     <label asp-for="StudyTaskUpdate.TaskPriorityId" class="form-label">Priority:</label>
-                                    <div class="form-check">
-                                        <input checked class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="" id="none-edit-@(Model.StudyTask.Id)" />
-                                        <label class="form-check-label text-opacity-75" for="none-edit-@(Model.StudyTask.Id)">None</label>
-                                    </div>
-                                    @foreach (var priority in Model.TaskPriorities)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" asp-for="StudyTaskUpdate.TaskPriorityId" value="@priority.Id" id="@(priority.Id)-edit-@(Model.StudyTask.Id)" />
-                                            <label class="form-check-label" for="@(priority.Id)-edit-@(Model.StudyTask.Id)">@priority.Level</label>
-                                        </div>
-                                    }
+                                    <select class="form-control form-control-sm" asp-for="StudyTaskUpdate.TaskPriorityId" asp-items="@Model.TaskPriorities">
+                                        <option value="">None</option>
+                                    </select>
                                     <span asp-validation-for="StudyTaskUpdate.TaskPriorityId" class="text-danger form-text"></span>
                                 </div>
                                 <div class="mb-2">
                                     <label asp-for="StudyTaskUpdate.Deadline" class="form-label">Deadline:</label>
 
-                                    @if (Model.StudyTask.Deadline.HasValue)
+                                    @if (Model.StudyTaskUpdate.Deadline.HasValue)
                                     {
-                                        string deadline = TimeService.ConvertToUserTime(Model.StudyTask.Deadline.Value, Model.TimeZone).ToString("yyyy-MM-ddTHH:mm");
+                                        string deadline = TimeService.ConvertToUserTime(Model.StudyTaskUpdate.Deadline.Value, Model.TimeZone).ToString("yyyy-MM-ddTHH:mm");
                                         <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" value="@deadline" />
                                     } else
                                     {
