@@ -1,8 +1,10 @@
 ﻿@page "{id:int}"
+@using AutoMapper
 @using Pomodoro.Library.Models.Tables.StudyTaskEntities
 @using Pomodoro.UI.ViewModels
 @using System.Text.Json
 @using System.Text.Json.Serialization
+@inject IMapper mapper
 @model Pomodoro.UI.Pages.Manage.Courses.IndexModel
 @{
     ViewData["Title"] = Model.Course.Name;
@@ -96,13 +98,9 @@
                             <div class="collapse" :class="hideMoreOptions ? 'hide' : 'show'" id="extra-options">
                                 <div class="mb-2">
                                     <label asp-for="StudyTaskCreate.TaskPriorityId" class="form-label">Priority:</label>
-                                    @foreach (var priority in Model.TaskPriorities)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" asp-for="StudyTaskCreate.TaskPriorityId" value="@priority.Id" id="@(priority.Id)-create" />
-                                            <label class="form-check-label" for="@(priority.Id)-create">@priority.Level</label>
-                                        </div>
-                                    }
+                                    <select class="form-control form-control-sm" asp-for="StudyTaskCreate.TaskPriorityId" asp-items="@Model.TaskPriorities">
+                                        <option value="">None</option>
+                                    </select>
                                     <span asp-validation-for="StudyTaskCreate.TaskPriorityId" class="text-danger form-text"></span>
                                 </div>
                                 <div class="mb-2">
@@ -175,14 +173,12 @@
 
 @foreach (var task in Model.Course.StudyTasks)
 {
-    @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM 
-    {
-        TimeZone = Model.TimeZone,
-        StudyTask = task,
-        StudyTaskUpdate = new StudyTaskUpdate(),
-        TaskLabels = Model.TaskLabels,
-        TaskPriorities = Model.TaskPriorities
-    })
+    @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM(
+        Model.TimeZone,
+        mapper.Map<StudyTaskUpdate>(task),
+        Model.TaskLabels,
+        Model.TaskPriorities
+    ))
 }
 
 

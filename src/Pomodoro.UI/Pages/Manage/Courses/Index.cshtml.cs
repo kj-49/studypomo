@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Pomodoro.Library.Authorization;
 using Pomodoro.Library.Models.Identity;
 using Pomodoro.Library.Models.Tables.CourseEntities;
@@ -48,7 +49,7 @@ public class IndexModel : BaseModel
     public StudyTaskCreate StudyTaskCreate { get; set; }
     [BindProperty]
     public CourseUpdate CourseUpdate { get; set; }
-    public ICollection<TaskPriority> TaskPriorities { get; set; }
+    public SelectList TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
 
     protected override async Task<TimeZoneInfo> ResolveTimeZone()
@@ -94,7 +95,7 @@ public class IndexModel : BaseModel
     public async Task PopulateFields(int userId, int courseId)
     {
         Course = await _courseService.GetAsync(courseId);
-        TaskPriorities = await _taskPriorityService.GetAllAsync();
+        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
     }
 
