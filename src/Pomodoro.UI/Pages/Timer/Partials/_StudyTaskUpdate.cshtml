@@ -23,10 +23,8 @@
         },
         clearSelectedLabels() {
             this.selectedLabels = [];
-        },
-        hideMoreOptions: true
-    }"
-    x-on:submit="hideMoreOptions = true">
+        }
+    }">
     <div class="modal-body">
         <input hidden asp-for="StudyTaskUpdate.Id" />
         <div class="mb-2">
@@ -34,70 +32,65 @@
             <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Name" />
             <span asp-validation-for="StudyTaskUpdate.Name" class="text-danger form-text"></span>
         </div>
-        <a x-show="hideMoreOptions" x-on:click="hideMoreOptions = false" class="text-muted" data-bs-toggle="collapse" href="#extra-options-edit" role="button" aria-expanded="false" aria-controls="extra-options-edit">
-            <i class="bi bi-plus"></i> More options
-        </a>
-        <div class="collapse" :class="hideMoreOptions ? 'hide' : 'show'" id="extra-options-edit">
-            <div class="mb-2">
-                <label asp-for="StudyTaskUpdate.TaskPriorityId" class="form-label">Priority:</label>
-                <select class="form-control form-control-sm" asp-for="StudyTaskUpdate.TaskPriorityId" asp-items="@Model.TaskPriorities">
-                    <option value="">None</option>
-                </select>
-                <span asp-validation-for="StudyTaskUpdate.TaskPriorityId" class="text-danger form-text"></span>
-            </div>
-            <div class="mb-2">
-                <label asp-for="StudyTaskUpdate.Deadline" class="form-label">Deadline:</label>
-                <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" />
-                <span asp-validation-for="StudyTaskUpdate.Deadline" class="text-danger form-text"></span>
-            </div>
-            <div class="mb-2">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                        <label asp-for="StudyTaskUpdate.Name" class="form-label me-2 my-0">Labels:</label>
-                        <div class="dropdown">
-                            <a class="text-muted" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Choose <i class="bi bi-chevron-expand"></i>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-item">
-                                    @*Create new label*@
-                                    <a asp-page="../Labels/Index" class="text-opacity-75">
-                                        Create New <i class="bi bi-plus"></i>
-                                    </a>
-                                </li>
-                                @foreach (var label in Model.TaskLabels)
-                                {
-                                    <li>
-                                        <a class="dropdown-item" href="#"
-                                           x-on:click.prevent.stop="toggleLabel(@label.Id)">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <badge text="@label.Name" color="@label.HexColor"></badge>
-                                                <i class="bi"
-                                                   :class="selectedLabels.includes(@label.Id) ? 'bi-check' :''">
-                                                </i>
-                                            </div>
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-2">
-                    <template x-for="labelId in selectedLabels" :key="labelId">
-                        <div>
+        <div class="mb-2">
+            <label asp-for="StudyTaskUpdate.TaskPriorityId" class="form-label">Priority:</label>
+            <select class="form-control form-control-sm" asp-for="StudyTaskUpdate.TaskPriorityId" asp-items="@Model.TaskPriorities">
+                <option value="">None</option>
+            </select>
+            <span asp-validation-for="StudyTaskUpdate.TaskPriorityId" class="text-danger form-text"></span>
+        </div>
+        <div class="mb-2">
+            <label asp-for="StudyTaskUpdate.Deadline" class="form-label">Deadline:</label>
+            <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" />
+            <span asp-validation-for="StudyTaskUpdate.Deadline" class="text-danger form-text"></span>
+        </div>
+        <div class="mb-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <label asp-for="StudyTaskUpdate.Name" class="form-label me-2 my-0">Labels:</label>
+                    <div class="dropdown">
+                        <a class="text-muted" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Choose <i class="bi bi-chevron-expand"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item">
+                                @*Create new label*@
+                                <a asp-page="../Labels/Index" class="text-opacity-75">
+                                    Create New <i class="bi bi-plus"></i>
+                                </a>
+                            </li>
                             @foreach (var label in Model.TaskLabels)
                             {
-                                <template x-if="labelId === @label.Id">
-                                    <badge text="@label.Name" color="@label.HexColor"></badge>
-                                </template>
+                                <li>
+                                    <a class="dropdown-item" href="#"
+                                        x-on:click.prevent.stop="toggleLabel(@label.Id)">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <badge text="@label.Name" color="@label.HexColor"></badge>
+                                            <i class="bi"
+                                                :class="selectedLabels.includes(@label.Id) ? 'bi-check' :''">
+                                            </i>
+                                        </div>
+                                    </a>
+                                </li>
                             }
-                            @*For model binding.*@
-                            <input type="hidden" name="StudyTaskUpdate.TaskLabelIds" :value="labelId">
-                        </div>
-                    </template>
+                        </ul>
+                    </div>
                 </div>
+            </div>
+
+            <div class="mt-2">
+                <template x-for="labelId in selectedLabels" :key="labelId">
+                    <div>
+                        @foreach (var label in Model.TaskLabels)
+                        {
+                            <template x-if="labelId === @label.Id">
+                                <badge text="@label.Name" color="@label.HexColor"></badge>
+                            </template>
+                        }
+                        @*For model binding.*@
+                        <input type="hidden" name="StudyTaskUpdate.TaskLabelIds" :value="labelId">
+                    </div>
+                </template>
             </div>
         </div>
     </div>
