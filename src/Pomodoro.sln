@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pomodoro.UI", "Pomodoro.UI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pomodoro.Library", "Pomodoro.Library\Pomodoro.Library.csproj", "{7EC956B2-78B6-4076-8F0B-274D62FE0E36}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{5E16BF97-27D7-4B65-8BD5-23950F824A91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7EC956B2-78B6-4076-8F0B-274D62FE0E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EC956B2-78B6-4076-8F0B-274D62FE0E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EC956B2-78B6-4076-8F0B-274D62FE0E36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E16BF97-27D7-4B65-8BD5-23950F824A91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E16BF97-27D7-4B65-8BD5-23950F824A91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E16BF97-27D7-4B65-8BD5-23950F824A91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E16BF97-27D7-4B65-8BD5-23950F824A91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

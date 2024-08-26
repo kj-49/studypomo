@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Pomodoro.Library.Data.Database;
 using System.Security.Claims;
 
 namespace Pomodoro.UI.Util;
@@ -9,5 +11,12 @@ public static class Extensions
     {
         SelectList sl = new SelectList(map, "Key", "Value");
         return sl;
+    }
+
+    public static void ApplyMigrations(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.Migrate();
     }
 }

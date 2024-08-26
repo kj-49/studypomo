@@ -88,6 +88,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.ApplyMigrations();
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -100,10 +105,5 @@ app.MapRazorPages();
 
 app.UseSession();
 app.UseMiddleware<PreferredThemeMiddleware>();
-
-app.MapGet("/api/", () => {
-    var a = "test";
-    return Results.Ok();
-});
 
 app.Run();

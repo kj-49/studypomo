@@ -1,0 +1,41 @@
+version: '3.4'
+
+volumes:
+  mysql-datafiles:
+
+services:
+  pomodoro.ui:
+    image: ${DOCKER_REGISTRY-}pomodoroui
+    build:
+      context: .
+      dockerfile: Pomodoro.UI/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    environment:
+      Google__ClientId: /run/secrets/google_client_id
+      Google__ClientSecret: /run/secrets/google_client_secret
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Pomodoro: Server=pomodoro.database;Database=Pomodoro;User=pomodoro;Password=pomodoro
+    secrets:
+      - google_client_id
+      - google_client_secret
+
+  pomodoro.database:
+    image: mysql:8.0.33
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-datafiles:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Pomodoro
+      MYSQL_USER: pomodoro
+      MYSQL_PASSWORD: pomodoro
+
+secrets:
+  google_client_id:
+    environment: Google__ClientId
+  google_client_secret:
+    environment: Google__ClientSecret
