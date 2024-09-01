@@ -20,7 +20,7 @@
                 <small>Fill in the fields below to start adding tasks to this course.</small>
             </div>
             <hr class="text-secondary mb-0" />
-            <form method="post">
+            <form method="post" asp-page-handler="CreateCourse">
                 <div class="modal-body" x-data="{ name: '', color: '#385091', isValid: true }">
                     <div class="mb-3">
                         <label asp-for="CourseCreate.Name" class="form-label"></label>

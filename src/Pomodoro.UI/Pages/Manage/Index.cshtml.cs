@@ -12,6 +12,7 @@ using Pomodoro.Library.Models.Tables.StudyTaskEntities;
 using Pomodoro.Library.Models.Tables.TaskPriorityEntities;
 using Pomodoro.Library.Services.Interfaces;
 using Pomodoro.UI.Util.PageModels;
+using System.Runtime.CompilerServices;
 
 namespace Pomodoro.UI.Pages.Manage;
 
@@ -44,7 +45,7 @@ public class IndexModel : BaseModel
     }
 
     public ICollection<Course> Courses { get; set; }
-    [BindProperty]
+
     public CourseCreate CourseCreate { get; set; }
 
     public SelectList TaskPriorities { get; set; }
@@ -117,5 +118,32 @@ public class IndexModel : BaseModel
         await _studyTaskService.UpdateAsync(studyTaskUpdate);
 
         return RedirectToPage(new { id = studyTaskUpdate.CourseId });
+    }
+
+    public async Task<IActionResult> OnPostCreateCourseAsync(CourseCreate courseCreate)
+    {
+        ApplicationUser? user = await _userManager.GetUserAsync(User);
+        if (user == null) return Challenge();
+
+        Course course = courseCreate.ToEntity(user.Id);
+
+        // Authorize
+        var authResult = await _authorizationService.AuthorizeAsync(User, course, Operations.Create);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
+        await _courseService.CreateAsync(courseCreate);
+
+        return RedirectToPage();
     }
 }

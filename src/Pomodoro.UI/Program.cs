@@ -51,8 +51,6 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 // Resouce authorization handlers
 builder.Services.AddAuthorizationHandlers();
 
-var s = builder.Configuration.GetConnectionString("Pomodoro");
-
 // Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("Pomodoro"), new MySqlServerVersion(new Version(8, 0, 33))));
