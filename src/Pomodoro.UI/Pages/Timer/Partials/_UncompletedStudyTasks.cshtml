@@ -2,16 +2,12 @@
 
 @model Pomodoro.UI.Pages.Timer.IndexModel
 
-@{
-    var uncompletedTasks = Model.StudyTasks.Where(u => !u.Completed && !u.Archived).ToList();
-}
-
 <form hx-post
     hx-page="Index"
     >
     <ul class="list-group">
 
-        @foreach (var task in uncompletedTasks)
+        @foreach (var task in Model.NextStudyTasks)
         {
             <li class="list-group-item">
                 <div class="d-flex justify-content-between align-items-center mb-0">

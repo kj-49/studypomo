@@ -58,7 +58,9 @@ public class IndexModel : BaseModel
 
     public SelectList TaskPriorities { get; set; }
 
-    public ICollection<StudyTask> StudyTasks { get; set; }
+    public ICollection<StudyTask> NextStudyTasks { get; set; }
+    public ICollection<StudyTask> CompletedStudyTasksToday { get; set; }
+
     [BindProperty]
     public StudyTaskCreate StudyTaskCreate { get; set; }
     [BindProperty]
@@ -97,7 +99,10 @@ public class IndexModel : BaseModel
 
     public async Task PopulateFields(int userId)
     {
-        StudyTasks = (await _studyTaskService.GetAllAsync(userId)).Next(5).ToList();
+        IEnumerable<StudyTask> studyTasks = await _studyTaskService.GetAllAsync(userId);
+        NextStudyTasks = (studyTasks).Next(3).ToList();
+        CompletedStudyTasksToday = studyTasks.Where(u => u.Completed && u.DateCompleted!.Value.Date == DateTime.UtcNow.Date).ToList();
+
         TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
     }

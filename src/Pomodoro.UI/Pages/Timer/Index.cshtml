@@ -43,9 +43,9 @@
             </div>
         </div>
     </div>
-    <div id="task-history">
+    @* <div id="task-history">
         @await Html.PartialAsync("Partials/_TaskHistory")
-    </div>
+    </div> *@
     <div class="mb-5" x-data="{ progressColor: '#d9d9d9' }" x-init="
       progressColor = document.querySelector('input[name=timer-options]:checked').getAttribute('data-color')">
         <div class="d-flex justify-content-between">
@@ -69,9 +69,9 @@
                     <button class="btn btn-lg btn-secondary d-none" id="reset-button">Reset</button>
                 </div>
             </div>
-            <div>
+            @* <div>
                 <a href="#" class="text-muted" data-bs-toggle="modal" data-bs-target="#study-task-history"><i class="bi bi-clock-history me-1"></i> History</a>
-            </div>
+            </div> *@
         </div>
         
         <p id="timer" class="timer">

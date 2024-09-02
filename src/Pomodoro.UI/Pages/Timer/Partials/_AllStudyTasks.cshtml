@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        @if (Model.StudyTasks.Count == 0)
+        @if (Model.NextStudyTasks.Count == 0)
         {
         }
         <div id="current-tasks">
@@ -31,7 +31,7 @@
         </div>
 
     </div>
-    @if (Model.StudyTasks.Any(u => u.Completed && !u.Archived && u.DateCompleted!.Value.Date == DateTime.UtcNow.Date))
+    @if (Model.CompletedStudyTasksToday.Count != 0)
     {
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-end mb-3" style="height: 40px">

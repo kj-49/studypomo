@@ -67,7 +67,7 @@ public static class StudyTaskExtensions
     {
         if (!includeArchived)
         {
-            studyTasks = studyTasks.Where(t => !t.Archived);
+            studyTasks = studyTasks.Where(t => !t.Archived && !t.Completed);
         }
 
         return studyTasks

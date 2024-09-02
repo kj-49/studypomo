@@ -8,11 +8,7 @@
 
 @model Pomodoro.UI.Pages.Timer.IndexModel
 
-@{
-    var completedTasks = Model.StudyTasks.Where(u => u.Completed && !u.Archived && u.DateCompleted!.Value.Date == DateTime.UtcNow.Date).ToList();
-}
-
-@if (completedTasks.Count == 0)
+@if (Model.CompletedStudyTasksToday.Count == 0)
 {
 }
 else
@@ -21,7 +17,7 @@ else
         hx-page="Index"
         >
         <ul class="list-group">
-            @foreach (var task in completedTasks)
+            @foreach (var task in Model.CompletedStudyTasksToday)
             {
                 <li class="list-group-item">
                     <div class="d-flex justify-content-between align-items-center mb-0">
