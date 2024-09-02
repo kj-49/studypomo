@@ -1,23 +1,26 @@
 ﻿@model Pomodoro.UI.Pages.Manage.Courses.IndexModel
 
 @{
+    var courseCreationDate = Model.Course.DateCreated.Date;
+    var today = DateTime.Today;
+
+    // Generate a list of dates from course creation to today
+    var allDates = Enumerable.Range(0, (today - courseCreationDate).Days + 1)
+                             .Select(offset => courseCreationDate.AddDays(offset))
+                             .ToList();
+
+    // Completed tasks grouped by completion date
     var completedTasks = Model.Course.StudyTasks
         .Where(t => t.DateCompleted.HasValue)
-        .GroupBy(t => t.DateCompleted.Value.Date)
-        .Select(g => new
-        {
-            Date = g.Key,
-            Count = g.Count()
-        })
-        .OrderBy(g => g.Date)
-        .ToList();
+        .GroupBy(t => t.DateCompleted!.Value.Date)
+        .ToDictionary(g => g.Key, g => g.Count());
 
-    // Prepare the data for the chart
-    var data = completedTasks.Select(ct => new
+    // Merge the full date range with the completed tasks count
+    var data = allDates.Select(date => new
     {
-        Date = ct.Date.ToString("yyyy-MM-dd"),  // Format the date as needed
-        Count = ct.Count
-    });
+        Date = date.ToString("yyyy-MM-dd"),
+        Count = completedTasks.ContainsKey(date) ? completedTasks[date] : 0
+    }).ToList();
 }
 
 <div id="main" class="h-100" style="min-height: 200px;"></div>
