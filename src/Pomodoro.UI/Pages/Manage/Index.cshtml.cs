@@ -46,7 +46,11 @@ public class IndexModel : BaseModel
 
     public ICollection<Course> Courses { get; set; }
 
+    
     public CourseCreate CourseCreate { get; set; }
+
+    [BindProperty]
+    public StudyTaskCreate StudyTaskCreate { get; set; }
 
     public SelectList TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
@@ -83,7 +87,26 @@ public class IndexModel : BaseModel
 
     public async Task<IActionResult> OnPostCreateStudyTaskAsync()
     {
-        await _courseService.CreateAsync(CourseCreate);
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) return Challenge();
+
+        // Need to ensure the created task is for a CourseId that the current user owns.
+        StudyTask studyTask = StudyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC));
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Create);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
+        await _studyTaskService.CreateAsync(StudyTaskCreate);
 
         return RedirectToPage();
     }
