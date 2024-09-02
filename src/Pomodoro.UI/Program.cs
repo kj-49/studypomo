@@ -24,7 +24,7 @@ builder.Configuration.AddEnvironmentVariables();
 // Add services to the container.
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AddPageRoute("/Timer/Index", "");
+    options.Conventions.AddPageRoute("/Manage/Index", "");
 
     options.Conventions
         .AuthorizeFolder("/") // Require auth for all paths
