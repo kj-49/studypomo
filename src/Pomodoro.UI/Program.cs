@@ -113,9 +113,4 @@ app.MapRazorPages();
 app.UseSession();
 app.UseMiddleware<PreferredThemeMiddleware>();
 
-app.MapGet("/api/", () => {
-    var a = "test";
-    return Results.Ok();
-});
-
 app.Run();
