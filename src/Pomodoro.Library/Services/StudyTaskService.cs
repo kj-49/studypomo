@@ -157,7 +157,8 @@ public class StudyTaskService : IStudyTaskService
                 u => u.User.Id == userId,
                 t => t.TaskPriority,
                 t => t.User,
-                t => t.TaskLabels
+                t => t.TaskLabels,
+                t => t.Course
             );
             return studyTasks.ToList();
         } else
@@ -166,7 +167,8 @@ public class StudyTaskService : IStudyTaskService
                 u => u.User.Id == userId && !u.Archived,
                 t => t.TaskPriority,
                 t => t.User,
-                t => t.TaskLabels
+                t => t.TaskLabels,
+                t => t.Course
             );
             return studyTasks.ToList();
         }
