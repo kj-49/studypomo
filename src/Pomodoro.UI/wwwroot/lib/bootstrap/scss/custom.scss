@@ -61,7 +61,7 @@ $color-mode-type: data;
 @include color-mode(light) {
 
     a:hover {
-        color: #0969da;
+        color: #0969da !important;
         font-weight: 400;
     }
     // Apply custom button styles to standard Bootstrap buttons
@@ -188,9 +188,10 @@ $color-mode-type: data;
 @include color-mode(dark) {
 
     a:hover {
-        color: #478be6;
+        color: #478be6 !important;
         font-weight: 400;
     }
+
     // Apply custom button styles to standard Bootstrap buttons
     .btn:not(.btn-outline):not(.btn-link) {
         @include util-button;
@@ -332,6 +333,12 @@ a {
     * {
         color: $list-group-color;
     }
+}
+
+a.muted-link {
+    color: $text-muted;
+    text-decoration: none;
+    transition: color 0.1s ease-in-out;
 }
 
 
