@@ -213,6 +213,25 @@ public class IndexModel : BaseModel
     {
         if (Request.IsHtmx())
         {
+            StudyTask studyTask = await _studyTaskService.GetAsync(StudyTaskUpdate.Id);
+
+            // TODO: Authorize
+            var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
+
+            if (!authResult.Succeeded)
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    // TODO: Show status message.
+                    return Content("");
+                }
+                else
+                {
+                    // TODO: Show status message.
+                    return Content("");
+                }
+            }
+
             await _studyTaskService.UpdateAsync(StudyTaskUpdate);
 
             ApplicationUser? user = await _userService.GetCurrentUserAsync();
