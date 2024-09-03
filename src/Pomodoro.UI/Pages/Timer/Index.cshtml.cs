@@ -68,9 +68,6 @@ public class IndexModel : BaseModel
 
     public ICollection<TaskLabel> TaskLabels { get; set; }
 
-    public bool RenderTasksOutOfBand { get; set; }
-
-
     protected override async Task<TimeZoneInfo> ResolveTimeZone()
     {
         ApplicationUser? user = await _userManager.GetUserAsync(User);
@@ -202,8 +199,6 @@ public class IndexModel : BaseModel
 
         if (Request.IsHtmx())
         {
-            RenderTasksOutOfBand = true;
-
             await _studyTaskService.ArchiveAsync(id);
 
             await PopulateFields(user.Id);

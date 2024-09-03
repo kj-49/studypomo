@@ -6,14 +6,6 @@
 
 @model Pomodoro.UI.Pages.Timer.IndexModel
 
-@if (Model.RenderTasksOutOfBand)
-{
-    <div id="task-history" hx-swap-oob="true">
-        @await Html.PartialAsync("Partials/_TaskHistory")
-    </div>
-}
-
-
 <div id="all-study-tasks" class="row gx-5">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-end mb-2" style="height: 40px">
