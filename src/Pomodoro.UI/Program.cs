@@ -15,6 +15,7 @@ using Pomodoro.Library.Models.Utility;
 using Pomodoro.Library.Services;
 using Pomodoro.Library.Services.Interfaces;
 using Pomodoro.UI.Middleware;
+using Serilog;
 using VnLibrary.Services.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,9 @@ builder.Services.AddRazorPages(options =>
         .AuthorizeAreaFolder("Registered", "/");
 
 });
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddRazorComponents();
 

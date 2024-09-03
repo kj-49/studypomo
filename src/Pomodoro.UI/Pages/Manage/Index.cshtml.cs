@@ -26,13 +26,16 @@ public class IndexModel : BaseModel
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IAuthorizationService _authorizationService;
 
+    private readonly ILogger<IndexModel> _logger;
+
     public IndexModel(IStudyTaskService studyTaskService,
         IUserService userService,
         ICourseService courseService,
         ITaskPriorityService taskPriorityService,
         ITaskLabelService taskLabelService,
         UserManager<ApplicationUser> userManager,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService,
+        ILogger<IndexModel> logger)
         : base(userService)
     {
         _studyTaskService = studyTaskService;
@@ -42,6 +45,7 @@ public class IndexModel : BaseModel
         _taskLabelService = taskLabelService;
         _userManager = userManager;
         _authorizationService = authorizationService;
+        _logger = logger;
     }
 
     public ICollection<Course> Courses { get; set; }
@@ -70,6 +74,8 @@ public class IndexModel : BaseModel
 
     public async Task<IActionResult> OnGetAsync()
     {
+        _logger.LogInformation("Manage page accessed.");
+
         var user = await _userService.GetCurrentUserAsync();
 
         if (user == null) return Challenge();
