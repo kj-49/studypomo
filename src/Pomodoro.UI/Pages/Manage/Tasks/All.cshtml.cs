@@ -192,10 +192,17 @@ public class AllModel : BaseModel
         if (Filter.DueDateDescending)
         {
             FilterActive = true;
-            StudyTasks = StudyTasks.OrderByDescending(u => u.Deadline).ToList();
-        } else
+            StudyTasks = StudyTasks
+                .OrderByDescending(u => u.Deadline.HasValue) // Sort nulls last
+                .ThenByDescending(u => u.Deadline)           // Then sort by deadline descending
+                .ToList();
+        }
+        else
         {
-            StudyTasks = StudyTasks.OrderBy(u => u.Deadline).ToList();
+            StudyTasks = StudyTasks
+                .OrderByDescending(u => u.Deadline.HasValue) // Sort nulls last
+                .ThenBy(u => u.Deadline)           // Then sort by deadline ascending
+                .ToList();
         }
     }
 
