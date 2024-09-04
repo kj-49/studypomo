@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pomodoro.Library.Authorization;
 using Pomodoro.Library.Models.Identity;
+using Pomodoro.Library.Models.Tables.CourseEntities;
 using Pomodoro.Library.Models.Tables.LabelEntities;
 using Pomodoro.Library.Models.Tables.StudyTaskEntities;
 using Pomodoro.Library.Models.Tables.TaskPriorityEntities;
@@ -22,8 +23,9 @@ public class AllModel : BaseModel
     private readonly ITaskPriorityService _taskPriorityService;
     private readonly ITaskLabelService _taskLabelService;
     private readonly IAuthorizationService _authorizationService;
+    private readonly ICourseService _courseService;
 
-    public AllModel(IUserService userService, UserManager<ApplicationUser> userManager, IStudyTaskService studyTaskService, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService, IAuthorizationService authorizationService) : base(userService)
+    public AllModel(IUserService userService, UserManager<ApplicationUser> userManager, IStudyTaskService studyTaskService, ITaskPriorityService taskPriorityService, ITaskLabelService taskLabelService, IAuthorizationService authorizationService, ICourseService courseService) : base(userService)
     {
         _userService = userService;
         _userManager = userManager;
@@ -31,6 +33,7 @@ public class AllModel : BaseModel
         _taskPriorityService = taskPriorityService;
         _taskLabelService = taskLabelService;
         _authorizationService = authorizationService;
+        _courseService = courseService;
     }
 
     protected override async Task<TimeZoneInfo> ResolveTimeZone()
@@ -50,9 +53,15 @@ public class AllModel : BaseModel
     public ICollection<StudyTask> StudyTasks { get; set; }
     public SelectList TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
+    public ICollection<Course> Courses { get; set; }
 
-    public async Task<IActionResult> OnGetAsync()
+    [BindProperty(SupportsGet = true)]
+    public FilterOptions Filter { get; set; }
+    public bool FilterActive { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(FilterOptions filter)
     {
+
         var user = await _userService.GetCurrentUserAsync();
 
         if (user == null) return Challenge();
@@ -60,8 +69,11 @@ public class AllModel : BaseModel
 
         TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
         TaskLabels = await _taskLabelService.GetAllAsync(user.Id);
+        Courses = await _courseService.GetAllAsync(user.Id);
 
         await InitializeTimeZoneAsync();
+
+        ApplyFilter();
 
         return Page();
     }
@@ -140,4 +152,50 @@ public class AllModel : BaseModel
 
         return RedirectToPage(new { id = studyTaskUpdate.CourseId });
     }
+
+    public class FilterOptions
+    {
+        public int? TaskPriorityId { get; set; }
+        public List<int> CourseIds { get; set; } = [];
+        public List<int> TaskLabelIds { get; set; } = [];
+        public string? SearchQuery { get; set; }
+        public bool DueDateDescending { get; set; }
+    }
+
+    private void ApplyFilter()
+    {
+        if (Filter.TaskPriorityId.HasValue)
+        {
+            FilterActive = true;
+            StudyTasks = StudyTasks.Where(u => u.TaskPriorityId == Filter.TaskPriorityId).ToList();
+        }
+        if (Filter.CourseIds.Any())
+        {
+            FilterActive = true;
+            StudyTasks = StudyTasks.Where(u => Filter.CourseIds.Any(c => c == u.CourseId)).ToList();
+        }
+        if (Filter.TaskLabelIds.Any())
+        {
+            FilterActive = true;
+            StudyTasks = StudyTasks
+                .Where(u => u.TaskLabels.Select(t => t.Id)
+                .Intersect(Filter.TaskLabelIds)
+                .Any())
+                .ToList();
+        }
+        if (!string.IsNullOrWhiteSpace(Filter.SearchQuery))
+        {
+            FilterActive = true;
+            StudyTasks = StudyTasks.Where(u => u.Name.Contains(Filter.SearchQuery)).ToList();
+        }
+        if (Filter.DueDateDescending)
+        {
+            FilterActive = true;
+            StudyTasks = StudyTasks.OrderByDescending(u => u.Deadline).ToList();
+        } else
+        {
+            StudyTasks = StudyTasks.OrderBy(u => u.Deadline).ToList();
+        }
+    }
+
 }
