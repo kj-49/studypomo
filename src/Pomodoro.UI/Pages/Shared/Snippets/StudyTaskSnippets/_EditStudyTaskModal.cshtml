@@ -44,6 +44,11 @@
                             </a>
                             <div class="collapse" :class="hideMoreOptions ? 'hide' : 'show'" id="extra-options-edit-@(Model.StudyTaskUpdate.Id)">
                                 <div class="mb-2">
+                                    <label asp-for="StudyTaskUpdate.Description" class="form-label">Description:</label>
+                                    <textarea class="form-control form-control-sm" asp-for="StudyTaskUpdate.Description"></textarea>
+                                    <span asp-validation-for="StudyTaskUpdate.Description" class="text-danger form-text"></span>
+                                </div>
+                                <div class="mb-2">
                                     <label asp-for="StudyTaskUpdate.TaskPriorityId" class="form-label">Priority:</label>
                                     <select class="form-control form-control-sm" asp-for="StudyTaskUpdate.TaskPriorityId" asp-items="@Model.TaskPriorities">
                                         <option value="">None</option>

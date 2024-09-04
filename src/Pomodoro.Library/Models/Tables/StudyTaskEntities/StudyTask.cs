@@ -16,6 +16,7 @@ public class StudyTask
     public int UserId { get; set; }
     public ApplicationUser User { get; set; }
     public string Name { get; set; }
+    public string? Description { get; set; }
     public bool Completed { get; set; }
     public DateTime DateCreated { get; set; }
     public DateTime? DateCompleted { get; set; }
