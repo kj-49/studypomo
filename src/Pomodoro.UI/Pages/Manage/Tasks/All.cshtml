@@ -135,6 +135,30 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+
+                    <div x-data="{ Filter: { DueDateDesc: @(Json.Serialize(Model.Filter.DueDateDescending)) } }" class="mb-2 d-flex">
+                        <label asp-for="Filter.DueDateDescending" class="me-2">Due Date:</label>
+                        <div class="d-flex gap-2" role="group" aria-label="On Off Toggle">
+                            <a href="#"
+                               :class="{'link-hover-color font-weight-bold': Filter.DueDateDesc, 'text-muted': !Filter.DueDateDesc}"
+                               x-on:click.prevent="Filter.DueDateDesc = true"
+                               id="toggle-on">
+                                Descending
+                            </a>
+                            |
+                            <a href="#"
+                               :class="{'link-hover-color font-weight-bold': !Filter.DueDateDesc, 'text-muted': Filter.DueDateDesc}"
+                               x-on:click.prevent="Filter.DueDateDesc = false"
+                               id="toggle-off">
+                                Ascending
+                            </a>
+                        </div>
+                        <input hidden asp-for="Filter.DueDateDescending" :value="Filter.DueDateDesc" />
+                    </div>
+                    
+
+
+
                     <div class="mb-2" x-data="{
                         selectedLabels: @(Json.Serialize(Model.Filter.TaskLabelIds)),
                         toggleLabel(id) {
