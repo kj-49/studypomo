@@ -55,12 +55,13 @@ public class AllModel : BaseModel
     public ICollection<TaskLabel> TaskLabels { get; set; }
     public ICollection<Course> Courses { get; set; }
 
-    [BindProperty(SupportsGet = true)]
     public FilterOptions Filter { get; set; }
     public bool FilterActive { get; set; }
 
     public async Task<IActionResult> OnGetAsync(FilterOptions filter)
     {
+
+        Filter = filter;
 
         var user = await _userService.GetCurrentUserAsync();
 
