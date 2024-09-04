@@ -20,6 +20,7 @@ public static class StudyTaskExtensions
 
         studyTask.UserId = userId;
         studyTask.Name = studyTaskCreate.Name;
+        studyTask.Description = studyTaskCreate.Description;
         studyTask.Completed = false;
         studyTask.DateCreated = DateTime.UtcNow;
         studyTask.DateCompleted = null;
@@ -39,6 +40,7 @@ public static class StudyTaskExtensions
         }
 
         existingStudyTask.Name = studyTaskUpdate.Name;
+        existingStudyTask.Description = studyTaskUpdate.Description;
         existingStudyTask.TaskPriorityId = studyTaskUpdate.TaskPriorityId;
         existingStudyTask.Deadline = studyTaskUpdate.Deadline == null ? null : TimeService.ConvertFromUserTime(studyTaskUpdate.Deadline.Value, userTimeZone);
         existingStudyTask.CourseId = studyTaskUpdate.CourseId;

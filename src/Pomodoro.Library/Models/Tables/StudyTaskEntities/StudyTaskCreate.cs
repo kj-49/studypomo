@@ -6,6 +6,7 @@ public class StudyTaskCreate
 {
     [Required]
     public string Name { get; set; }
+    public string? Description { get; set; }
     [Display(Name = "Priority")]
     public int? TaskPriorityId { get; set; }
     public DateTime? Deadline { get; set; }
