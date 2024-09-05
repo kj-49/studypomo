@@ -309,13 +309,16 @@
                     <div class="col-md-5">
                         <span><strong>Task</strong></span>
                     </div>
-                    <div class="d-none d-md-block col-md-4">
+                    <div class="d-none d-md-block col-md-3">
                         <span><strong>Due</strong></span>
+                    </div>
+                    <div class="d-none d-lg-block col-md-1">
+                        <span><strong>Priority</strong></span>
                     </div>
                     <div class="d-none d-lg-block col-md-1">
                         <span><strong>Course</strong></span>
                     </div>
-                    <div class="col-md-2 text-end text-nowrap">
+                    <div class="col-md-1 text-end text-nowrap">
                         <span><strong>Actions</strong></span>
                     </div>
                 </div>
@@ -335,17 +338,19 @@
                                 <i class="bi bi-x-circle text-secondary me-2"></i>
                             }
                             <study-task-link task="@task"></study-task-link>
-                            @if (task.TaskPriority != null)
-                            {
-                                <badge priority="true" text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
-                            }
                             @foreach (var label in task.TaskLabels)
                             {
                                 <badge text="@label.Name" color="@label.HexColor"></badge>
                             }
                         </div>
-                        <div class="d-none d-md-block col-md-4">
+                        <div class="d-none d-md-block col-md-3">
                             <span class="text-muted">@task.Deadline.Humanize()</span>
+                        </div>
+                        <div class="d-none d-lg-block col-md-1">
+                            @if (task.TaskPriority != null)
+                            {
+                                <badge text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
+                            }
                         </div>
                         <div class="d-none d-lg-block col-md-1">
                             @if (task.Course != null)
@@ -353,7 +358,7 @@
                                 <badge text="@task.Course.Name" color="@task.Course.HexColor"></badge>
                             }
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <div class="d-flex align-items-center justify-content-end">
                                 <div class="dropdown">
                                     <i style="cursor: pointer" class="text-secondary bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"></i>
