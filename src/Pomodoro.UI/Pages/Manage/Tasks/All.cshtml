@@ -141,6 +141,33 @@
                 </div>
                 <div class="modal-body">
 
+                    <div x-data="{ Filter: { OrderByCompleted: @(Json.Serialize(Model.Filter.OrderByCompleted)) } }" class="mb-2 d-flex">
+                        <label asp-for="Filter.DueDateDescending" class="me-2">Status:</label>
+                        <div class="d-flex gap-2" role="group" aria-label="On Off Toggle">
+                            <a href="#"
+                               :class="{'link-hover-color font-weight-bold': Filter.OrderByCompleted, 'text-muted': !Filter.OrderByCompleted}"
+                               x-on:click.prevent="Filter.OrderByCompleted = true"
+                               id="toggle-on">
+                                Completed First
+                            </a>
+                            |
+                            <a href="#"
+                               :class="{'link-hover-color font-weight-bold': !Filter.OrderByCompleted && Filter.OrderByCompleted != null, 'text-muted': Filter.OrderByCompleted}"
+                               x-on:click.prevent="Filter.OrderByCompleted = false"
+                               id="toggle-on">
+                                Incomplete First
+                            </a>
+                            |
+                            <a href="#"
+                               :class="{'link-hover-color font-weight-bold': Filter.OrderByCompleted == null, 'text-muted': Filter.OrderByCompleted != null}"
+                               x-on:click.prevent="Filter.OrderByCompleted = null"
+                               id="toggle-off">
+                                None
+                            </a>
+                        </div>
+                        <input hidden asp-for="Filter.OrderByCompleted" :value="Filter.OrderByCompleted" />
+                    </div>
+
                     <div x-data="{ Filter: { DueDateDesc: @(Json.Serialize(Model.Filter.DueDateDescending)) } }" class="mb-2 d-flex">
                         <label asp-for="Filter.DueDateDescending" class="me-2">Due Date:</label>
                         <div class="d-flex gap-2" role="group" aria-label="On Off Toggle">
