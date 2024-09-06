@@ -161,6 +161,10 @@ public class AllModel : BaseModel
         public List<int> TaskLabelIds { get; set; } = [];
         public string? SearchQuery { get; set; }
         public bool DueDateDescending { get; set; }
+        /// <summary>
+        /// If null, no ordering is applied.
+        /// </summary>
+        public bool? OrderByCompleted { get; set; }
     }
 
     private void ApplyFilter()
@@ -204,6 +208,24 @@ public class AllModel : BaseModel
                 .ThenBy(u => u.Deadline)           // Then sort by deadline ascending
                 .ToList();
         }
+        if (Filter.OrderByCompleted.HasValue)
+        {
+            FilterActive = true;
+
+            if (Filter.OrderByCompleted.Value)
+            {
+                StudyTasks = StudyTasks
+                    .OrderByDescending(u => u.Completed)
+                    .ToList();
+            } else
+            {
+                StudyTasks = StudyTasks
+                    .OrderByDescending(u => !u.Completed)
+                    .ToList();
+            }
+        }
+
+
     }
 
 }
