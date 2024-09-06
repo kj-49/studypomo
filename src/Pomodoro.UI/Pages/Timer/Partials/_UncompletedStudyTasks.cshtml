@@ -34,13 +34,7 @@
                                     <badge text="@label.Name" color="@label.HexColor"></badge>
                                 }
                             </div>
-                            @if (task.Deadline != null)
-                            {
-                                <small>Due @task.Deadline.Value.Humanize()</small>
-                            } else
-                            {
-                                <small>@task.Status()</small>
-                            }
+                            <small>Due @task.Deadline.Humanize()</small>
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
