@@ -17,5 +17,5 @@ public class StudyTaskUpdate
     public DateTime? Deadline { get; set; }
     public int? CourseId { get; set; }
 
-    public List<int> TaskLabelIds { get; set; }
+    public List<int> TaskLabelIds { get; set; } = [];
 }
