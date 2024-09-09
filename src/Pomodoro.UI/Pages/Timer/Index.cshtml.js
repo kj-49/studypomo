@@ -23,16 +23,12 @@ function addEventListeners() {
     const startStopButton = document.getElementById(STARTSTOP_BUTTON_ID);
     const resetButton = document.getElementById(RESET_BUTTON_ID);
 
-    // Remove existing listeners to prevent duplicates
-    startStopButton.removeEventListener('click', toggleTimer);
     startStopButton.addEventListener('click', toggleTimer);
 
-    resetButton.removeEventListener('click', resetTimer);
     resetButton.addEventListener('click', resetTimer);
 
     // Add event listeners for radio button changes
     document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
-        radio.removeEventListener('change', handleRadioChange); // Ensure no duplicates
         radio.addEventListener('change', handleRadioChange);
     });
 
@@ -233,4 +229,3 @@ function restoreTimerState() {
     }
 }
 
-init();
