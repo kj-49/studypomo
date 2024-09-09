@@ -10,7 +10,8 @@ let state = {
     secondsLeft: null,
     timerDuration: null,
     currentInterval: null,
-    timerType: 'pomodoro' // Default type
+    timerType: 'pomodoro', // Default type
+    pomodoroCount: 0 // Counter to track the number of completed Pomodoros
 };
 
 function init() {
@@ -68,6 +69,22 @@ function getNotificationMessage() {
     }
 }
 
+function getNextTimerType() {
+    // Determine the next timer type based on the current timer type and Pomodoro count
+    if (state.timerType === 'pomodoro') {
+        state.pomodoroCount++;
+        if (state.pomodoroCount % 3 === 0) {
+            return 'long-break'; // Switch to long break after every 3 Pomodoros
+        } else {
+            return 'short-break';
+        }
+    } else if (state.timerType === 'short-break') {
+        return 'pomodoro';
+    } else if (state.timerType === 'long-break') {
+        return 'pomodoro';
+    }
+}
+
 function toggleTimer() {
     if (state.timerOn) {
         stopTimer();
@@ -100,6 +117,13 @@ function startTimer() {
         if (--state.secondsLeft < 0) {
             stopTimer();
             showNotification(getNotificationMessage());
+            const nextTimerType = getNextTimerType();
+            setDuration(
+                parseInt(document.querySelector(`input[name="${RADIO_GROUP_ID}"]#${nextTimerType}`).value, 10),
+                nextTimerType
+            );
+            updateButtonState();
+            updateDisplay();
         }
     }, 1000);
 }
@@ -118,7 +142,17 @@ function resetTimer() {
 function setDuration(minutes, timerType = 'pomodoro') {
     state.timerDuration = minutes * 60;
     state.timerType = timerType; // Set the timer type
+    state.secondsLeft = state.secondsLeft ?? state.timerDuration;
+    updateSelectedRadio(timerType); // Ensure the correct radio button is selected
     resetTimer();
+}
+
+function updateSelectedRadio(timerType) {
+    document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
+        if (radio.id === timerType) {
+            radio.checked = true;
+        }
+    });
 }
 
 function updateButtonState() {
@@ -179,12 +213,7 @@ function restoreTimerState() {
             state = JSON.parse(savedState);
 
             if (state.timerOn != null && state.secondsLeft != null && state.timerDuration != null) {
-                document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
-                    if (parseInt(radio.value, 10) * 60 === state.timerDuration) {
-                        radio.checked = true;
-                    }
-                });
-
+                updateSelectedRadio(state.timerType); // Ensure the correct radio button is selected
                 stopTimer();
                 updateDisplay();
             } else {
