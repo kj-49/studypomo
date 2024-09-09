@@ -152,7 +152,7 @@
                             </a>
                             |
                             <a href="#"
-                               :class="{'link-hover-color font-weight-bold': !Filter.OrderByCompleted && Filter.OrderByCompleted != null, 'text-muted': Filter.OrderByCompleted}"
+                               :class="{'link-hover-color font-weight-bold': !Filter.OrderByCompleted && Filter.OrderByCompleted != null, 'text-muted': Filter.OrderByCompleted || Filter.OrderByCompleted == null}"
                                x-on:click.prevent="Filter.OrderByCompleted = false"
                                id="toggle-on">
                                 Incomplete First
