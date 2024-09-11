@@ -1,9 +1,13 @@
 ﻿@page
 @using Pomodoro.Library.Models.Tables.StudyTaskEntities
 @using Pomodoro.Library.Models.Utility
+@using Pomodoro.UI.Pages.Shared.Snippets.StudyTaskSnippets
 @model Pomodoro.UI.Pages.Timer.IndexModel
 @{
 }
+
+
+
 <div class="mt-5">
     <div class="modal fade" id="study-task-create-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -83,7 +87,7 @@
     </div>
 
 
-    @await Html.PartialAsync("Partials/_AllStudyTasks")
+    @await Html.PartialAsync("Partials/_Dynamic")
 </div>
 
 @section Scripts {

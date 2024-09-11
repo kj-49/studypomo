@@ -7,20 +7,23 @@
     hx-page="Index"
     >
     <ul class="list-group">
+        @{
 
-        @foreach (var task in Model.NextStudyTasks)
+            StudyTask? task = Model.UncompletedStudyTasks.FirstOrDefault(u => u.Id == Model.WorkingStudyTaskId);
+        }
+        @if (task != null)
         {
             <li class="list-group-item">
                 <div class="d-flex justify-content-between align-items-center mb-0">
                     <div class="d-flex align-items-baseline">
                         <div>
                             <input hx-post
-                                hx-page-handler="CompleteTask"
-                                hx-route-id="@task.Id"
-                                hx-swap="outerHTML"
-                                hx-target="#all-study-tasks"
-                                type="checkbox" 
-                                class="form-check-input me-2 mt-1" />
+                                   hx-page-handler="CompleteTask"
+                                   hx-route-id="@task.Id"
+                                   hx-swap="outerHTML"
+                                   hx-target="#dynamic"
+                                   type="checkbox"
+                                   class="form-check-input me-2 mt-1" />
                         </div>
                         <div class="d-flex flex-column justify-content-between">
                             <div class="d-flex align-items-center mw-50">
@@ -39,7 +42,7 @@
                     </div>
                     <div class="d-flex align-items-center">
                         <form hx-swap="outerHTML"
-                              hx-target="#all-study-tasks">
+                              hx-target="#dynamic">
                             <div class="dropdown">
                                 <i style="cursor: pointer" class="text-secondary bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                 <ul class="dropdown-menu">
@@ -54,24 +57,26 @@
                         </form>
                     </div>
                 </div>
-                    
+
+            </li>
+        } else
+        {
+            <li class="list-group-item custom-hover">
+                <a data-bs-toggle="modal" data-bs-target="#study-task-select-modal" class="d-flex justify-content-between align-items-center mb-0">
+                    <div class="d-flex align-items-baseline">
+                        <div>
+                            <i class="bi bi-plus me-2"></i>
+                        </div>
+                        <div class="d-flex flex-column justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <span class="fw-semibold ext-decoration-none">Select Task</span>
+                            </div>
+                            <small>Status...</small>
+                        </div>
+                    </div>
+                </a>
             </li>
         }
-        <li class="list-group-item custom-hover">
-            <a data-bs-toggle="modal" data-bs-target="#study-task-create-modal" class="d-flex justify-content-between align-items-center mb-0">
-                <div class="d-flex align-items-baseline">
-                    <div>
-                        <i class="bi bi-plus me-2"></i>
-                    </div>
-                    <div class="d-flex flex-column justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <span class="fw-semibold ext-decoration-none">Add New Task</span>
-                        </div>
-                        <small>Status...</small>
-                    </div>
-                </div>
-            </a>
-        </li>
     </ul>
 </form>
 

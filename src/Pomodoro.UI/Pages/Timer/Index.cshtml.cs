@@ -33,7 +33,9 @@ public class IndexModel : BaseModel
     private readonly IMapper _mapper;
     private readonly IAuthorizationService _authorizationService;
     private readonly IUserService _userService;
-    private readonly UserManager<ApplicationUser> _userManager; 
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    private static string _workingTaskIdKey = "WORKING_TASK_ID";
 
     public IndexModel(
         IUserService userService,
@@ -58,8 +60,9 @@ public class IndexModel : BaseModel
 
     public SelectList TaskPriorities { get; set; }
 
-    public ICollection<StudyTask> NextStudyTasks { get; set; }
-    public ICollection<StudyTask> CompletedStudyTasksToday { get; set; }
+    public int? WorkingStudyTaskId { get; set; }
+
+    public ICollection<StudyTask> UncompletedStudyTasks { get; set; }
 
     [BindProperty]
     public StudyTaskCreate StudyTaskCreate { get; set; }
@@ -96,9 +99,10 @@ public class IndexModel : BaseModel
 
     public async Task PopulateFields(int userId)
     {
+        WorkingStudyTaskId = HttpContext.Session.GetInt32(_workingTaskIdKey);
+
         IEnumerable<StudyTask> studyTasks = await _studyTaskService.GetAllAsync(userId);
-        NextStudyTasks = (studyTasks).Next(3).ToList();
-        CompletedStudyTasksToday = studyTasks.Where(u => u.Completed && u.DateCompleted!.Value.Date == DateTime.UtcNow.Date).ToList();
+        UncompletedStudyTasks = studyTasks.Where(u => !u.Completed).ToList();
 
         TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
@@ -130,13 +134,9 @@ public class IndexModel : BaseModel
         if (Request.IsHtmx()) {
 
             await _studyTaskService.CreateAsync(StudyTaskCreate);
-
-            await PopulateFields(user.Id);
-
-            return Partial("Partials/_UncompletedStudyTasks", this);
         }
 
-        return Page();
+        return new EmptyResult();
     }
 
     public async Task<IActionResult> OnPostRemoveStudyTaskAsync(int id)
@@ -168,7 +168,7 @@ public class IndexModel : BaseModel
 
             await PopulateFields(user.Id);
 
-            return Partial("Partials/_AllStudyTasks", this);
+            return Partial("Partials/_Dynamic", this);
         }
 
         return Page();
@@ -203,7 +203,7 @@ public class IndexModel : BaseModel
 
             await PopulateFields(user.Id);
 
-            return Partial("Partials/_AllStudyTasks", this);
+            return Partial("Partials/_Dynamic", this);
         }
 
         return Page();
@@ -240,7 +240,7 @@ public class IndexModel : BaseModel
 
             await PopulateFields(user.Id);
 
-            return Partial("Partials/_AllStudyTasks", this);
+            return Partial("Partials/_Dynamic", this);
         }
 
         return Page();
@@ -283,6 +283,11 @@ public class IndexModel : BaseModel
 
     public async Task<IActionResult> OnPostCompleteTaskAsync(int id)
     {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) return Challenge();
 
@@ -304,17 +309,16 @@ public class IndexModel : BaseModel
             }
         }
 
-        if (Request.IsHtmx())
+        await _studyTaskService.CompleteAsync(id);
+
+        if (HttpContext.Session.GetInt32(_workingTaskIdKey) == id)
         {
-            await _studyTaskService.CompleteAsync(id);
-
-            await PopulateFields(user.Id);
-
-            return Partial("Partials/_AllStudyTasks", this);
+            HttpContext.Session.Remove(_workingTaskIdKey);
         }
 
-        return Page();
+        await PopulateFields(user.Id);
 
+        return Partial("Partials/_Dynamic", this);
     }
 
     public async Task<IActionResult> OnPostUncompleteTaskAsync(int id)
@@ -346,10 +350,10 @@ public class IndexModel : BaseModel
 
             await PopulateFields(user.Id);
 
-            return Partial("Partials/_AllStudyTasks", this);
+            return Partial("Partials/_Dynamic", this);
         }
 
-        return Page();
+        return new EmptyResult();
 
     }
 
@@ -365,4 +369,24 @@ public class IndexModel : BaseModel
 
         return new OkResult();
     }
+
+    public async Task<IActionResult> OnPostChooseTask(int id)
+    {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+
+        // Dont have to authorize, as linq will look for the Id, it will not be fetched from db.
+        HttpContext.Session.SetInt32(_workingTaskIdKey, id);
+
+        await _studyTaskService.UncompleteAsync(id);
+
+        await PopulateFields(user.Id);
+
+        return Partial("Partials/_Dynamic", this);
+    }
+
 }

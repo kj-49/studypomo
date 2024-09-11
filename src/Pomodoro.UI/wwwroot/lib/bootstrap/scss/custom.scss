@@ -60,6 +60,11 @@ $color-mode-type: data;
 
 @include color-mode(light) {
 
+    .list-group-item.bg-hover:hover {
+        background-color: $body-tertiary-bg;
+        cursor: pointer;
+    }
+
     a:hover {
         color: #0969da !important;
         font-weight: 400;
@@ -190,6 +195,11 @@ $color-mode-type: data;
 
 // Dark mode styles
 @include color-mode(dark) {
+
+    .list-group-item.bg-hover:hover {
+        background-color: $body-tertiary-bg-dark;
+        cursor: pointer;
+    }
 
     a:hover {
         color: #478be6 !important;
