@@ -61,7 +61,7 @@ public class AllModel : BaseModel
     public async Task<IActionResult> OnGetAsync(FilterOptions filter)
     {
 
-        Filter = filter;
+        Filter = filter ?? new FilterOptions();
 
         var user = await _userService.GetCurrentUserAsync();
 
@@ -160,28 +160,41 @@ public class AllModel : BaseModel
         public List<int> CourseIds { get; set; } = [];
         public List<int> TaskLabelIds { get; set; } = [];
         public string? SearchQuery { get; set; }
-        public bool DueDateDescending { get; set; }
+        public bool DueDateDescending { get; set; } = false;
         /// <summary>
         /// If null, no ordering is applied.
         /// </summary>
-        public bool? OrderByCompleted { get; set; }
+        public bool? OrderByCompleted { get; set; } = false;
+
+        public bool MatchesDefault()
+        {
+            var defaultOptions = new FilterOptions();
+
+            return TaskPriorityId == defaultOptions.TaskPriorityId
+                && CourseIds.SequenceEqual(defaultOptions.CourseIds)
+                && TaskLabelIds.SequenceEqual(defaultOptions.TaskLabelIds)
+                && SearchQuery == defaultOptions.SearchQuery
+                && DueDateDescending == defaultOptions.DueDateDescending
+                && OrderByCompleted == defaultOptions.OrderByCompleted;
+        }
     }
 
     private void ApplyFilter()
     {
+        if (Filter == null) return;
+
+        FilterActive = !Filter.MatchesDefault();
+
         if (Filter.TaskPriorityId.HasValue)
         {
-            FilterActive = true;
             StudyTasks = StudyTasks.Where(u => u.TaskPriorityId == Filter.TaskPriorityId).ToList();
         }
         if (Filter.CourseIds.Any())
         {
-            FilterActive = true;
             StudyTasks = StudyTasks.Where(u => Filter.CourseIds.Any(c => c == u.CourseId)).ToList();
         }
         if (Filter.TaskLabelIds.Any())
         {
-            FilterActive = true;
             StudyTasks = StudyTasks
                 .Where(u => u.TaskLabels.Select(t => t.Id)
                 .Intersect(Filter.TaskLabelIds)
@@ -195,7 +208,6 @@ public class AllModel : BaseModel
         }
         if (Filter.DueDateDescending)
         {
-            FilterActive = true;
             StudyTasks = StudyTasks
                 .OrderByDescending(u => u.Deadline.HasValue) // Sort nulls last
                 .ThenByDescending(u => u.Deadline)           // Then sort by deadline descending
@@ -210,8 +222,6 @@ public class AllModel : BaseModel
         }
         if (Filter.OrderByCompleted.HasValue)
         {
-            FilterActive = true;
-
             if (Filter.OrderByCompleted.Value)
             {
                 StudyTasks = StudyTasks
@@ -224,8 +234,6 @@ public class AllModel : BaseModel
                     .ToList();
             }
         }
-
-
     }
 
 }
