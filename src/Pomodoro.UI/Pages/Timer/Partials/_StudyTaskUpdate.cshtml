@@ -10,7 +10,7 @@
     hx-page="Index"
     hx-page-handler="UpdateStudyTask"
     hx-swap="outerHTML"
-    hx-target="#all-study-tasks"
+    hx-target="#dynamic"
     hx-on::after-request=" if(event.detail.successful) this.reset()"
     x-data="{
         selectedLabels: @Json.Serialize(Model.StudyTaskUpdate.TaskLabelIds),
