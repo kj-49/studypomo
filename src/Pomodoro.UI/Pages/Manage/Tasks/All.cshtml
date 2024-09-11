@@ -371,7 +371,7 @@
                             }
                         </div>
                         <div class="d-none d-md-block col-md-3">
-                            <span class="text-muted">@task.Deadline.Humanize()</span>
+                            <deadline date="@task.Deadline"></deadline>
                         </div>
                         <div class="d-none d-lg-block col-md-1">
                             @if (task.TaskPriority != null)
