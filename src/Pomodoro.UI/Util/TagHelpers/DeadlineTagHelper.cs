@@ -17,17 +17,13 @@ public class DeadlineTagHelper : TagHelper
         {
             TimeSpan timeToDeadline = Date.Value - DateTime.UtcNow;
 
-            if (timeToDeadline.TotalHours < 6)
+            if (timeToDeadline.TotalDays < 1)
             {
-                textColor = "text-danger fw-semibold"; // Less than 6 hours
-            }
-            else if (timeToDeadline.TotalDays < 3)
-            {
-                textColor = "text-warning fw-semibold"; // Less than 3 days
+                textColor = "text-danger";
             }
             else
             {
-                textColor = "text-muted"; // Default color or any other condition
+                textColor = "text-muted";
             }
         }
 
