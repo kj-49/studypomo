@@ -77,4 +77,17 @@ public static class StudyTaskExtensions
             .ThenBy(t => t.Deadline)
             .Take(amount);
     }
+
+    public static IEnumerable<StudyTask> Prioritize(this IEnumerable<StudyTask> studyTasks)
+    {
+        if (studyTasks == null)
+        {
+            return new List<StudyTask>();
+        }
+
+        return studyTasks
+            .OrderByDescending(u => u.Deadline.HasValue) // Sort nulls last
+            .ThenBy(u => u.Deadline)
+            .ThenBy(u => !u.Completed);
+    }
 }

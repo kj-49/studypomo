@@ -6,8 +6,8 @@
     hx-post
     hx-page="Index"
     hx-page-handler="CreateStudyTask"
-    hx-swap="innerHTML"
-    hx-target="#current-task"
+    hx-swap="outerHTML"
+    hx-target="#dynamic"
     hx-on::after-request="if(event.detail.successful) { this.reset(); }"
     x-data="{
         selectedLabels: [],
