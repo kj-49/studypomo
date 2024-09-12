@@ -1,4 +1,6 @@
 ﻿@using Pomodoro.UI.Pages.Shared.Snippets.StudyTaskSnippets
+@using Pomodoro.Library.Models.Tables.StudyTaskEntities
+
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -35,21 +37,24 @@
                                     </div>
                                 </div>
                             </li>
-                            @foreach (var task in Model.UncompletedStudyTasks)
+                            @foreach (var task in Model.UncompletedStudyTasks.Prioritize())
                             {
-                                <li class="list-group-item bg-hover"
-                                    hx-post
-                                    hx-page="Index"
-                                    hx-page-handler="ChooseTask"
-                                    hx-route-id="@task.Id"
-                                    hx-trigger="click"
-                                    hx-swap="outerHTML"
-                                    hx-target="#dynamic"
-                                    data-bs-dismiss="modal">
+                                <li class="list-group-item bg-hover">
                                     <div class="row align-items-center">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="col-md-5 d-flex flex-nowrap align-items-center">
-                                                <study-task-link task="@task"></study-task-link>
+                                                <a class="me-2 text-truncate"
+                                                   href="#"
+                                                   hx-post
+                                                   hx-page="Index"
+                                                   hx-page-handler="ChooseTask"
+                                                   hx-route-id="@task.Id"
+                                                   hx-trigger="click"
+                                                   hx-swap="outerHTML"
+                                                   hx-target="#dynamic"
+                                                   data-bs-dismiss="modal">
+                                                    @task.Name
+                                                </a>
                                                 @foreach (var label in task.TaskLabels)
                                                 {
                                                     <badge text="@label.Name" color="@label.HexColor"></badge>
@@ -75,11 +80,11 @@
                                                     <div class="dropdown">
                                                         <i style="cursor: pointer" class="text-secondary bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                                         <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="@($"#{StudyTaskModalHelper.GetEditModalId(task.Id)}")">Edit</a></li>
                                                             <li>
-                                                                <form method="post">
-                                                                    <button type="submit" class="dropdown-item" asp-page-handler="ArchiveStudyTask" asp-route-studyTaskId="@task.Id">Delete</button>
-                                                                </form>
+                                                                <a style="cursor: pointer" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#study-task-edit-modal" hx-get hx-page="Index" hx-page-handler="StudyTaskUpdate" hx-route-id="@task.Id" hx-swap="innerHTML" hx-target="#study-task-edit-form">Edit</a>
+                                                            </li>
+                                                            <li>
+                                                                <a style="cursor: pointer" class="dropdown-item" hx-post hx-page="Index" hx-page-handler="ArchiveStudyTask" hx-route-id="@task.Id" hx-swap="outerHTML" hx-target="#dynamic" data-bs-dismiss="modal">Delete</a>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -107,13 +112,17 @@
                                                     <i class="bi bi-plus"></i>
                                                     <span class="ext-decoration-none text-opacity-50">Add New Task</span>
                                                 </div>
-                                                <div class="d-none d-md-block col-md-4">
+                                                <div class="d-none d-md-block col-md-3">
                                                     <span class="text-opacity-50">Due...</span>
+                                                </div>
+                                                <div class="d-none d-lg-block col-md-1">
+                                                    <span class="text-opacity-50">Priority...</span>
                                                 </div>
                                                 <div class="d-none d-lg-block col-md-1">
                                                     <span class="text-opacity-50">Course...</span>
                                                 </div>
-                                                <div class="col-md-2 text-end text-nowrap">
+                                                <div class="col-md-1 text-end text-nowrap">
+                                                    Actions...
                                                 </div>
                                             </div>
                                         </a>

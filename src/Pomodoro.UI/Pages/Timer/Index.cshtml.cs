@@ -104,12 +104,26 @@ public class IndexModel : BaseModel
         IEnumerable<StudyTask> studyTasks = await _studyTaskService.GetAllAsync(userId);
         UncompletedStudyTasks = studyTasks.Where(u => !u.Completed).ToList();
 
+        if (HttpContext.Session.GetInt32(_workingTaskIdKey) != null)
+        {
+            WorkingStudyTaskId = HttpContext.Session.GetInt32(_workingTaskIdKey);
+        }
+        else
+        {
+            WorkingStudyTaskId = studyTasks.Prioritize().FirstOrDefault()?.Id;
+        }
+
         TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
     }
 
     public async Task<IActionResult> OnPostCreateStudyTaskAsync()
     {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) return Challenge();
 
@@ -131,16 +145,20 @@ public class IndexModel : BaseModel
             }
         }
 
-        if (Request.IsHtmx()) {
+        await _studyTaskService.CreateAsync(StudyTaskCreate);
 
-            await _studyTaskService.CreateAsync(StudyTaskCreate);
-        }
+        await PopulateFields(user.Id);
 
-        return new EmptyResult();
+        return Partial("Partials/_Dynamic", this);
     }
 
     public async Task<IActionResult> OnPostRemoveStudyTaskAsync(int id)
     {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) return Challenge();
 
@@ -162,20 +180,25 @@ public class IndexModel : BaseModel
             }
         }
 
-        if (Request.IsHtmx())
+        await _studyTaskService.RemoveAsync(id);
+
+        if (HttpContext.Session.GetInt32(_workingTaskIdKey) == WorkingStudyTaskId)
         {
-            await _studyTaskService.RemoveAsync(id);
-
-            await PopulateFields(user.Id);
-
-            return Partial("Partials/_Dynamic", this);
+            HttpContext.Session.Remove(_workingTaskIdKey);
         }
 
-        return Page();
+        await PopulateFields(user.Id);
+
+        return Partial("Partials/_Dynamic", this);
     }
 
     public async Task<IActionResult> OnPostArchiveStudyTaskAsync(int id)
     {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) return Challenge();
 
@@ -197,16 +220,11 @@ public class IndexModel : BaseModel
             }
         }
 
-        if (Request.IsHtmx())
-        {
-            await _studyTaskService.ArchiveAsync(id);
+        await _studyTaskService.ArchiveAsync(id);
 
-            await PopulateFields(user.Id);
+        await PopulateFields(user.Id);
 
-            return Partial("Partials/_Dynamic", this);
-        }
-
-        return Page();
+        return Partial("Partials/_Dynamic", this);
     }
 
     public async Task<IActionResult> OnPostUpdateStudyTaskAsync()
@@ -248,6 +266,11 @@ public class IndexModel : BaseModel
 
     public async Task<IActionResult> OnGetStudyTaskUpdateAsync(int id)
     {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) return Challenge();
 
@@ -269,16 +292,13 @@ public class IndexModel : BaseModel
             }
         }
 
-        if (Request.IsHtmx())
-        {
-            StudyTaskUpdate = _mapper.Map<StudyTaskUpdate>(studyTask);
 
-            await PopulateFields(user.Id);
+        StudyTaskUpdate = _mapper.Map<StudyTaskUpdate>(studyTask);
 
-            return Partial("Partials/_StudyTaskUpdate", this);
-        }
+        await PopulateFields(user.Id);
 
-        return Page();
+        return Partial("Partials/_StudyTaskUpdate", this);
+
     }
 
     public async Task<IActionResult> OnPostCompleteTaskAsync(int id)
