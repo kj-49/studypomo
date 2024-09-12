@@ -110,7 +110,7 @@ public class IndexModel : BaseModel
         }
         else
         {
-            WorkingStudyTaskId = studyTasks.Prioritize().FirstOrDefault()?.Id;
+            WorkingStudyTaskId = UncompletedStudyTasks.Prioritize().FirstOrDefault()?.Id;
         }
 
         TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
