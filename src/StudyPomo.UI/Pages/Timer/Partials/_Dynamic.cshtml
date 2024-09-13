@@ -1,0 +1,150 @@
+﻿@using StudyPomo.UI.Pages.Shared.Snippets.StudyTaskSnippets
+@using StudyPomo.Library.Models.Tables.StudyTaskEntities
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model StudyPomo.UI.Pages.Timer.IndexModel
+
+<div id="dynamic" class="row gx-5">
+    <div class="modal fade" id="study-task-select-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-none">
+                <div class="modal-body p-0">
+                    <form>
+                        <ul class="list-group">
+                            <li class="list-group-item bg-body-tertiary">
+                                <div class="row align-items-center">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="col-md-5">
+                                            <span><strong>Task</strong></span>
+                                        </div>
+                                        <div class="d-none d-md-block col-md-3">
+                                            <span><strong>Due</strong></span>
+                                        </div>
+                                        <div class="d-none d-lg-block col-md-1">
+                                            <span><strong>Priority</strong></span>
+                                        </div>
+                                        <div class="d-none d-lg-block col-md-1">
+                                            <span><strong>Course</strong></span>
+                                        </div>
+                                        <div class="col-md-1 text-end text-nowrap">
+                                            <span><strong>Actions</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            @foreach (var task in Model.UncompletedStudyTasks.Prioritize())
+                            {
+                                <li class="list-group-item bg-hover">
+                                    <div class="row align-items-center">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="col-md-5 d-flex flex-nowrap align-items-center">
+                                                <a class="me-2 text-truncate"
+                                                   href="#"
+                                                   hx-post
+                                                   hx-page="Index"
+                                                   hx-page-handler="ChooseTask"
+                                                   hx-route-id="@task.Id"
+                                                   hx-trigger="click"
+                                                   hx-swap="outerHTML"
+                                                   hx-target="#dynamic"
+                                                   data-bs-dismiss="modal">
+                                                    @task.Name
+                                                </a>
+                                                @foreach (var label in task.TaskLabels)
+                                                {
+                                                    <badge text="@label.Name" color="@label.HexColor"></badge>
+                                                }
+                                            </div>
+                                            <div class="d-none d-md-block col-md-3">
+                                                <deadline date="@task.Deadline"></deadline>
+                                            </div>
+                                            <div class="d-none d-lg-block col-md-1">
+                                                @if (task.TaskPriority != null)
+                                                {
+                                                    <badge text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
+                                                }
+                                            </div>
+                                            <div class="d-none d-lg-block col-md-1">
+                                                @if (task.Course != null)
+                                                {
+                                                    <badge text="@task.Course.Name" color="@task.Course.HexColor"></badge>
+                                                }
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div class="d-flex align-items-center justify-content-end">
+                                                    <div class="dropdown">
+                                                        <i style="cursor: pointer" class="text-secondary bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a style="cursor: pointer" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#study-task-edit-modal" hx-get hx-page="Index" hx-page-handler="StudyTaskUpdate" hx-route-id="@task.Id" hx-swap="innerHTML" hx-target="#study-task-edit-form">Edit</a>
+                                                            </li>
+                                                            <li>
+                                                                <a style="cursor: pointer" class="dropdown-item" hx-post hx-page="Index" hx-page-handler="ArchiveStudyTask" hx-route-id="@task.Id" hx-swap="outerHTML" hx-target="#dynamic" data-bs-dismiss="modal">Delete</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+
+                            @if (Model.UncompletedStudyTasks.Count == 0)
+                            {
+                                if (false)
+                                {
+                                    <li class="list-group-item text-body-tertiary">
+                                        No matching tasks.
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="list-group-item custom-hover">
+                                        <a data-bs-toggle="modal" data-bs-target="#study-task-create-modal" class="row align-items-center">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="col-md-5">
+                                                    <i class="bi bi-plus"></i>
+                                                    <span class="ext-decoration-none text-opacity-50">Add New Task</span>
+                                                </div>
+                                                <div class="d-none d-md-block col-md-3">
+                                                    <span class="text-opacity-50">Due...</span>
+                                                </div>
+                                                <div class="d-none d-lg-block col-md-1">
+                                                    <span class="text-opacity-50">Priority...</span>
+                                                </div>
+                                                <div class="d-none d-lg-block col-md-1">
+                                                    <span class="text-opacity-50">Course...</span>
+                                                </div>
+                                                <div class="col-md-1 text-end text-nowrap">
+                                                    Actions...
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-end mb-3" style="height: 40px">
+            <h5 class="mb-0">Task</h5>
+            @if(Model.WorkingStudyTaskId != null)
+            {
+                <a href="#" class="muted-link" data-bs-toggle="modal" data-bs-target="#study-task-select-modal">Change Task</a>
+            }
+        </div>
+        <div id="current-task">
+            @await Html.PartialAsync("Partials/_CurrentStudyTask")
+        </div>
+    </div>
+</div>

@@ -1,2 +1,2 @@
-/src/Pomodoro.UI/wwwroot/lib/* linguist-vendored
-!/src/Pomodoro.UI/wwwroot/lib/bootstrap/scss/*
+/src/StudyPomo.UI/wwwroot/lib/* linguist-vendored
+!/src/StudyPomo.UI/wwwroot/lib/bootstrap/scss/* linguist-vendored=
