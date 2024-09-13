@@ -82,20 +82,25 @@ class PomodoroTimer {
     startTimer() {
         this.requestNotificationPermission();
         this.state.timerOn = true;
-        console.log("Timer started.");
         const selectedRadio = document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`);
         const minutes = parseInt(selectedRadio.value, 10);
         this.state.timerDuration = minutes * 60;
         this.state.secondsLeft = this.state.secondsLeft ?? this.state.timerDuration;
         this.state.timerType = selectedRadio.id;
 
-        if (this.state.secondsLeft === this.state.timerDuration) {
-            this.state.secondsLeft--;
-        }
+        this.lastTimestamp = performance.now();
+        this.runTimer(); // Start the timer loop using requestAnimationFrame
+    }
 
-        this.timerInterval = setInterval(() => {
-            this.updateDisplay();
-            if (--this.state.secondsLeft < 0) {
+    runTimer(timestamp) {
+        if (!this.state.timerOn) return; // Stop if timer is not running
+
+        if (timestamp) {
+            const delta = (timestamp - this.lastTimestamp) / 1000; // Convert milliseconds to seconds
+            this.lastTimestamp = timestamp;
+            this.state.secondsLeft -= delta; // Decrement the seconds left
+
+            if (this.state.secondsLeft <= 0) {
                 this.stopTimer();
                 this.showNotification(this.getNotificationMessage());
                 const nextTimerType = this.getNextTimerType();
@@ -105,16 +110,17 @@ class PomodoroTimer {
                 );
                 this.updateButtonState();
                 this.updateDisplay();
+                return; // Stop the recursive loop
             }
-        }, 1000);
+        }
 
-        console.log("here");
+        this.updateDisplay(); // Update the display on each frame
+        this.animationFrameId = requestAnimationFrame((ts) => this.runTimer(ts));
     }
 
     stopTimer() {
-        clearInterval(this.timerInterval);
+        cancelAnimationFrame(this.animationFrameId);
         this.state.timerOn = false;
-        console.log("Timer stopped.");
     }
 
     resetTimer() {
@@ -146,7 +152,7 @@ class PomodoroTimer {
 
     updateDisplay() {
         const minutes = String(Math.floor(this.state.secondsLeft / 60));
-        const seconds = String(this.state.secondsLeft % 60).padStart(2, '0');
+        const seconds = String(Math.floor(this.state.secondsLeft % 60)).padStart(2, '0');
         this.setTimerText(minutes, seconds);
 
         const progressEl = document.getElementById(PROGRESS_BAR_ID);
