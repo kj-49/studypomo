@@ -133,16 +133,7 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
-            else
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
+            return new EmptyResult();
         }
 
         await _studyTaskService.CreateAsync(StudyTaskCreate);
@@ -168,16 +159,7 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
-            else
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
+            return new EmptyResult();
         }
 
         await _studyTaskService.RemoveAsync(id);
@@ -208,16 +190,7 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
-            else
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
+            return new EmptyResult();
         }
 
         await _studyTaskService.ArchiveAsync(id);
@@ -229,39 +202,29 @@ public class IndexModel : BaseModel
 
     public async Task<IActionResult> OnPostUpdateStudyTaskAsync()
     {
-        if (Request.IsHtmx())
+        if (!Request.IsHtmx())
         {
-            StudyTask studyTask = await _studyTaskService.GetAsync(StudyTaskUpdate.Id);
-
-            // TODO: Authorize
-            var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
-
-            if (!authResult.Succeeded)
-            {
-                if (User.Identity.IsAuthenticated)
-                {
-                    // TODO: Show status message.
-                    return Content("");
-                }
-                else
-                {
-                    // TODO: Show status message.
-                    return Content("");
-                }
-            }
-
-            await _studyTaskService.UpdateAsync(StudyTaskUpdate);
-
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
-
-            if (user == null) return Challenge();
-
-            await PopulateFields(user.Id);
-
-            return Partial("Partials/_Dynamic", this);
+            return new EmptyResult();
         }
 
-        return Page();
+        StudyTask studyTask = await _studyTaskService.GetAsync(StudyTaskUpdate.Id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
+
+        if (!authResult.Succeeded)
+        {
+            return new EmptyResult();
+        }
+
+        await _studyTaskService.UpdateAsync(StudyTaskUpdate);
+
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
+
+        if (user == null) return Challenge();
+
+        await PopulateFields(user.Id);
+
+        return Partial("Partials/_Dynamic", this);
     }
 
     public async Task<IActionResult> OnGetStudyTaskUpdateAsync(int id)
@@ -280,18 +243,8 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
-            else
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
+            return new EmptyResult();
         }
-
 
         StudyTaskUpdate = _mapper.Map<StudyTaskUpdate>(studyTask);
 
@@ -317,16 +270,7 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
-            else
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
+            return new EmptyResult();
         }
 
         await _studyTaskService.CompleteAsync(id);
@@ -352,16 +296,7 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
-            else
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
+            return new EmptyResult();
         }
 
         if (Request.IsHtmx())

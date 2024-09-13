@@ -121,7 +121,6 @@ public class IndexModel : BaseModel
     {
         StudyTask studyTask = await _studyTaskService.GetAsync(studyTaskId);
 
-        // Authorize
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
 
         if (!authResult.Succeeded)
@@ -144,10 +143,8 @@ public class IndexModel : BaseModel
 
     public async Task<IActionResult> OnPostUpdateStudyTaskAsync(StudyTaskUpdate studyTaskUpdate)
     {
-        // Authorize
         StudyTask studyTask = await _studyTaskService.GetAsync(studyTaskUpdate.Id);
 
-        // TODO: Authorize
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
 
         if (!authResult.Succeeded)
@@ -174,7 +171,6 @@ public class IndexModel : BaseModel
 
         Course course = courseCreate.ToEntity(user.Id);
 
-        // Authorize
         var authResult = await _authorizationService.AuthorizeAsync(User, course, Operations.Create);
 
         if (!authResult.Succeeded)

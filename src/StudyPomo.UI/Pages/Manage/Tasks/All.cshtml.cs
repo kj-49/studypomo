@@ -60,7 +60,6 @@ public class AllModel : BaseModel
 
     public async Task<IActionResult> OnGetAsync(FilterOptions filter)
     {
-
         Filter = filter ?? new FilterOptions();
 
         var user = await _userService.GetCurrentUserAsync();
@@ -83,7 +82,6 @@ public class AllModel : BaseModel
     {
         StudyTask studyTask = await _studyTaskService.GetAsync(studyTaskId);
 
-        // Authorize
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
 
         if (!authResult.Succeeded)

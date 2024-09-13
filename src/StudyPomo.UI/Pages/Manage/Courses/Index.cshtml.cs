@@ -150,74 +150,57 @@ public class IndexModel : BaseModel
 
     public async Task<IActionResult> OnPostCompleteTaskAsync(int studyTaskId, int courseId)
     {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
         StudyTask studyTask = await _studyTaskService.GetAsync(studyTaskId);
 
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
-            else
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
+            return new EmptyResult();
         }
+        
+        await _studyTaskService.CompleteAsync(studyTaskId);
 
-        if (Request.IsHtmx())
-        {
-            await _studyTaskService.CompleteAsync(studyTaskId);
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        if (user == null) return Challenge();
 
-            if (user == null) return Challenge();
+        await PopulateFields(userId: user.Id, courseId: courseId);
 
-            await PopulateFields(userId: user.Id, courseId: courseId);
+        return Partial("Partials/_Dynamic", this);
 
-            return Partial("Partials/_Dynamic", this);
-        }
-
-        return Page();
     }
 
     public async Task<IActionResult> OnPostUncompleteTaskAsync(int studyTaskId, int courseId)
     {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
         StudyTask studyTask = await _studyTaskService.GetAsync(studyTaskId);
 
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
-            else
-            {
-                // TODO: Show status message.
-                return Content("");
-            }
+            return new EmptyResult();
         }
 
-        if (Request.IsHtmx())
-        {
-            await _studyTaskService.UncompleteAsync(studyTaskId);
+        await _studyTaskService.UncompleteAsync(studyTaskId);
 
-            ApplicationUser? user = await _userService.GetCurrentUserAsync();
+        ApplicationUser? user = await _userService.GetCurrentUserAsync();
 
-            if (user == null) return Challenge();
+        if (user == null) return Challenge();
 
-            await PopulateFields(userId: user.Id, courseId: courseId);
+        await PopulateFields(userId: user.Id, courseId: courseId);
 
-            return Partial("Partials/_Dynamic", this);
-        }
-
-        return Page();
+        return Partial("Partials/_Dynamic", this);
 
     }
 
@@ -229,14 +212,7 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return new ForbidResult();
-            }
-            else
-            {
-                return new ChallengeResult();
-            }
+            return new EmptyResult();
         }
 
         await _studyTaskService.ArchiveAsync(studyTaskId);
@@ -252,14 +228,7 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return new ForbidResult();
-            }
-            else
-            {
-                return new ChallengeResult();
-            }
+            return new EmptyResult();
         }
 
         await _courseService.UpdateAsync(CourseUpdate);
@@ -280,19 +249,12 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return new ForbidResult();
-            }
-            else
-            {
-                return new ChallengeResult();
-            }
+            return new EmptyResult();
         }
 
         var completedTasks = course.StudyTasks
             .Where(t => t.DateCompleted.HasValue)
-            .GroupBy(t => t.DateCompleted.Value.Date)
+            .GroupBy(t => t.DateCompleted!.Value.Date)
             .Select(g => new
             {
                 Date = g.Key,
