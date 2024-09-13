@@ -1,3 +1,4 @@
+// Constants
 const TIMER_ELEMENT_ID = 'timer';
 const PROGRESS_BAR_ID = 'progress-bar';
 const STARTSTOP_BUTTON_ID = 'startstop-button';
@@ -5,227 +6,201 @@ const RESET_BUTTON_ID = 'reset-button';
 const SESSION_TIMER_STATE_KEY = 'timerState';
 const RADIO_GROUP_ID = 'timer-options';
 
-let state = {
-    timerOn: false,
-    secondsLeft: null,
-    timerDuration: null,
-    currentInterval: null,
-    timerType: 'pomodoro', // Default type
-    pomodoroCount: 0 // Counter to track the number of completed Pomodoros
-};
+class PomodoroTimer {
+    constructor() {
+        this.state = {
+            timerOn: false,
+            secondsLeft: null,
+            timerDuration: null,
+            timerType: 'pomodoro',
+            pomodoroCount: 0
+        };
+        this.timerInterval = null;
+    }
 
-function init() {
-    addEventListeners();
-    restoreTimerState();
-}
+    init() {
+        this.addEventListeners();
+        this.restoreTimerState();
+    }
 
-function addEventListeners() {
-    const startStopButton = document.getElementById(STARTSTOP_BUTTON_ID);
-    const resetButton = document.getElementById(RESET_BUTTON_ID);
+    addEventListeners() {
+        document.getElementById(STARTSTOP_BUTTON_ID).addEventListener('click', () => this.toggleTimer());
+        document.getElementById(RESET_BUTTON_ID).addEventListener('click', () => this.resetTimer());
+        document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
+            radio.addEventListener('change', (e) => this.handleRadioChange(e));
+        });
+        this.closeOnSubmit('study-task-create-form', 'study-task-create-modal');
+        this.closeOnSubmit('study-task-edit-form', 'study-task-edit-modal');
+        window.addEventListener('beforeunload', () => this.saveTimerState());
+    }
 
-    startStopButton.addEventListener('click', toggleTimer);
+    closeOnSubmit(formId, modalId) {
+        const form = document.getElementById(formId);
+        const modal = document.getElementById(modalId);
+        if (form && modal) {
+            form.addEventListener('submit', () => modal.style.display = 'none');
+        }
+    }
 
-    resetButton.addEventListener('click', resetTimer);
-
-    // Add event listeners for radio button changes
-    document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
-        radio.addEventListener('change', handleRadioChange);
-    });
-
-    closeOnSubmit('study-task-create-form', 'study-task-create-modal');
-    closeOnSubmit('study-task-edit-form', 'study-task-edit-modal');
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-}
-
-function requestNotificationPermission() {
-    if (Notification.permission === 'default') {
-        Notification.requestPermission().then(permission => {
+    requestNotificationPermission() {
+        if (Notification.permission === 'default') {
+            const permission = Notification.requestPermission();
             if (permission !== 'granted') {
                 console.warn('Notifications permission denied.');
             }
+        }
+    }
+
+    showNotification(message) {
+        if (Notification.permission === 'granted') {
+            new Notification('Timer Finished', { body: message });
+        }
+    }
+
+    getNotificationMessage() {
+        const messages = {
+            'short-break': 'Short break finished. Time to get back to work!',
+            'long-break': "Long break finished. Let's get back to being productive!",
+            'pomodoro': 'Pomodoro finished. Time for a break!'
+        };
+        return messages[this.state.timerType] || messages.pomodoro;
+    }
+
+    getNextTimerType() {
+        if (this.state.timerType === 'pomodoro') {
+            this.state.pomodoroCount++;
+            return this.state.pomodoroCount % 3 === 0 ? 'long-break' : 'short-break';
+        }
+        return 'pomodoro';
+    }
+
+    toggleTimer() {
+        this.state.timerOn ? this.stopTimer() : this.startTimer();
+        this.updateButtonState();
+    }
+
+    startTimer() {
+        this.requestNotificationPermission();
+        this.state.timerOn = true;
+        console.log("Timer started.");
+        const selectedRadio = document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`);
+        const minutes = parseInt(selectedRadio.value, 10);
+        this.state.timerDuration = minutes * 60;
+        this.state.secondsLeft = this.state.secondsLeft ?? this.state.timerDuration;
+        this.state.timerType = selectedRadio.id;
+
+        if (this.state.secondsLeft === this.state.timerDuration) {
+            this.state.secondsLeft--;
+        }
+
+        this.timerInterval = setInterval(() => {
+            this.updateDisplay();
+            if (--this.state.secondsLeft < 0) {
+                this.stopTimer();
+                this.showNotification(this.getNotificationMessage());
+                const nextTimerType = this.getNextTimerType();
+                this.setDuration(
+                    parseInt(document.querySelector(`input[name="${RADIO_GROUP_ID}"]#${nextTimerType}`).value, 10),
+                    nextTimerType
+                );
+                this.updateButtonState();
+                this.updateDisplay();
+            }
+        }, 1000);
+
+        console.log("here");
+    }
+
+    stopTimer() {
+        clearInterval(this.timerInterval);
+        this.state.timerOn = false;
+        console.log("Timer stopped.");
+    }
+
+    resetTimer() {
+        this.stopTimer();
+        this.state.secondsLeft = this.state.timerDuration;
+        this.updateDisplay();
+    }
+
+    setDuration(minutes, timerType = 'pomodoro') {
+        this.state.timerDuration = minutes * 60;
+        this.state.timerType = timerType;
+        this.state.secondsLeft = this.state.secondsLeft ?? this.state.timerDuration;
+        this.updateSelectedRadio(timerType);
+        this.resetTimer();
+    }
+
+    updateSelectedRadio(timerType) {
+        document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
+            radio.checked = radio.id === timerType;
         });
     }
-}
 
-function showNotification(message) {
-    if (Notification.permission === 'granted') {
-        new Notification('Timer Finished', { body: message });
-    }
-}
-
-function getNotificationMessage() {
-    switch (state.timerType) {
-        case 'short-break':
-            return 'Short break finished. Time to get back to work!';
-        case 'long-break':
-            return 'Long break finished. Let’s get back to being productive!';
-        default:
-            return 'Pomodoro finished. Time for a break!';
-    }
-}
-
-function getNextTimerType() {
-    // Determine the next timer type based on the current timer type and Pomodoro count
-    if (state.timerType === 'pomodoro') {
-        state.pomodoroCount++;
-        if (state.pomodoroCount % 3 === 0) {
-            return 'long-break'; // Switch to long break after every 3 Pomodoros
-        } else {
-            return 'short-break';
-        }
-    } else if (state.timerType === 'short-break') {
-        return 'pomodoro';
-    } else if (state.timerType === 'long-break') {
-        return 'pomodoro';
-    }
-}
-
-function toggleTimer() {
-    if (state.timerOn) {
-        stopTimer();
-    } else {
-        // Request notification permission when starting the timer
-        requestNotificationPermission();
-        startTimer();
-    }
-    updateButtonState();
-}
-
-function startTimer() {
-    if (state.currentInterval) {
-        clearInterval(state.currentInterval);
+    updateButtonState() {
+        const button = document.getElementById(STARTSTOP_BUTTON_ID);
+        button.classList.toggle('btn-danger', this.state.timerOn);
+        button.classList.toggle('btn-primary', !this.state.timerOn);
+        button.textContent = this.state.timerOn ? 'Stop' : 'Start';
     }
 
-    state.timerOn = true;
-    const selectedRadio = document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`);
-    const minutes = parseInt(selectedRadio.value, 10);
-    state.timerDuration = minutes * 60;
-    state.secondsLeft = state.secondsLeft ?? state.timerDuration;
-    state.timerType = selectedRadio.id; // Use the ID of the radio button to set the timer type
+    updateDisplay() {
+        const minutes = String(Math.floor(this.state.secondsLeft / 60));
+        const seconds = String(this.state.secondsLeft % 60).padStart(2, '0');
+        this.setTimerText(minutes, seconds);
 
-    if (state.secondsLeft === state.timerDuration) {
-        state.secondsLeft--;
+        const progressEl = document.getElementById(PROGRESS_BAR_ID);
+        const selectedRadio = document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`);
+        const progressColor = selectedRadio.dataset.color || '#ccc';
+        progressEl.style.backgroundColor = progressColor;
+        progressEl.style.width = `${(this.state.secondsLeft / this.state.timerDuration) * 100}%`;
     }
 
-    state.currentInterval = setInterval(() => {
-        updateDisplay();
-        if (--state.secondsLeft < 0) {
-            stopTimer();
-            showNotification(getNotificationMessage());
-            const nextTimerType = getNextTimerType();
-            setDuration(
-                parseInt(document.querySelector(`input[name="${RADIO_GROUP_ID}"]#${nextTimerType}`).value, 10),
-                nextTimerType
-            );
-            updateButtonState();
-            updateDisplay();
-        }
-    }, 1000);
-}
-
-function stopTimer() {
-    clearInterval(state.currentInterval);
-    state.timerOn = false;
-}
-
-function resetTimer() {
-    stopTimer();
-    state.secondsLeft = state.timerDuration;
-    updateDisplay();
-}
-
-function setDuration(minutes, timerType = 'pomodoro') {
-    state.timerDuration = minutes * 60;
-    state.timerType = timerType; // Set the timer type
-    state.secondsLeft = state.secondsLeft ?? state.timerDuration;
-    updateSelectedRadio(timerType); // Ensure the correct radio button is selected
-    resetTimer();
-}
-
-function updateSelectedRadio(timerType) {
-    document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
-        if (radio.id === timerType) {
-            radio.checked = true;
-        }
-    });
-}
-
-function updateButtonState() {
-    const button = document.getElementById(STARTSTOP_BUTTON_ID);
-
-    if (state.timerOn) {
-        button.classList.add('btn-danger');
-        button.classList.remove('btn-primary');
-        button.textContent = 'Stop';
-    } else {
-        button.classList.remove('btn-danger');
-        button.classList.add('btn-primary');
-        button.textContent = 'Start';
+    setTimerText(minutes, seconds) {
+        document.getElementById(TIMER_ELEMENT_ID).textContent = `${minutes}:${seconds}`;
     }
-}
 
-function updateDisplay() {
-    const minutes = String(Math.floor(state.secondsLeft / 60));
-    const seconds = String(state.secondsLeft % 60).padStart(2, '0');
-    setTimerText(minutes, seconds);
+    handleRadioChange(event) {
+        const { value, id } = event.target;
+        this.setDuration(parseInt(value, 10), id);
+        this.updateButtonState();
+        this.updateDisplay();
+    }
 
-    const progressEl = document.getElementById(PROGRESS_BAR_ID);
-    const selectedRadio = document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`);
-    const progressColor = selectedRadio.dataset.color || '#ccc'; // Default color if not set
-    progressEl.style.backgroundColor = progressColor; // Set progress bar color
-    progressEl.style.width = `${(state.secondsLeft / state.timerDuration) * 100}%`;
-}
+    saveTimerState() {
+        sessionStorage.setItem(SESSION_TIMER_STATE_KEY, JSON.stringify(this.state));
+    }
 
-function setTimerText(minutes, seconds) {
-    document.getElementById(TIMER_ELEMENT_ID).textContent = `${minutes}:${seconds}`;
-}
-
-function getSelectedValue() {
-    return document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`).value;
-}
-
-function handleRadioChange(event) {
-    const radioButton = event.target;
-    const minutes = parseInt(radioButton.value, 10);
-    const timerType = radioButton.id; // Use the ID to set the timer type
-    setDuration(minutes, timerType);
-    updateButtonState();
-    updateDisplay();
-}
-
-function handleBeforeUnload(event) {
-    saveTimerState(state);
-}
-
-function saveTimerState(state) {
-    sessionStorage.setItem(SESSION_TIMER_STATE_KEY, JSON.stringify(state));
-}
-
-function restoreTimerState() {
-    const savedState = sessionStorage.getItem(SESSION_TIMER_STATE_KEY);
-    if (savedState) {
-        try {
-            state = JSON.parse(savedState);
-
-            if (state.timerOn != null && state.secondsLeft != null && state.timerDuration != null) {
-                updateSelectedRadio(state.timerType); // Ensure the correct radio button is selected
-                stopTimer();
-                updateDisplay();
-            } else {
-                console.log('Saved state values are invalid');
-                let minutes = getSelectedValue();
-                setDuration(minutes);
-                updateDisplay();
+    restoreTimerState() {
+        const savedState = sessionStorage.getItem(SESSION_TIMER_STATE_KEY);
+        if (savedState) {
+            try {
+                this.state = JSON.parse(savedState);
+                if (this.state.timerOn != null && this.state.secondsLeft != null && this.state.timerDuration != null) {
+                    this.updateSelectedRadio(this.state.timerType);
+                    this.stopTimer();
+                    this.updateDisplay();
+                } else {
+                    console.log('Saved state values are invalid');
+                    this.initializeDefaultState();
+                }
+            } catch (e) {
+                console.error('Error parsing saved state:', e);
+                this.initializeDefaultState();
             }
-        } catch (e) {
-            console.error('Error parsing saved state:', e);
+        } else {
+            console.log('No saved state found');
+            this.initializeDefaultState();
         }
-    } else {
-        console.log('No saved state found');
-        let minutes = getSelectedValue();
-        setDuration(minutes);
-        updateDisplay();
+    }
+
+    initializeDefaultState() {
+        const selectedRadio = document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`);
+        this.setDuration(parseInt(selectedRadio.value, 10), selectedRadio.id);
+        this.updateDisplay();
     }
 }
 
+// Initialize the timer
+const pomodoroTimer = new PomodoroTimer();
+pomodoroTimer.init();
