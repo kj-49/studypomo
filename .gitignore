@@ -482,5 +482,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-/src/Pomodoro.UI/wwwroot/lib/bootstrap/scss/custom.css.map
-/src/Pomodoro.UI/wwwroot/lib/bootstrap/scss/custom.css
+/src/StudyPomo.UI/wwwroot/lib/bootstrap/scss/custom.css.map
+/src/StudyPomo.UI/wwwroot/lib/bootstrap/scss/custom.css
