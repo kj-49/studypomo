@@ -52,6 +52,54 @@
                 <input class="form-control form-control-sm" asp-for="StudyTaskCreate.Deadline" />
                 <span asp-validation-for="StudyTaskCreate.Deadline" class="text-danger form-text"></span>
             </div>
+            <div class="mb-2"
+                 x-data="{ selectedCourseId: null }">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <label class="form-label me-2 my-0">Course:</label>
+                        <template x-if="selectedCourseId != null">
+                            @foreach (var course in Model.Courses)
+                            {
+                                <template x-if="selectedCourseId == @course.Id">
+                                    <div style="cursor: pointer;" x-on:click.prevent.stop="selectedCourseId = null">
+                                        <badge text="@course.Name" color="@course.HexColor"></badge>
+                                    </div>
+                                </template>
+                            }
+                        </template>
+                        <template x-if="selectedCourseId == null">
+                            <div class="dropdown">
+                                <a class="text-muted" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Choose <i class="bi bi-chevron-expand"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-item">
+                                        @*Create new label*@
+                                        <a asp-page="/Manage/Courses/Index" class="text-opacity-75">
+                                            Create New <i class="bi bi-plus"></i>
+                                        </a>
+                                    </li>
+                                    @foreach (var course in Model.Courses)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                               x-on:click.prevent.stop="selectedCourseId = @course.Id">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <badge text="@course.Name" color="@course.HexColor"></badge>
+                                                    <i class="bi"
+                                                       :class="selectedCourseId == @course.Id ? 'bi-check' :''">
+                                                    </i>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <input type="hidden" name="StudyTaskCreate.CourseId" :value="selectedCourseId">
+            </div>
             <div class="mb-2">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center">

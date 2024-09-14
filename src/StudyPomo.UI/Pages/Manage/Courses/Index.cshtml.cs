@@ -51,6 +51,7 @@ public class IndexModel : BaseModel
     public CourseUpdate CourseUpdate { get; set; }
     public SelectList TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
+    public ICollection<Course> Courses { get; set; }
 
     protected override async Task<TimeZoneInfo> ResolveTimeZone()
     {
@@ -97,6 +98,7 @@ public class IndexModel : BaseModel
         Course = await _courseService.GetAsync(courseId);
         TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
+        Courses = await _courseService.GetAllAsync(userId);
     }
 
     public async Task<IActionResult> OnPostCreateStudyTaskAsync()
@@ -125,7 +127,7 @@ public class IndexModel : BaseModel
         return RedirectToPage(new { id = StudyTaskCreate.CourseId });
     }
 
-    public async Task<IActionResult> OnPostUpdateStudyTaskAsync(StudyTaskUpdate studyTaskUpdate)
+    public async Task<IActionResult> OnPostUpdateStudyTaskAsync(StudyTaskUpdate studyTaskUpdate, int courseId)
     {
         StudyTask studyTask = await _studyTaskService.GetAsync(studyTaskUpdate.Id);
 
@@ -145,7 +147,8 @@ public class IndexModel : BaseModel
 
         await _studyTaskService.UpdateAsync(studyTaskUpdate);
 
-        return RedirectToPage(new { id = studyTaskUpdate.CourseId });
+        // Incase courseId value changes, let's redirect to home page.
+        return RedirectToPage("/Manage/Index");
     }
 
     public async Task<IActionResult> OnPostCompleteTaskAsync(int studyTaskId, int courseId)

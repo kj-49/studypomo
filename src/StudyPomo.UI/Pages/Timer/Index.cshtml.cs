@@ -14,6 +14,7 @@ using StudyPomo.Library.Authorization;
 using StudyPomo.Library.Data;
 using StudyPomo.Library.Data.Interfaces;
 using StudyPomo.Library.Models.Identity;
+using StudyPomo.Library.Models.Tables.CourseEntities;
 using StudyPomo.Library.Models.Tables.LabelEntities;
 using StudyPomo.Library.Models.Tables.StudyTaskEntities;
 using StudyPomo.Library.Models.Tables.TaskPriorityEntities;
@@ -34,6 +35,7 @@ public class IndexModel : BaseModel
     private readonly IAuthorizationService _authorizationService;
     private readonly IUserService _userService;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ICourseService _courseService;
 
     private static string _workingTaskIdKey = "WORKING_TASK_ID";
 
@@ -45,7 +47,8 @@ public class IndexModel : BaseModel
         ITaskPriorityService taskPriorityService,
         ITaskLabelService taskLabelService,
         IAuthorizationService authorizationService,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        ICourseService courseService)
         : base(userService)
     {
         _userService = userService;
@@ -56,6 +59,7 @@ public class IndexModel : BaseModel
         _taskLabelService = taskLabelService;
         _authorizationService = authorizationService;
         _userManager = userManager;
+        _courseService = courseService;
     }
 
     public SelectList TaskPriorities { get; set; }
@@ -70,6 +74,7 @@ public class IndexModel : BaseModel
     public StudyTaskUpdate StudyTaskUpdate { get; set; }
 
     public ICollection<TaskLabel> TaskLabels { get; set; }
+    public ICollection<Course> Courses { get; set; }
 
     protected override async Task<TimeZoneInfo> ResolveTimeZone()
     {
@@ -115,6 +120,7 @@ public class IndexModel : BaseModel
 
         TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
+        Courses = await _courseService.GetAllAsync(userId);
     }
 
     public async Task<IActionResult> OnPostCreateStudyTaskAsync()
