@@ -21,13 +21,13 @@
                     <div class="col-md-3">
                         <span><strong>Label</strong></span>
                     </div>
-                    <div class="d-none d-md-block col-md-4">
+                    <div class="d-none d-md-block col-md-6">
                         <span><strong>Description</strong></span>
                     </div>
                     <div class="d-none d-lg-block col-md-2">
-                        <span><strong># of Task</strong></span>
+                        <span><strong># of Tasks</strong></span>
                     </div>
-                    <div class="col-md-2 text-end text-nowrap">
+                    <div class="col-md-1 text-end text-nowrap">
                         <span><strong>Actions</strong></span>
                     </div>
                 </div>
@@ -41,13 +41,13 @@
                         <div class="col-md-3">
                             <badge text="@Model.TaskLabels[i].Name" color="@Model.TaskLabels[i].HexColor"></badge>
                         </div>
-                        <div class="d-none d-md-block col-md-4">
+                        <div class="d-none d-md-block col-md-6">
                             <span class="text-muted">@Model.TaskLabels[i].Description</span>
                         </div>
                         <div class="d-none d-lg-block col-md-2">
                             <span class="text-muted">@Model.TaskLabels[i].StudyTasks.Count() task(s)</span>
                         </div>
-                        <div class="col-md-2 text-end text-nowrap">
+                        <div class="col-md-1 text-end text-nowrap">
                             <div class="d-flex align-items-center justify-content-end">
                                 <div class="dropdown">
                                     <i style="cursor: pointer" class="text-secondary bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"></i>
@@ -139,13 +139,14 @@
                         <i class="bi bi-plus"></i>
                         <span class="ext-decoration-none text-opacity-50">Add New Label</span>
                     </div>
-                    <div class="d-none d-md-block col-md-4">
+                    <div class="d-none d-md-block col-md-6">
                         <span class="text-opacity-50">Description...</span>
                     </div>
                     <div class="d-none d-lg-block col-md-2">
                         <span class="text-opacity-50">Count...</span>
                     </div>
-                    <div class="col-md-2 text-end text-nowrap">
+                    <div class="col-md-1 text-end text-nowrap">
+                        <span class="text-opacity-50">Actions...</span>
                     </div>
                 </div>
             </a>
