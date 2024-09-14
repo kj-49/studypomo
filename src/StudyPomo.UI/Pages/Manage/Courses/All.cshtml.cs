@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using StudyPomo.Library.Authorization;
@@ -13,16 +14,20 @@ public class AllModel : PageModel
     private readonly ICourseService _courseService;
     private readonly IUserService _userService;
     private readonly IAuthorizationService _authorizationService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public AllModel(ICourseService courseService, IUserService userService, IAuthorizationService authorizationService)
+    public AllModel(ICourseService courseService, IUserService userService, IAuthorizationService authorizationService, UserManager<ApplicationUser> userManager)
     {
         _courseService = courseService;
         _userService = userService;
         _authorizationService = authorizationService;
+        _userManager = userManager;
     }
 
     public CourseUpdate CourseUpdate { get; set; }
     public ICollection<Course> Courses { get; set; }
+    [BindProperty]
+    public CourseCreate CourseCreate { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -72,5 +77,32 @@ public class AllModel : PageModel
         await _courseService.UpdateAsync(courseUpdate);
 
         return RedirectToPage(new { id = courseUpdate.Id });
+    }
+
+
+    public async Task<IActionResult> OnPostCreateCourseAsync(CourseCreate courseCreate)
+    {
+        ApplicationUser? user = await _userManager.GetUserAsync(User);
+        if (user == null) return Challenge();
+
+        Course course = courseCreate.ToEntity(user.Id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, course, Operations.Create);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
+        await _courseService.CreateAsync(courseCreate);
+
+        return RedirectToPage();
     }
 }
