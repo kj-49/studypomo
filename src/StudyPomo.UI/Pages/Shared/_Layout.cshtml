@@ -52,7 +52,22 @@
                         {
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Manage/Index">Manage</a>
+                                    <a class="nav-link" asp-page="/Manage/Index">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <div class="dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Manage
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-page="/Manage/Labels/Index">Labels</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-page="/Manage/Tasks/All">Tasks</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </li>
                             </ul>
                             <div class="d-none d-sm-block mt-1 h-100 mx-3">
