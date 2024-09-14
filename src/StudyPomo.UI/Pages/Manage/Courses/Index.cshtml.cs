@@ -212,7 +212,14 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            return new EmptyResult();
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
         }
 
         await _studyTaskService.ArchiveAsync(studyTaskId);
@@ -228,7 +235,14 @@ public class IndexModel : BaseModel
 
         if (!authResult.Succeeded)
         {
-            return new EmptyResult();
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
         }
 
         await _courseService.UpdateAsync(CourseUpdate);

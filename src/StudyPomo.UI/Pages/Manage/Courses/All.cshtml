@@ -1,0 +1,131 @@
+﻿@page
+@model StudyPomo.UI.Pages.Manage.Courses.AllModel
+@{
+}
+
+
+
+<div class="mb-2">
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <h5 class="mb-0">All Courses</h5>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item bg-body-tertiary">
+            <div class="row align-items-center">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="col-md-3">
+                        <span><strong>Course</strong></span>
+                    </div>
+                    <div class="d-none d-md-block col-md-4">
+                        <span><strong>Description</strong></span>
+                    </div>
+                    <div class="d-none d-lg-block col-md-1">
+                        <span><strong># of Tasks</strong></span>
+                    </div>
+                    <div class="d-none d-lg-block col-md-2">
+                        <span><strong>Status</strong></span>
+                    </div>
+                    <div class="col-md-1 text-end text-nowrap">
+                        <span><strong>Actions</strong></span>
+                    </div>
+                </div>
+            </div>
+        </li>
+        @foreach (var course in Model.Courses)
+        {
+            <li class="list-group-item">
+                <div class="row align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="col-md-3 d-flex flex-nowrap align-items-center">
+                            <badge text="@course.Name" color="@course.HexColor"></badge>
+                        </div>
+                        <div class="d-none d-md-block col-md-4">
+                            <span>@course.Description</span>
+                        </div>
+                        <div class="d-none d-lg-block col-md-1">
+                            <span>@(course.StudyTasks.Count) task(s)</span>
+                        </div>
+                        <div class="d-none d-lg-block col-md-2">
+                            @if (course.Archived)
+                            {
+                                <span class="badge bg-danger">Archived</span>
+                            } else 
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                        </div>
+                        <div class="col-md-1">
+                            <div class="d-flex align-items-center justify-content-end">
+                                <div class="dropdown">
+                                    <i style="cursor: pointer" class="text-secondary bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#course-edit-modal-@(course.Id)">Edit</a></li>
+                                        <li>
+                                            @if (course.Archived)
+                                            {
+                                                <form method="post">
+                                                    <button type="submit" class="dropdown-item" asp-page-handler="Activate" asp-route-id="@course.Id">Activate</button>
+                                                </form>
+                                            } else
+                                            {
+                                                <form method="post">
+                                                    <button type="submit" class="dropdown-item" asp-page-handler="Archive" asp-route-id="@course.Id">Archive</button>
+                                                </form>
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+    @foreach (var course in Model.Courses)
+    {
+        <div class="modal fade" id="course-edit-modal-@(course.Id)" tabindex="-1" aria-labelledby="courseModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header mb-3">
+                        <h5 class="modal-title" id="courseModalLabel">Edit Course</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" asp-page-handler="UpdateCourse">
+                        <input type="hidden" asp-for="CourseUpdate.Id" value="@course.Id" />
+                        <div class="modal-body" x-data="{ name: '@course.Name', color: '@(course.HexColor)', isValid: true }">
+                            <div class="mb-3">
+                                <label asp-for="CourseUpdate.Name" class="form-label"></label>
+                                <input x-model="name" asp-for="CourseUpdate.Name" value="@course.Name" class="form-control form-control-sm" />
+                                <span asp-validation-for="CourseUpdate.Name" class="text-danger form-text"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="CourseUpdate.Description" class="form-label"></label>
+                                <input asp-for="CourseUpdate.Description" value="@course.Description" class="form-control form-control-sm" />
+                                <span asp-validation-for="CourseUpdate.Description" class="text-danger form-text"></span>
+                            </div>
+                            <div class="mb-2">
+                                <label asp-for="CourseUpdate.HexColor" class="form-label">Color</label>
+                                <div class="input-group input-group-sm">
+                                    <button x-on:click="color = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'); isValid = true" type="button" class="btn btn-secondary mb-3"><i class="bi bi-arrow-counterclockwise"></i></button>
+                                    <input x-model="color" x-on:input="isValid = isValidHexColor(color)" type="text" id="user-color" class="form-control mb-3" placeholder="Enter a color (e.g., #ff5733)" asp-for="CourseUpdate.HexColor" value="@course.HexColor">
+                                </div>
+                                <div x-show="!isValid" class="text-danger">Invalid color format. Please enter a valid hex color.</div>
+                                <span asp-validation-for="CourseUpdate.HexColor" class="text-danger form-text"></span>
+                            </div>
+                            <div class="mb-3" x-show="name.trim() !== ''">
+                                <span>Preview:</span>
+                                <span class="badge" :style="'background-color: ' + color" x-text="name"></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
