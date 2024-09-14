@@ -9,7 +9,8 @@ namespace StudyPomo.Library.Services.Interfaces
         Task RemoveAsync(int id);
         Task UpdateAsync(CourseUpdate courseUpdate);
         Task ArchiveAsync(int id);
-        Task<ICollection<Course>> GetAllAsync(int userId);
+        Task UnArchiveAsync(int id);
+        Task<ICollection<Course>> GetAllAsync(int userId, bool includeArchived = false);
         Task<Course> GetAsync(int id);
     }
 }

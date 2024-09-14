@@ -1,10 +1,12 @@
-﻿using StudyPomo.Library.Data.Interfaces;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using StudyPomo.Library.Data.Interfaces;
 using StudyPomo.Library.Models.Identity;
 using StudyPomo.Library.Models.Tables.CourseEntities;
 using StudyPomo.Library.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,6 +36,18 @@ public class CourseService : ICourseService
         _unitOfWork.Complete();
     }
 
+    public async Task UnArchiveAsync(int id)
+    {
+        Course? course = await _unitOfWork.Course.GetAsync(u => u.Id == id);
+        if (course == null) throw new Exception("Course not found");
+
+        course.Archived = false;
+        course.DateUpdated = DateTime.Now;
+
+        _unitOfWork.Course.Update(course);
+        _unitOfWork.Complete();
+    }
+
     public async Task CreateAsync(CourseCreate courseCreate)
     {
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
@@ -45,11 +59,19 @@ public class CourseService : ICourseService
         _unitOfWork.Complete();
     }
 
-    public async Task<ICollection<Course>> GetAllAsync(int userId)
+    public async Task<ICollection<Course>> GetAllAsync(int userId, bool includeArchived = false)
     {
+        Expression<Func<Course, bool>> filter = u => u.UserId == userId;
+
+        if (!includeArchived)
+        {
+            filter = u => u.UserId == userId && u.Archived == false;
+        }
+
         IEnumerable<Course> courses = await _unitOfWork.Course.GetAllAsync(
-            filter: u => u.UserId == userId,
+            filter: filter,
             includeProperties: t => t.StudyTasks);
+
         return courses.ToList();
     }
 
