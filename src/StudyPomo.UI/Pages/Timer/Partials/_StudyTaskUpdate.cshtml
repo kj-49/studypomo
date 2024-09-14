@@ -1,4 +1,5 @@
 ﻿@using StudyPomo.Library.Models.Utility
+@using StudyPomo.Library.Services
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -46,7 +47,15 @@
         </div>
         <div class="mb-2">
             <label asp-for="StudyTaskUpdate.Deadline" class="form-label">Deadline:</label>
-            <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" />
+            @if (Model.StudyTaskUpdate.Deadline.HasValue)
+            {
+                string deadline = TimeService.ConvertToUserTime(Model.StudyTaskUpdate.Deadline.Value, Model.TimeZone).ToString("yyyy-MM-ddTHH:mm");
+                <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" value="@deadline" />
+            }
+            else
+            {
+                <input class="form-control form-control-sm" asp-for="StudyTaskUpdate.Deadline" />
+            }
             <span asp-validation-for="StudyTaskUpdate.Deadline" class="text-danger form-text"></span>
         </div>
         <div class="mb-2"

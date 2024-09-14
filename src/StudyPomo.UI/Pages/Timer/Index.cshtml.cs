@@ -104,6 +104,8 @@ public class IndexModel : BaseModel
 
     public async Task PopulateFields(int userId)
     {
+        await InitializeTimeZoneAsync();
+
         WorkingStudyTaskId = HttpContext.Session.GetInt32(_workingTaskIdKey);
 
         IEnumerable<StudyTask> studyTasks = await _studyTaskService.GetAllAsync(userId);
