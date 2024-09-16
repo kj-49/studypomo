@@ -5,9 +5,10 @@ const STARTSTOP_BUTTON_ID = 'startstop-button';
 const RESET_BUTTON_ID = 'reset-button';
 const SESSION_TIMER_STATE_KEY = 'timerState';
 const RADIO_GROUP_ID = 'timer-options';
+const STATS_STORAGE_KEY = 'pomodoroStats';
 
 class PomodoroTimer {
-    constructor() {
+    constructor(sendStatsCallback) {
         this.state = {
             timerOn: false,
             secondsLeft: null,
@@ -16,11 +17,20 @@ class PomodoroTimer {
             pomodoroCount: 0
         };
         this.timerInterval = null;
+        this.stats = {
+            totalPomodoros: 0,
+            totalFocusTime: 0,
+            totalBreakTime: 0
+        };
+        this.sendStatsCallback = sendStatsCallback;
+        this.lastTimestamp = null;
     }
 
     init() {
         this.addEventListeners();
         this.restoreTimerState();
+        this.loadStats();
+        this.updateDisplay(); // Add this line to initialize the display
     }
 
     addEventListeners() {
@@ -31,7 +41,10 @@ class PomodoroTimer {
         });
         this.closeOnSubmit('study-task-create-form', 'study-task-create-modal');
         this.closeOnSubmit('study-task-edit-form', 'study-task-edit-modal');
-        window.addEventListener('beforeunload', () => this.saveTimerState());
+        window.addEventListener('beforeunload', () => {
+            this.saveTimerState();
+            this.saveStats();
+        });
     }
 
     closeOnSubmit(formId, modalId) {
@@ -42,45 +55,12 @@ class PomodoroTimer {
         }
     }
 
-    requestNotificationPermission() {
-        if (Notification.permission === 'default') {
-            const permission = Notification.requestPermission();
-            if (permission !== 'granted') {
-                console.warn('Notifications permission denied.');
-            }
-        }
-    }
-
-    showNotification(message) {
-        if (Notification.permission === 'granted') {
-            new Notification('Timer Finished', { body: message });
-        }
-    }
-
-    getNotificationMessage() {
-        const messages = {
-            'short-break': 'Short break finished. Time to get back to work!',
-            'long-break': "Long break finished. Let's get back to being productive!",
-            'pomodoro': 'Pomodoro finished. Time for a break!'
-        };
-        return messages[this.state.timerType] || messages.pomodoro;
-    }
-
-    getNextTimerType() {
-        if (this.state.timerType === 'pomodoro') {
-            this.state.pomodoroCount++;
-            return this.state.pomodoroCount % 3 === 0 ? 'long-break' : 'short-break';
-        }
-        return 'pomodoro';
-    }
-
     toggleTimer() {
         this.state.timerOn ? this.stopTimer() : this.startTimer();
         this.updateButtonState();
     }
 
     startTimer() {
-        this.requestNotificationPermission();
         this.state.timerOn = true;
         const selectedRadio = document.querySelector(`input[name="${RADIO_GROUP_ID}"]:checked`);
         const minutes = parseInt(selectedRadio.value, 10);
@@ -89,20 +69,19 @@ class PomodoroTimer {
         this.state.timerType = selectedRadio.id;
 
         this.lastTimestamp = performance.now();
-        this.runTimer(); // Start the timer loop using requestAnimationFrame
+        this.runTimer();
     }
 
     runTimer(timestamp) {
-        if (!this.state.timerOn) return; // Stop if timer is not running
+        if (!this.state.timerOn) return;
 
         if (timestamp) {
-            const delta = (timestamp - this.lastTimestamp) / 1000; // Convert milliseconds to seconds
+            const delta = (timestamp - this.lastTimestamp) / 1000;
             this.lastTimestamp = timestamp;
-            this.state.secondsLeft -= delta; // Decrement the seconds left
+            this.state.secondsLeft -= delta;
 
             if (this.state.secondsLeft <= 0) {
                 this.stopTimer();
-                this.showNotification(this.getNotificationMessage());
                 const nextTimerType = this.getNextTimerType();
                 this.setDuration(
                     parseInt(document.querySelector(`input[name="${RADIO_GROUP_ID}"]#${nextTimerType}`).value, 10),
@@ -110,17 +89,18 @@ class PomodoroTimer {
                 );
                 this.updateButtonState();
                 this.updateDisplay();
-                return; // Stop the recursive loop
+                return;
             }
         }
 
-        this.updateDisplay(); // Update the display on each frame
+        this.updateDisplay();
         this.animationFrameId = requestAnimationFrame((ts) => this.runTimer(ts));
     }
 
     stopTimer() {
         cancelAnimationFrame(this.animationFrameId);
         this.state.timerOn = false;
+        this.updateStats();
     }
 
     resetTimer() {
@@ -129,25 +109,38 @@ class PomodoroTimer {
         this.updateDisplay();
     }
 
-    setDuration(minutes, timerType = 'pomodoro') {
-        this.state.timerDuration = minutes * 60;
-        this.state.timerType = timerType;
-        this.state.secondsLeft = this.state.secondsLeft ?? this.state.timerDuration;
-        this.updateSelectedRadio(timerType);
-        this.resetTimer();
+    updateStats() {
+        const completedTime = this.state.timerDuration - this.state.secondsLeft;
+        if (this.state.timerType === 'pomodoro' && completedTime === this.state.timerDuration) {
+            this.stats.totalPomodoros++;
+            this.stats.totalFocusTime += this.state.timerDuration;
+        } else if (this.state.timerType.includes('break')) {
+            this.stats.totalBreakTime += completedTime;
+        }
     }
 
-    updateSelectedRadio(timerType) {
-        document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
-            radio.checked = radio.id === timerType;
-        });
+    loadStats() {
+        const savedStats = localStorage.getItem(STATS_STORAGE_KEY);
+        if (savedStats) {
+            this.stats = JSON.parse(savedStats);
+        }
     }
 
-    updateButtonState() {
-        const button = document.getElementById(STARTSTOP_BUTTON_ID);
-        button.classList.toggle('btn-danger', this.state.timerOn);
-        button.classList.toggle('btn-primary', !this.state.timerOn);
-        button.textContent = this.state.timerOn ? 'Stop' : 'Start';
+    saveStats() {
+        localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(this.stats));
+    }
+
+    getStats() {
+        return this.stats;
+    }
+
+    sendStatsToBackend() {
+        const stats = this.getStats();
+        if (this.sendStatsCallback) {
+            this.sendStatsCallback(stats);
+        } else {
+            console.log('Sending stats to backend:', stats);
+        }
     }
 
     updateDisplay() {
@@ -166,11 +159,40 @@ class PomodoroTimer {
         document.getElementById(TIMER_ELEMENT_ID).textContent = `${minutes}:${seconds}`;
     }
 
+    updateButtonState() {
+        const button = document.getElementById(STARTSTOP_BUTTON_ID);
+        button.classList.toggle('btn-danger', this.state.timerOn);
+        button.classList.toggle('btn-primary', !this.state.timerOn);
+        button.textContent = this.state.timerOn ? 'Stop' : 'Start';
+    }
+
     handleRadioChange(event) {
         const { value, id } = event.target;
         this.setDuration(parseInt(value, 10), id);
         this.updateButtonState();
         this.updateDisplay();
+    }
+
+    setDuration(minutes, timerType = 'pomodoro') {
+        this.state.timerDuration = minutes * 60;
+        this.state.timerType = timerType;
+        this.state.secondsLeft = this.state.secondsLeft ?? this.state.timerDuration;
+        this.updateSelectedRadio(timerType);
+        this.resetTimer();
+    }
+
+    updateSelectedRadio(timerType) {
+        document.querySelectorAll(`input[name="${RADIO_GROUP_ID}"]`).forEach(radio => {
+            radio.checked = radio.id === timerType;
+        });
+    }
+
+    getNextTimerType() {
+        if (this.state.timerType === 'pomodoro') {
+            this.state.pomodoroCount++;
+            return this.state.pomodoroCount % 3 === 0 ? 'long-break' : 'short-break';
+        }
+        return 'pomodoro';
     }
 
     saveTimerState() {
@@ -207,6 +229,29 @@ class PomodoroTimer {
     }
 }
 
-// Initialize the timer
-const pomodoroTimer = new PomodoroTimer();
-pomodoroTimer.init();
+// Helper function to get yesterday's date string
+function yesterday() {
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    return date.toDateString();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const pomodoroTimer = new PomodoroTimer(function (stats) {
+
+        console.log('Sending stats to backend:', stats);
+
+        document.getElementById('stats-input').value = JSON.stringify(stats);
+
+        htmx.ajax('POST', '/Timer?handler=SaveStats', {
+            swap: 'none',
+            values: { stats: this.stats }
+        });
+
+    });
+    pomodoroTimer.init();
+
+    // Send stats every 5 minutes and when the page is about to unload
+    setInterval(() => pomodoroTimer.sendStatsToBackend(), 5 * 1000);
+    window.addEventListener('beforeunload', () => pomodoroTimer.sendStatsToBackend());
+});

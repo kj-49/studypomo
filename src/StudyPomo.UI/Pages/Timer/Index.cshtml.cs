@@ -22,6 +22,7 @@ using StudyPomo.Library.Services;
 using StudyPomo.Library.Services.Interfaces;
 using StudyPomo.UI.Util.PageModels;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace StudyPomo.UI.Pages.Timer;
 
@@ -352,4 +353,29 @@ public class IndexModel : BaseModel
         return Partial("Partials/_Dynamic", this);
     }
 
+    public IActionResult OnPostSaveStats([FromForm] string stats)
+    {
+        Console.WriteLine($"hit {stats}");
+
+        try
+        {
+            var pomodoroStats = JsonSerializer.Deserialize<PomodoroStats>(stats);
+
+            // Here, you would typically save the stats to your database
+            // For example:
+            // await _pomodoroService.SaveStatsAsync(pomodoroStats);
+
+            return new OkResult();
+        }
+        catch (JsonException)
+        {
+            return BadRequest("Invalid stats format");
+        }
+    }
+}
+public class PomodoroStats
+{
+    public int TotalPomodoros { get; set; }
+    public int TotalFocusTime { get; set; }
+    public int TotalBreakTime { get; set; }
 }
