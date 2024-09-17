@@ -55,9 +55,7 @@
                                 <li class="nav-item">
                                     <div class="dropdown">
                                         <a class="nav-link" data-bs-toggle="offcanvas" href="#nav-offcanvas" role="button" aria-controls="nav-offcanvas">
-                                            <i class="bi bi-chevron-bar-right"></i>
                                             Manage
-                                            
                                         </a>
                                     </div>
                                 </li>
@@ -80,7 +78,7 @@
                     </div>
                 </div>
             </nav>
-            <div class="offcanvas offcanvas-start rounded-end-4" tabindex="-1" id="nav-offcanvas" aria-labelledby="nav-offcanvas-label">
+            <div class="offcanvas offcanvas-start rounded-end-4" style="width: 350px;" tabindex="-1" id="nav-offcanvas" aria-labelledby="nav-offcanvas-label">
                 <div class="offcanvas-header">
                     <div>
                         <h5 class="offcanvas-title" id="nav-offcanvas-label">studypomo</h5>
@@ -92,23 +90,23 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/Manage/Index">
+                            <a class="nav-link illuminate" asp-page="/Manage/Index">
                                 <i class="bi bi-house-door me-1 text-muted"></i> Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/Manage/Labels/Index">
-                                <small><i class="bi bi-tags me-1 text-muted"></i></small> Labels
+                            <a class="nav-link illuminate" asp-page="/Manage/Labels/Index">
+                                <i class="bi bi-tag me-1 text-muted"></i> Labels
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/Manage/Tasks/All">
-                                <small><i class="bi bi-list-task me-1 text-muted"></i></small> Tasks
+                            <a class="nav-link illuminate" asp-page="/Manage/Tasks/All">
+                                <i class="bi bi-list-task me-1 text-muted"></i> Tasks
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/Manage/Courses/All">
-                                <small><i class="bi bi-book me-1 text-muted"></i></small> Courses
+                            <a class="nav-link illuminate" asp-page="/Manage/Courses/All">
+                                <i class="bi bi-book me-1 text-muted"></i> Courses
                             </a>
                         </li>
                     </ul>

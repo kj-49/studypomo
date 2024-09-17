@@ -60,6 +60,21 @@ $color-mode-type: data;
 
 @include color-mode(light) {
 
+    $darken-percentage: 5%;
+
+    .nav-link.illuminate {
+        background-color: transparent;
+        transition: background-color 0.3s ease;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.4rem;
+        color: $body-color !important;
+
+        &:hover {
+            background-color: darken($body-bg, $darken-percentage) !important;
+            color: $body-color !important;
+        }
+    }
+
     .list-group-item.bg-hover:hover {
         background-color: $body-tertiary-bg;
     }
@@ -194,6 +209,21 @@ $color-mode-type: data;
 
 // Dark mode styles
 @include color-mode(dark) {
+
+    $lighten-percentage: 5%;
+
+    .nav-link.illuminate {
+        background-color: transparent;
+        transition: background-color 0.3s ease;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.4rem;
+        color: $body-color-dark !important;
+
+        &:hover {
+            background-color: lighten($body-bg-dark, $lighten-percentage) !important;
+            color: $body-color-dark !important;
+        }
+    }
 
     .list-group-item.bg-hover:hover {
         background-color: $body-tertiary-bg-dark;
@@ -357,8 +387,3 @@ a.muted-link {
     text-decoration: none;
     transition: color 0.1s ease-in-out;
 }
-
-
-
-
-
