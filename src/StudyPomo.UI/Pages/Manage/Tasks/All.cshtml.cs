@@ -1,3 +1,4 @@
+using Htmx;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -124,15 +125,13 @@ public class AllModel : BaseModel
 
         await _studyTaskService.CreateAsync(StudyTaskCreate);
 
-        return RedirectToPage(new { id = StudyTaskCreate.CourseId });
+        return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostUpdateStudyTaskAsync(StudyTaskUpdate studyTaskUpdate)
     {
-        // Authorize
         StudyTask studyTask = await _studyTaskService.GetAsync(studyTaskUpdate.Id);
 
-        // TODO: Authorize
         var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
 
         if (!authResult.Succeeded)
@@ -149,8 +148,57 @@ public class AllModel : BaseModel
 
         await _studyTaskService.UpdateAsync(studyTaskUpdate);
 
-        return RedirectToPage(new { id = studyTaskUpdate.CourseId });
+        return RedirectToPage();
     }
+
+
+    public async Task<IActionResult> OnPostCompleteStudyTaskAsync(int id)
+    {
+
+        StudyTask studyTask = await _studyTaskService.GetAsync(id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
+        await _studyTaskService.CompleteAsync(id);
+
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostUncompleteStudyTaskAsync(int id)
+    {
+        StudyTask studyTask = await _studyTaskService.GetAsync(id);
+
+        var authResult = await _authorizationService.AuthorizeAsync(User, studyTask, Operations.Update);
+
+        if (!authResult.Succeeded)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return new ForbidResult();
+            }
+            else
+            {
+                return new ChallengeResult();
+            }
+        }
+
+        await _studyTaskService.UncompleteAsync(id);
+
+        return RedirectToPage();
+    }
+
 
     public class FilterOptions
     {
@@ -176,7 +224,6 @@ public class AllModel : BaseModel
                 && OrderByCompleted == defaultOptions.OrderByCompleted;
         }
     }
-
     private void ApplyFilter()
     {
         if (Filter == null) return;
