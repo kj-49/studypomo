@@ -17,6 +17,7 @@ using StudyPomo.Library.Services.Interfaces;
 using StudyPomo.UI.Middleware;
 using Serilog;
 using VnLibrary.Services.Identity;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 

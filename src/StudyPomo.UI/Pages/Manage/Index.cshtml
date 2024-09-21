@@ -230,7 +230,7 @@
     <div class="row">
         @foreach (var course in Model.Courses)
         {
-            <div class="col-md-4 mb-4">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
                 <a asp-page="/Manage/Courses/Index" asp-route-id="@course.Id" class="text-decoration-none">
                     <div class="card h-100 card-hover" style="border-left: 5px solid @course.HexColor;">
                         <div class="card-body d-flex flex-column justify-content-between">
@@ -275,7 +275,7 @@
 <div class="mb-2">
     <div class="d-flex justify-content-between align-items-end mb-3">
         <div class="d-flex">
-            <h5 class="mb-0 me-2">Tasks Due Next</h5><a class="muted-link" asp-page="/Manage/Tasks/All">(see all)</a>
+            <h5 class="mb-0 me-2">Tasks Due Next</h5>
         </div>
         
         @if (Model.StudyTasks.Where(u => !u.Completed).Count() > 0)
