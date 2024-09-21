@@ -275,7 +275,7 @@
 <div class="mb-2">
     <div class="d-flex justify-content-between align-items-end mb-3">
         <div class="d-flex">
-            <h5 class="mb-0 me-2">Tasks Due Next</h5><a class="muted-link" asp-page="/Manage/Tasks/All">(see all)</a>
+            <h5 class="mb-0 me-2">Tasks Due Next</h5>
         </div>
         
         @if (Model.StudyTasks.Where(u => !u.Completed).Count() > 0)
