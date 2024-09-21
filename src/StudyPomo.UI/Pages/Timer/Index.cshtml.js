@@ -7,6 +7,14 @@ const SESSION_TIMER_STATE_KEY = 'timerState';
 const RADIO_GROUP_ID = 'timer-options';
 const STATS_STORAGE_KEY = 'pomodoroStats';
 
+// Simple UUID generator
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 class PomodoroTimer {
     constructor(sendStatsCallback) {
         this.state = {
@@ -14,23 +22,27 @@ class PomodoroTimer {
             secondsLeft: null,
             timerDuration: null,
             timerType: 'pomodoro',
-            pomodoroCount: 0
+            pomodoroCount: 0,
+            lastStartTime: null
         };
-        this.timerInterval = null;
         this.stats = {
+            id: generateUUID(), // Add UUID here
             totalPomodoros: 0,
             totalFocusTime: 0,
-            totalBreakTime: 0
+            totalBreakTime: 0,
+            lastUpdated: new Date().toISOString()
         };
         this.sendStatsCallback = sendStatsCallback;
         this.lastTimestamp = null;
+        this.statsUpdateInterval = null;
     }
 
     init() {
         this.addEventListeners();
         this.restoreTimerState();
         this.loadStats();
-        this.updateDisplay(); // Add this line to initialize the display
+        this.updateDisplay();
+        this.startStatsUpdateInterval();
     }
 
     addEventListeners() {
@@ -67,6 +79,7 @@ class PomodoroTimer {
         this.state.timerDuration = minutes * 60;
         this.state.secondsLeft = this.state.secondsLeft ?? this.state.timerDuration;
         this.state.timerType = selectedRadio.id;
+        this.state.lastStartTime = Date.now();
 
         this.lastTimestamp = performance.now();
         this.runTimer();
@@ -98,40 +111,76 @@ class PomodoroTimer {
     }
 
     stopTimer() {
-        cancelAnimationFrame(this.animationFrameId);
-        this.state.timerOn = false;
-        this.updateStats();
+        if (this.state.timerOn) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.state.timerOn = false;
+            this.updateStats();
+            this.sendStatsToBackend();
+        }
     }
 
     resetTimer() {
         this.stopTimer();
         this.state.secondsLeft = this.state.timerDuration;
+        this.state.lastStartTime = null;
         this.updateDisplay();
     }
 
-    updateStats() {
-        const completedTime = this.state.timerDuration - this.state.secondsLeft;
-        if (this.state.timerType === 'pomodoro' && completedTime === this.state.timerDuration) {
-            this.stats.totalPomodoros++;
-            this.stats.totalFocusTime += this.state.timerDuration;
-        } else if (this.state.timerType.includes('break')) {
-            this.stats.totalBreakTime += completedTime;
+    startStatsUpdateInterval() {
+        // Update stats every 5 minutes
+        this.statsUpdateInterval = setInterval(() => this.sendStatsToBackend(), 5 * 60 * 1000);
+    }
+
+    stopStatsUpdateInterval() {
+        if (this.statsUpdateInterval) {
+            clearInterval(this.statsUpdateInterval);
         }
     }
 
+    updateStats() {
+        const now = Date.now();
+        const elapsedSeconds = (now - this.state.lastStartTime) / 1000;
+
+        console.log('Elapsed seconds:', elapsedSeconds);
+
+        if (this.state.timerType === 'pomodoro') {
+            this.stats.totalFocusTime += elapsedSeconds;
+            if (elapsedSeconds >= this.state.timerDuration - 1) {  // Allow 1 second tolerance
+                this.stats.totalPomodoros++;
+            }
+        } else if (this.state.timerType.includes('break')) {
+            this.stats.totalBreakTime += elapsedSeconds;
+        }
+
+        this.stats.lastUpdated = new Date(now).toISOString();
+    }
+
     loadStats() {
-        const savedStats = localStorage.getItem(STATS_STORAGE_KEY);
+        const savedStats = sessionStorage.getItem(STATS_STORAGE_KEY);
         if (savedStats) {
-            this.stats = JSON.parse(savedStats);
+            const parsedStats = JSON.parse(savedStats);
+            // Check for existing UUID
+            if (parsedStats.id) {
+                this.stats = {
+                    ...this.stats,
+                    ...parsedStats // Merge existing stats
+                };
+            } else {
+                // If UUID is missing, generate a new one
+                this.stats.id = generateUUID();
+            }
+        } else {
+            // If no stats found, create a new stats object with a new UUID
+            this.stats.id = generateUUID();
         }
     }
 
     saveStats() {
-        localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(this.stats));
+        sessionStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(this.stats));
     }
 
     getStats() {
-        return this.stats;
+        return { ...this.stats };
     }
 
     sendStatsToBackend() {
@@ -141,6 +190,7 @@ class PomodoroTimer {
         } else {
             console.log('Sending stats to backend:', stats);
         }
+        this.saveStats();
     }
 
     updateDisplay() {
@@ -227,6 +277,12 @@ class PomodoroTimer {
         this.setDuration(parseInt(selectedRadio.value, 10), selectedRadio.id);
         this.updateDisplay();
     }
+
+    cleanup() {
+        this.stopStatsUpdateInterval();
+        this.saveStats();
+        this.sendStatsToBackend();
+    }
 }
 
 // Helper function to get yesterday's date string
@@ -238,20 +294,15 @@ function yesterday() {
 
 document.addEventListener('DOMContentLoaded', function () {
     const pomodoroTimer = new PomodoroTimer(function (stats) {
-
         console.log('Sending stats to backend:', stats);
-
         document.getElementById('stats-input').value = JSON.stringify(stats);
-
         htmx.ajax('POST', '/Timer?handler=SaveStats', {
             swap: 'none',
-            values: { stats: this.stats }
+            values: { stats: stats }
         });
-
     });
     pomodoroTimer.init();
 
-    // Send stats every 5 minutes and when the page is about to unload
-    setInterval(() => pomodoroTimer.sendStatsToBackend(), 5 * 1000);
-    window.addEventListener('beforeunload', () => pomodoroTimer.sendStatsToBackend());
+    // Clean up resources when the page is about to unload
+    window.addEventListener('beforeunload', () => pomodoroTimer.cleanup());
 });

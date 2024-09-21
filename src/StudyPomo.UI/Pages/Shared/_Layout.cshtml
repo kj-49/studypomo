@@ -36,7 +36,6 @@
       hx-swap="none">
     <!-- Hidden input to store the client's timezone -->
     <input type="hidden" id="timezone-input" name="ianaTimeZone" value="test">
-    <div id="hover-area"></div>
     <div class="content-wrapper">
         <div class="container-fluid">
             <div class="row flex-nowrap">
@@ -227,19 +226,6 @@
             console.log(`Timezone detected: ${timezone}`);
             // Set the value of the hidden input
             document.getElementById("timezone-input").value = timezone;
-
-            const hoverArea = document.getElementById('hover-area');
-            const navOffcanvas = document.getElementById('nav-offcanvas');
-            let offcanvasInstance = new bootstrap.Offcanvas(navOffcanvas);
-
-            hoverArea.addEventListener('mouseenter', () => {
-                offcanvasInstance.show();
-            });
-
-            navOffcanvas.addEventListener('mouseleave', () => {
-                offcanvasInstance.hide();
-            });
-
         });
     </script>
 
