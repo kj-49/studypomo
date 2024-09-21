@@ -115,7 +115,6 @@ class PomodoroTimer {
             cancelAnimationFrame(this.animationFrameId);
             this.state.timerOn = false;
             this.updateStats();
-            this.sendStatsToBackend();
         }
     }
 
@@ -127,8 +126,7 @@ class PomodoroTimer {
     }
 
     startStatsUpdateInterval() {
-        // Update stats every 5 minutes
-        this.statsUpdateInterval = setInterval(() => this.sendStatsToBackend(), 5 * 60 * 1000);
+        this.statsUpdateInterval = setInterval(() => this.sendStatsToBackend(), 60 * 1000);
     }
 
     stopStatsUpdateInterval() {
@@ -184,6 +182,7 @@ class PomodoroTimer {
     }
 
     sendStatsToBackend() {
+        this.updateStats();
         const stats = this.getStats();
         if (this.sendStatsCallback) {
             this.sendStatsCallback(stats);
