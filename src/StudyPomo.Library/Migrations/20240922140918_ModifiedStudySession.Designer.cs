@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudyPomo.Library.Data.Database;
 
@@ -11,9 +12,11 @@ using StudyPomo.Library.Data.Database;
 namespace StudyPomo.Library.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240922140918_ModifiedStudySession")]
+    partial class ModifiedStudySession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -303,9 +306,6 @@ namespace StudyPomo.Library.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime(6)");

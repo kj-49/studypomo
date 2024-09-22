@@ -7,5 +7,7 @@ namespace StudyPomo.Library.Services.Interfaces
     {
         Task CreateAsync(StudySessionCreate studySessionCreate);
         Task<ICollection<StudySession>> GetAllAsync(int userId);
+        Task UpdateAsync(StudySessionUpdate studySessionUpdate);
+        Task<StudySession?> GetAsync(string UUID);
     }
 }

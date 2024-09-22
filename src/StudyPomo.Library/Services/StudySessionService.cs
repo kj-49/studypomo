@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿                                                                                                                                                                                                            using AutoMapper;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using StudyPomo.Library.Data.Interfaces;
@@ -38,12 +38,36 @@ public class StudySessionService : IStudySessionService
         StudySession studySession = studySessionCreate.ToEntity(user.Id);
 
         await _unitOfWork.StudySession.AddAsync(studySession);
+
+        _unitOfWork.Complete();
     }
+
+    public async Task UpdateAsync(StudySessionUpdate studySessionUpdate)
+    {
+        ApplicationUser user = await _userService.GetCurrentUserAsync();
+
+        StudySession? studySession = await _unitOfWork.StudySession.GetAsync(u => u.Id == studySessionUpdate.Id);
+
+        if (studySession == null) throw new Exception("Study session not found");
+
+        studySession = studySessionUpdate.ToEntity(studySession);
+
+        _unitOfWork.StudySession.Update(studySession);
+        _unitOfWork.Complete();
+    }
+
     public async Task<ICollection<StudySession>> GetAllAsync(int userId)
     {
         IEnumerable<StudySession> studyTasks = await _unitOfWork.StudySession.GetAllAsync(
             u => u.User.Id == userId
         );
         return studyTasks.ToList();
+    }
+
+    public async Task<StudySession?> GetAsync(string UUID)
+    {
+        StudySession? studySession = await _unitOfWork.StudySession.GetAsync(u => u.SessionUUID == UUID);
+
+        return studySession;
     }
 }

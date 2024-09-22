@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using StudyPomo.Library.Models.Tables.LabelEntities;
+using StudyPomo.Library.Models.Tables.StudyTaskEntities;
 using StudyPomo.Library.Models.Tables.StudyTaskLabelEntities;
 using StudyPomo.Library.Models.Tables.TaskLabelEntities;
 using StudyPomo.Library.Services;
@@ -24,7 +25,21 @@ public static class StudySessionExtensions
         studySession.TotalFocusTime = studySessionCreate.TotalFocusTime;
         studySession.TotalBreakTime = studySessionCreate.TotalBreakTime;
 
-
         return studySession;
+    }
+
+    public static StudySession ToEntity(this StudySessionUpdate studyTaskUpdate, StudySession? exisitingStudySession = null)
+    {
+        if (exisitingStudySession == null)
+        {
+            exisitingStudySession = new StudySession();
+        }
+
+        exisitingStudySession.TotalPomodoros = studyTaskUpdate.TotalPomodoros;
+        exisitingStudySession.TotalFocusTime = studyTaskUpdate.TotalFocusTime;
+        exisitingStudySession.TotalBreakTime = studyTaskUpdate.TotalBreakTime;
+        exisitingStudySession.DateModified = DateTime.UtcNow;
+
+        return exisitingStudySession;
     }
 }

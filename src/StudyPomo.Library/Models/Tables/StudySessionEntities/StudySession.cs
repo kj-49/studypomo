@@ -18,4 +18,6 @@ public class StudySession
     public int TotalPomodoros { get; set; }
     public long TotalFocusTime { get; set; }
     public long TotalBreakTime { get; set; }
+
+    public DateTime? DateModified { get; set; }
 }
