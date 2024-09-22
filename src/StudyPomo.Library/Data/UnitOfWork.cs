@@ -17,6 +17,8 @@ public class UnitOfWork : IUnitOfWork
     public IStudyTaskLabelRepository StudyTaskLabel { get; private set; }
     public ICourseRepository Course { get; private set; }
 
+    public IStudySessionRepository StudySession { get; private set; }
+
     private ApplicationDbContext _db;
 
     public UnitOfWork(ApplicationDbContext db)
@@ -28,6 +30,7 @@ public class UnitOfWork : IUnitOfWork
         TaskLabel = new TaskLabelRepository(_db);
         StudyTaskLabel = new StudyTaskLabelRepository(_db);
         Course = new CourseRepository(_db);
+        StudySession = new StudySessionRepository(_db);
     }
 
     public int Complete()

@@ -14,6 +14,7 @@ public interface IUnitOfWork
     ITaskLabelRepository TaskLabel { get; }
     IStudyTaskLabelRepository StudyTaskLabel { get; }
     ICourseRepository Course { get; }
+    IStudySessionRepository StudySession { get; }
 
     int Complete();
 }
