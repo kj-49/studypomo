@@ -16,12 +16,14 @@ using StudyPomo.Library.Data.Interfaces;
 using StudyPomo.Library.Models.Identity;
 using StudyPomo.Library.Models.Tables.CourseEntities;
 using StudyPomo.Library.Models.Tables.LabelEntities;
+using StudyPomo.Library.Models.Tables.StudySessionEntities;
 using StudyPomo.Library.Models.Tables.StudyTaskEntities;
 using StudyPomo.Library.Models.Tables.TaskPriorityEntities;
 using StudyPomo.Library.Services;
 using StudyPomo.Library.Services.Interfaces;
 using StudyPomo.UI.Util.PageModels;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace StudyPomo.UI.Pages.Timer;
 
@@ -36,6 +38,7 @@ public class IndexModel : BaseModel
     private readonly IUserService _userService;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ICourseService _courseService;
+    private readonly IStudySessionService _studySessionService;
 
     private static string _workingTaskIdKey = "WORKING_TASK_ID";
 
@@ -48,7 +51,8 @@ public class IndexModel : BaseModel
         ITaskLabelService taskLabelService,
         IAuthorizationService authorizationService,
         UserManager<ApplicationUser> userManager,
-        ICourseService courseService)
+        ICourseService courseService,
+        IStudySessionService studySessionService)
         : base(userService)
     {
         _userService = userService;
@@ -60,6 +64,7 @@ public class IndexModel : BaseModel
         _authorizationService = authorizationService;
         _userManager = userManager;
         _courseService = courseService;
+        _studySessionService = studySessionService;
     }
 
     public SelectList TaskPriorities { get; set; }
@@ -352,4 +357,63 @@ public class IndexModel : BaseModel
         return Partial("Partials/_Dynamic", this);
     }
 
+    public async Task<IActionResult> OnPostSaveStatsAsync([FromForm] string stats)
+    {
+        Console.WriteLine($"hit {stats}");
+
+        try
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            var pomodoroStats = JsonSerializer.Deserialize<PomodoroStats>(stats, options);
+
+            if (pomodoroStats == null)
+            {
+                return BadRequest("Invalid stats format");
+            }
+
+            StudySession? studySession = await _studySessionService.GetAsync(pomodoroStats.Id);
+
+            if (studySession != null)
+            {
+                StudySessionUpdate studySessionUpdate = new StudySessionUpdate
+                {
+                    Id = studySession.Id,
+                    TotalPomodoros = Convert.ToInt32(pomodoroStats.TotalPomodoros),
+                    TotalFocusTime = Convert.ToInt32(pomodoroStats.TotalFocusTime),
+                    TotalBreakTime = Convert.ToInt32(pomodoroStats.TotalBreakTime)
+                };
+
+                await _studySessionService.UpdateAsync(studySessionUpdate);
+
+            } else
+            {
+                StudySessionCreate studySessionCreate = new StudySessionCreate
+                {
+                    SessionUUID = pomodoroStats.Id,
+                    TotalPomodoros = Convert.ToInt32(pomodoroStats.TotalPomodoros),
+                    TotalFocusTime = Convert.ToInt32(pomodoroStats.TotalFocusTime),
+                    TotalBreakTime = Convert.ToInt32(pomodoroStats.TotalBreakTime)
+                };
+
+                await _studySessionService.CreateAsync(studySessionCreate);
+            }
+
+            return new OkResult();
+        }
+        catch (JsonException)
+        {
+            return BadRequest("Invalid stats format");
+        }
+    }
+}
+public class PomodoroStats
+{
+    public string Id { get; set; }
+    public double TotalPomodoros { get; set; }
+    public double TotalFocusTime { get; set; }
+    public double TotalBreakTime { get; set; }
 }

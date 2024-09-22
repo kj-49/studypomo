@@ -6,6 +6,14 @@
 @{
 }
 
+<form id="stats-form"
+    hx-post
+    hx-page="Index"
+    hx-page-handler="SaveStats"
+    hx-swap="none"
+    >
+    <input type="hidden" id="stats-input" name="stats" />
+</form>
 
 
 <div class="mt-5">
