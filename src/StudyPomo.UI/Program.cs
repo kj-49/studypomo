@@ -79,6 +79,7 @@ builder.Services.AddScoped<ITaskLabelService, TaskLabelService>();
 builder.Services.AddScoped<ITaskPriorityService, TaskPriorityService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IStudySessionService, StudySessionService>();
+builder.Services.AddScoped<IStatisticService, StatisticService>();
 #endregion
 
 #region Auto Mapper
