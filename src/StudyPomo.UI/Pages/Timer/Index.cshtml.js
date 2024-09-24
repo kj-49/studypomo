@@ -23,10 +23,11 @@ class PomodoroTimer {
             timerDuration: null,
             timerType: 'pomodoro',
             pomodoroCount: 0,
-            lastStartTime: null
+            lastStartTime: null,
+            accumulatedTime: 0  // New property to track accumulated time
         };
         this.stats = {
-            id: generateUUID(), // Add UUID here
+            id: generateUUID(),
             totalPomodoros: 0,
             totalFocusTime: 0,
             totalBreakTime: 0,
@@ -80,6 +81,7 @@ class PomodoroTimer {
         this.state.secondsLeft = this.state.secondsLeft ?? this.state.timerDuration;
         this.state.timerType = selectedRadio.id;
         this.state.lastStartTime = Date.now();
+        this.state.accumulatedTime = 0;  // Reset accumulated time when starting
 
         this.lastTimestamp = performance.now();
         this.runTimer();
@@ -92,6 +94,7 @@ class PomodoroTimer {
             const delta = (timestamp - this.lastTimestamp) / 1000;
             this.lastTimestamp = timestamp;
             this.state.secondsLeft -= delta;
+            this.state.accumulatedTime += delta;  // Accumulate time
 
             if (this.state.secondsLeft <= 0) {
                 this.stopTimer();
@@ -115,6 +118,7 @@ class PomodoroTimer {
             cancelAnimationFrame(this.animationFrameId);
             this.state.timerOn = false;
             this.updateStats();
+            this.state.accumulatedTime = 0;  // Reset accumulated time when stopping
         }
     }
 
@@ -136,21 +140,18 @@ class PomodoroTimer {
     }
 
     updateStats() {
-        const now = Date.now();
-        const elapsedSeconds = (now - this.state.lastStartTime) / 1000;
-
-        console.log('Elapsed seconds:', elapsedSeconds);
+        console.log('Accumulated time:', this.state.accumulatedTime);
 
         if (this.state.timerType === 'pomodoro') {
-            this.stats.totalFocusTime += elapsedSeconds;
-            if (elapsedSeconds >= this.state.timerDuration - 1) {  // Allow 1 second tolerance
+            this.stats.totalFocusTime += this.state.accumulatedTime;
+            if (this.state.accumulatedTime >= this.state.timerDuration - 1) {  // Allow 1 second tolerance
                 this.stats.totalPomodoros++;
             }
         } else if (this.state.timerType.includes('break')) {
-            this.stats.totalBreakTime += elapsedSeconds;
+            this.stats.totalBreakTime += this.state.accumulatedTime;
         }
 
-        this.stats.lastUpdated = new Date(now).toISOString();
+        this.stats.lastUpdated = new Date().toISOString();
     }
 
     loadStats() {
@@ -245,14 +246,20 @@ class PomodoroTimer {
     }
 
     saveTimerState() {
-        sessionStorage.setItem(SESSION_TIMER_STATE_KEY, JSON.stringify(this.state));
+        const stateToSave = { ...this.state };
+        delete stateToSave.lastStartTime;  // Don't save lastStartTime
+        delete stateToSave.accumulatedTime;  // Don't save accumulatedTime
+        sessionStorage.setItem(SESSION_TIMER_STATE_KEY, JSON.stringify(stateToSave));
     }
 
     restoreTimerState() {
         const savedState = sessionStorage.getItem(SESSION_TIMER_STATE_KEY);
         if (savedState) {
             try {
-                this.state = JSON.parse(savedState);
+                const parsedState = JSON.parse(savedState);
+                this.state = { ...this.state, ...parsedState };
+                this.state.lastStartTime = null;  // Reset lastStartTime
+                this.state.accumulatedTime = 0;  // Reset accumulatedTime
                 if (this.state.timerOn != null && this.state.secondsLeft != null && this.state.timerDuration != null) {
                     this.updateSelectedRadio(this.state.timerType);
                     this.stopTimer();

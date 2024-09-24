@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using StudyPomo.Library.Data;
 using StudyPomo.Library.Data.Interfaces;
 using StudyPomo.Library.Models.Identity;
+using StudyPomo.Library.Models.Tables.StudySessionEntities;
 using StudyPomo.Library.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,6 @@ public class UserService : IUserService
     private readonly IHttpContextAccessor _http;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUnitOfWork _unitOfWork;
-
     public UserService(IHttpContextAccessor http, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
     {
         _http = http;
