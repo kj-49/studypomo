@@ -127,9 +127,12 @@
                                     <h4>studypomo</h4>
                                 </a>
                                 <div class="d-flex align-items-center">
-                                    <i class="bi bi-fire me-1"></i>
-                                    @(await StatisticService.GetCurrentStreakAsync((await UserService.GetCurrentUserAsync()).Id))
-                                    <span class="ms-3 me-2">/</span>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <i class="bi bi-fire me-1"></i>
+                                        @(await StatisticService.GetCurrentStreakAsync((await UserService.GetCurrentUserAsync()).Id))
+                                        <span class="ms-3 me-2">/</span>
+                                    }
                                     <partial name="_LoginPartial" />
                                 </div>
                             </div>
