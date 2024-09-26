@@ -124,13 +124,14 @@
                     <header>
                         <nav class="navbar navbar-expand-md mb-4 mt-1">
                             <div class="container">
-                                <!-- Hamburger button for offcanvas -->
-                                <button :class="pinned ? '' : 'd-block'" class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
-                                    <span class="navbar-toggler-icon"></span>
-                                </button>
-                                <a :class="pinned ? 'd-none d-md-block' : 'd-none'" class="navbar-brand" :class="theme == 'dark' ? 'text-light' : 'text-dark'" asp-page="/Manage/Index">
-                                    <h4>studypomo</h4>
-                                </a>
+                                <div class="d-flex align-items-center">
+                                    <button :class="pinned ? '' : 'd-block'" class="navbar-toggler me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
+                                        <span class="navbar-toggler-icon"></span>
+                                    </button>
+                                    <a class="navbar-brand d-none d-md-block" :class="theme == 'dark' ? 'text-light' : 'text-dark'" asp-page="/Manage/Index">
+                                        <h4>studypomo</h4>
+                                    </a>
+                                </div>
                                 <div class="d-flex align-items-center">
                                     @if (SignInManager.IsSignedIn(User))
                                     {
