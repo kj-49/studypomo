@@ -36,7 +36,8 @@
       hx-post="/?handler=UpdateTimeZone"
       hx-trigger="load from:window delay:100ms"
       hx-include="#timezone-input"
-      hx-swap="none">
+      hx-swap="none"
+      x-data="{ pinned: true }">
     <!-- Hidden input to store the client's timezone -->
     <input type="hidden" id="timezone-input" name="ianaTimeZone" value="test">
     <div class="content-wrapper">
@@ -45,12 +46,16 @@
                 <!-- Sidebar (hidden on smaller screens) -->
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-body border border-end-1 d-none d-md-block" style="min-width: 275px">
+                    <div :class="pinned ? 'd-none d-md-block' : 'd-none'" class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-body border border-end-1" style="min-width: 275px">
                         <div class="d-flex flex-column align-items-sm-start px-2 pt-2 min-vh-100 flex-grow-1">
-                            <div class="mt-2 mb-4">
-                                <h5 class="mb-1 mt-0">studypomo</h5>
-                                <a class="small text-muted" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bi bi-person-fill me-1"></i>@UserManager.GetUserName(User)</a>
+                            <div class="d-flex justify-content-between w-100 mt-2">
+                                <div class="mb-4">
+                                    <h5 class="mb-1 mt-0">studypomo</h5>
+                                    <a class="small text-muted" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bi bi-person-fill me-1"></i>@UserManager.GetUserName(User)</a>
+                                </div>
+                                <i x-on:click="pinned = !pinned" style="cursor: pointer;" :class="pinned ? 'bi bi-pin-fill' : 'bi bi-pin'"></i>
                             </div>
+
                             <div class="w-100">
                                 <ul class="navbar-nav flex-grow-1">
                                     <li class="nav-item">
@@ -120,10 +125,10 @@
                         <nav class="navbar navbar-expand-md mb-4 mt-1">
                             <div class="container">
                                 <!-- Hamburger button for offcanvas -->
-                                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
+                                <button :class="pinned ? '' : 'd-block'" class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
                                     <span class="navbar-toggler-icon"></span>
                                 </button>
-                                <a class="navbar-brand d-none d-md-block" :class="theme == 'dark' ? 'text-light' : 'text-dark'" asp-page="/Manage/Index">
+                                <a :class="pinned ? 'd-none d-md-block' : 'd-none'" class="navbar-brand" :class="theme == 'dark' ? 'text-light' : 'text-dark'" asp-page="/Manage/Index">
                                     <h4>studypomo</h4>
                                 </a>
                                 <div class="d-flex align-items-center">
@@ -142,12 +147,16 @@
                             <!-- Offcanvas (shown on smaller screens) -->
                             <div class="offcanvas offcanvas-start rounded-end-4" style="width: 300px;" tabindex="-1" id="navOffcanvas" aria-labelledby="navOffcanvasLabel">
                                 <div class="offcanvas-header">
-                                    <div>
-                                        <h5 class="offcanvas-title" id="nav-offcanvas-label">studypomo</h5>
-                                        <a class="small text-muted" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bi bi-person-fill me-1"></i>@UserManager.GetUserName(User)</a>
+                                    <div class="d-flex justify-content-between w-100">
+                                        <div>
+                                            <h5 class="offcanvas-title" id="nav-offcanvas-label">studypomo</h5>
+                                            <a class="small text-muted" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bi bi-person-fill me-1"></i>@UserManager.GetUserName(User)</a>
+                                        </div>
+                                        <i x-on:click="pinned = !pinned" style="cursor: pointer;" class="mt-2 d-none d-md-block" :class="pinned ? 'bi bi-pin-fill' : 'bi bi-pin'" data-bs-dismiss="offcanvas"></i>
                                     </div>
 
-                                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+                                    <button type="button" class="btn-close d-block d-md-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                 </div>
                                 <div class="offcanvas-body">
                                     <ul class="navbar-nav">
