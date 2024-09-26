@@ -12,8 +12,9 @@
     setTheme(newTheme) {
         this.theme = newTheme;
         localStorage.setItem('theme', newTheme);
-    }
-}" x-init="$watch('theme', value => localStorage.setItem('theme', value))" :data-bs-theme="theme">
+    },
+    pinned: JSON.parse(localStorage.getItem('pinned'))
+}" x-init="$watch('theme', value => localStorage.setItem('theme', value)); $watch('pinned', value => localStorage.setItem('pinned', value));" :data-bs-theme="theme">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,8 +37,7 @@
       hx-post="/?handler=UpdateTimeZone"
       hx-trigger="load from:window delay:100ms"
       hx-include="#timezone-input"
-      hx-swap="none"
-      x-data="{ pinned: true }">
+      hx-swap="none">
     <!-- Hidden input to store the client's timezone -->
     <input type="hidden" id="timezone-input" name="ianaTimeZone" value="test">
     <div class="content-wrapper">
@@ -53,7 +53,7 @@
                                     <h5 class="mb-1 mt-0">studypomo</h5>
                                     <a class="small text-muted" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bi bi-person-fill me-1"></i>@UserManager.GetUserName(User)</a>
                                 </div>
-                                <i x-on:click="pinned = !pinned" style="cursor: pointer;" :class="pinned ? 'bi bi-pin-fill' : 'bi bi-pin'"></i>
+                                <i x-on:click="pinned = false" style="cursor: pointer; font-size: 1.3rem;" class="bi bi-arrows-collapse-vertical"></i>
                             </div>
 
                             <div class="w-100">
@@ -152,7 +152,7 @@
                                             <h5 class="offcanvas-title" id="nav-offcanvas-label">studypomo</h5>
                                             <a class="small text-muted" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bi bi-person-fill me-1"></i>@UserManager.GetUserName(User)</a>
                                         </div>
-                                        <i x-on:click="pinned = !pinned" style="cursor: pointer;" class="mt-2 d-none d-md-block" :class="pinned ? 'bi bi-pin-fill' : 'bi bi-pin'" data-bs-dismiss="offcanvas"></i>
+                                        <i x-on:click="pinned = true" style="cursor: pointer;" class="mt-2 d-none d-md-block" :class="pinned ? 'bi bi-pin-fill' : 'bi bi-pin'" data-bs-dismiss="offcanvas"></i>
                                     </div>
 
 
