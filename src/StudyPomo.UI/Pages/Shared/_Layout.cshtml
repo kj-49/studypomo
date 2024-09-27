@@ -125,9 +125,12 @@
                         <nav class="navbar navbar-expand-md mb-4 mt-1">
                             <div class="container">
                                 <div class="d-flex align-items-center">
-                                    <div :class="pinned ? 'd-block d-md-none' : 'd-block'" class="border rounded-2 me-3" style="padding: 0.1rem 0.4rem" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
-                                        <i class="bi bi-list" style="font-size: 1.2rem"></i>
-                                    </div>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <div :class="pinned ? 'd-block d-md-none' : 'd-block'" class="border rounded-2 me-3" style="padding: 0.1rem 0.4rem" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
+                                            <i class="bi bi-list" style="font-size: 1.2rem"></i>
+                                        </div>
+                                    }
                                     <a class="navbar-brand d-none d-md-block" :class="theme == 'dark' ? 'text-light' : 'text-dark'" asp-page="/Manage/Index">
                                         <h4>studypomo</h4>
                                     </a>
