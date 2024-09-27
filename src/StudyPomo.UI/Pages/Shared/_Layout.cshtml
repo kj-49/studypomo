@@ -125,13 +125,9 @@
                         <nav class="navbar navbar-expand-md mb-4 mt-1">
                             <div class="container">
                                 <div class="d-flex align-items-center">
-                                    <div :class="pinned ? 'd-none' : 'd-block'" class="border rounded-2 me-3" style="padding: 0.1rem 0.4rem" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
+                                    <div :class="pinned ? 'd-block d-md-none' : 'd-block'" class="border rounded-2 me-3" style="padding: 0.1rem 0.4rem" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
                                         <i class="bi bi-list" style="font-size: 1.2rem"></i>
                                     </div>
-                                    @* <button :class="pinned ? '' : 'd-block'" class="navbar-toggler me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
-                                        <span class="navbar-toggler-icon"></span>
-                                        
-                                    </button> *@
                                     <a class="navbar-brand d-none d-md-block" :class="theme == 'dark' ? 'text-light' : 'text-dark'" asp-page="/Manage/Index">
                                         <h4>studypomo</h4>
                                     </a>
