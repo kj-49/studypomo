@@ -84,7 +84,7 @@
                                     <div class="mb-3">
                                         <label asp-for="TaskLabelUpdate.Description" class="form-label">Description</label>
                                         <input type="text" class="form-control form-control-sm" asp-for="TaskLabelUpdate.Description" value="@Model.TaskLabels[i].Description" />
-                                        <small class="text-body-secondary">Write a short description for this label. (optional)</small>
+                                        <small class="text-body-secondary">Write an optional description for this label.</small>
                                         <span asp-validation-for="TaskLabelUpdate.Description" class="text-danger form-text"></span>
                                     </div>
                                     <div class="mb-2">
@@ -174,7 +174,7 @@
                     <div class="mb-3">
                         <label asp-for="TaskLabelCreate.Description" class="form-label">Description</label>
                         <input type="text" class="form-control form-control-sm" asp-for="TaskLabelCreate.Description" />
-                        <small class="text-body-secondary">Write a short description for this label. (optional)</small>
+                        <small class="text-body-secondary">Write an optional description for this label.</small>
                         <span asp-validation-for="TaskLabelCreate.Description" class="text-danger form-text"></span>
                     </div>
                     <div class="mb-2">
