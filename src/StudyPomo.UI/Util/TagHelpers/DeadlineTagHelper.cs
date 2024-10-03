@@ -17,7 +17,11 @@ public class DeadlineTagHelper : TagHelper
         {
             TimeSpan timeToDeadline = Date.Value - DateTime.UtcNow;
 
-            if (timeToDeadline.TotalDays < 1)
+            if (timeToDeadline.TotalHours < 0)
+            {
+                textColor = "overdue-color";
+            }
+            else if (timeToDeadline.TotalDays < 1)
             {
                 textColor = "text-danger";
             }
@@ -25,6 +29,8 @@ public class DeadlineTagHelper : TagHelper
             {
                 textColor = "text-muted";
             }
+
+
         }
 
 
