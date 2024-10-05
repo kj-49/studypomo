@@ -61,7 +61,12 @@ $color-mode-type: data;
 @include color-mode(light) {
 
     .overdue-color {
-        color: $indigo-500;
+        color: $red-500;
+    }
+
+
+    .almost-due-color {
+        color: $orange-500;
     }
 
     $darken-percentage: 5%;
@@ -215,7 +220,12 @@ $color-mode-type: data;
 @include color-mode(dark) {
 
     .overdue-color {
-        color: $indigo-200;
+        color: $red-400;
+    }
+
+
+    .almost-due-color {
+        color: $orange-300;
     }
 
     $lighten-percentage: 5%;
