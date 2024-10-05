@@ -11844,7 +11844,10 @@ textarea.form-control-lg {
   }
 }
 [data-bs-theme=light] .overdue-color {
-  color: #6610f2;
+  color: #dc3545;
+}
+[data-bs-theme=light] .almost-due-color {
+  color: #fd7e14;
 }
 [data-bs-theme=light] .nav-link.illuminate {
   background-color: transparent;
@@ -12032,7 +12035,10 @@ textarea.form-control-lg {
 }
 
 [data-bs-theme=dark] .overdue-color {
-  color: #c29ffa;
+  color: #e35d6a;
+}
+[data-bs-theme=dark] .almost-due-color {
+  color: #feb272;
 }
 [data-bs-theme=dark] .nav-link.illuminate {
   background-color: transparent;

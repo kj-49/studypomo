@@ -23,7 +23,7 @@ public class DeadlineTagHelper : TagHelper
             }
             else if (timeToDeadline.TotalDays < 1)
             {
-                textColor = "text-danger";
+                textColor = "almost-due-color";
             }
             else
             {
