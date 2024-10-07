@@ -325,19 +325,6 @@ public class IndexModel : BaseModel
 
     }
 
-    public async Task<IActionResult> OnPostSetPreferredThemeAsync(string theme)
-    {
-        ApplicationUser? user = await _userService.GetCurrentUserAsync();
-
-        if (user == null) return NotFound();
-
-        user.PreferredTheme = theme;
-
-        _unitOfWork.Complete();
-
-        return new OkResult();
-    }
-
     public async Task<IActionResult> OnPostChooseTask(int id)
     {
         if (!Request.IsHtmx())
