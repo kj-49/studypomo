@@ -80,6 +80,7 @@ builder.Services.AddScoped<ITaskPriorityService, TaskPriorityService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IStudySessionService, StudySessionService>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();
+builder.Services.AddScoped<LogContextEnrichmentMiddleware>();
 #endregion
 
 #region Auto Mapper
@@ -117,10 +118,12 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<LogContextEnrichmentMiddleware>();
+
+
 app.MapRazorPages();
 
 app.UseSession();
 
-app.UseMiddleware<LogContextEnrichmentMiddleware>();
 
 app.Run();
