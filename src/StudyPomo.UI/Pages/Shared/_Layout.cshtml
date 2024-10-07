@@ -97,12 +97,12 @@
                                         </a>
                                     </li>
                                     <li x-show="theme == 'dark'" class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" style="cursor: pointer;" hx-post hx-swap="none" hx-page="Index" hx-page-handler="SetPreferredTheme" hx-route-theme="light" x-on:click="setTheme('light')">
+                                        <a class="nav-link illuminate text-nowrap" style="cursor: pointer;" x-on:click="setTheme('light')">
                                             <i class="bi bi-sun me-1 text-muted"></i> Change To Light Mode
                                         </a>
                                     </li>
                                     <li x-show="theme == 'light'" class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" style="cursor: pointer;" hx-post hx-swap="none" hx-page="Index" hx-page-handler="SetPreferredTheme" hx-route-theme="dark" x-on:click="setTheme('dark')">
+                                        <a class="nav-link illuminate text-nowrap" style="cursor: pointer;" x-on:click="setTheme('dark')">
                                             <i class="bi bi-moon-stars me-1 text-muted"></i> Change To Dark Mode
                                         </a>
                                     </li>
@@ -203,12 +203,12 @@
                                             </a>
                                         </li>
                                         <li x-show="theme == 'dark'" class="nav-item">
-                                            <a class="nav-link illuminate" style="cursor: pointer;" hx-post hx-swap="none" hx-page="Index" hx-page-handler="SetPreferredTheme" hx-route-theme="light" x-on:click="setTheme('light')">
+                                            <a class="nav-link illuminate" style="cursor: pointer;" x-on:click="setTheme('light')">
                                                 <i class="bi bi-sun me-1 text-muted"></i> Change To Light Mode
                                             </a>
                                         </li>
                                         <li x-show="theme == 'light'" class="nav-item">
-                                            <a class="nav-link illuminate" style="cursor: pointer;" hx-post hx-swap="none" hx-page="Index" hx-page-handler="SetPreferredTheme" hx-route-theme="dark" x-on:click="setTheme('dark')">
+                                            <a class="nav-link illuminate" style="cursor: pointer;" x-on:click="setTheme('dark')">
                                                 <i class="bi bi-moon-stars me-1 text-muted"></i> Change To Dark Mode
                                             </a>
                                         </li>
