@@ -18,6 +18,7 @@ using StudyPomo.UI.Middleware;
 using Serilog;
 using VnLibrary.Services.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,6 +87,10 @@ builder.Services.AddScoped<LogContextEnrichmentMiddleware>();
 #region Auto Mapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 #endregion
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo("/root/.aspnet/DataProtection-Keys"))
+    .SetApplicationName("StudyPomo");
 
 var app = builder.Build();
 
