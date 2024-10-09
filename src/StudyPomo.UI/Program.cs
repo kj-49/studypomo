@@ -19,6 +19,7 @@ using Serilog;
 using VnLibrary.Services.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.DataProtection;
+using Serilog.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +60,10 @@ builder.Services.AddAuthorizationHandlers();
 
 // Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("StudyPomo"), new MySqlServerVersion(new Version(8, 0, 33))));
+{
+    options.UseMySql(builder.Configuration.GetConnectionString("StudyPomo"), new MySqlServerVersion(new Version(8, 0, 33)));
+    options.AddInterceptors(new SlowQueryDetectionHelper());
+});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
