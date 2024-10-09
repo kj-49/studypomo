@@ -102,8 +102,8 @@ public class StudyTaskService : IStudyTaskService
                 {
                     await _unitOfWork.StudyTaskLabel.AddAsync(new StudyTaskLabel
                     {
-                        StudyTask = studyTask,
-                        TaskLabel = label
+                        StudyTaskId = studyTask.Id,
+                        TaskLabelId = label.Id
                     });
                 }
             }
