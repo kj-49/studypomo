@@ -1,0 +1,60 @@
+﻿@page
+@model StudyPomo.UI.Areas.Identity.Pages.Onboarding.IndexModel
+@{
+    Layout = "_OnboardingLayout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Welcome to StudyPomo!</h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-4">Let's set up your account preferences to get you started.</p>
+                <form id="onboardingForm">
+                    <div class="mb-3">
+                        <label for="timezone" class="form-label">Timezone</label>
+                        <select class="form-select" id="timezone" required>
+                            <option value="">Choose your timezone...</option>
+                            <option value="UTC-8">Pacific Time (PT)</option>
+                            <option value="UTC-5">Eastern Time (ET)</option>
+                            <option value="UTC+0">Coordinated Universal Time (UTC)</option>
+                            <option value="UTC+1">Central European Time (CET)</option>
+                            <!-- Add more timezone options as needed -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notification Preferences</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications">
+                            <label class="form-check-label" for="emailNotifications">
+                                Email Notifications
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="pushNotifications">
+                            <label class="form-check-label" for="pushNotifications">
+                                Push Notifications
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studyGoal" class="form-label">Daily Study Goal (in minutes)</label>
+                        <input type="number" class="form-control" id="studyGoal" min="0" max="1440" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pomodoroLength" class="form-label">Preferred Pomodoro Length (in minutes)</label>
+                        <select class="form-select" id="pomodoroLength" required>
+                            <option value="25">25 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Preferences</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

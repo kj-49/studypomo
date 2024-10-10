@@ -1,0 +1,97 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using StudyPomo.Library.Models.Identity
+@using StudyPomo.Library.Services.Interfaces
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserService UserService
+@inject IStatisticService StatisticService
+
+<!DOCTYPE html>
+<html lang="en" x-data="{
+    theme: localStorage.getItem('theme') || '@Context.Session.GetString("theme")',
+    setTheme(newTheme) {
+        this.theme = newTheme;
+        localStorage.setItem('theme', newTheme);
+    },
+    pinned: JSON.parse(localStorage.getItem('pinned'))
+}" x-init="$watch('theme', value => localStorage.setItem('theme', value)); $watch('pinned', value => localStorage.setItem('pinned', value));" :data-bs-theme="theme">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="htmx-config" includeAspNetAntiforgeryToken="true" />
+    <title>studypomo</title>
+    <style>
+        /* Hide content until Alpine.js applies the theme */
+        body {
+            visibility: hidden;
+        }
+
+    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23FFFFFF' d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM1 8a7 7 0 0 1 7-7 3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 0 0 7 7 7 0 0 1-7-7zm7-4.3a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4zM9 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z'/></svg>">
+    <link rel="stylesheet" href="~/lib/bootstrap/scss/custom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/StudyPomo.UI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body x-init="document.body.style.visibility = 'visible';"
+      hx-post="/?handler=UpdateTimeZone"
+      hx-trigger="load from:window delay:100ms"
+      hx-include="#timezone-input"
+      hx-swap="none">
+    <!-- Hidden input to store the client's timezone -->
+    <input type="hidden" id="timezone-input" name="ianaTimeZone" value="test">
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <div class="row flex-nowrap">
+                <!-- Main content -->
+                <div class="col">
+                    <header>
+                        <nav class="navbar navbar-expand-md mb-4 mt-1">
+                            <div class="container">
+                                <div class="d-flex align-items-center">
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <div :class="pinned ? 'd-block d-md-none' : 'd-block'" class="border rounded-2 me-3" style="padding: 0.1rem 0.4rem" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
+                                            <i class="bi bi-list" style="font-size: 1.2rem"></i>
+                                        </div>
+                                    }
+                                    <a class="navbar-brand d-none d-md-block" :class="theme == 'dark' ? 'text-light' : 'text-dark'" asp-page="/Manage/Index">
+                                        <h4>studypomo</h4>
+                                    </a>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <partial name="_LoginPartial" />
+                                </div>
+                            </div>
+                        </nav>
+                    </header>
+                    <main role="main" class="container-sm">
+                        @RenderBody()
+                    </main>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/bootstrap-5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.1" integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            // Detect the client's timezone
+            var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            console.log(`Timezone detected: ${timezone}`);
+            // Set the value of the hidden input
+            document.getElementById("timezone-input").value = timezone;
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
