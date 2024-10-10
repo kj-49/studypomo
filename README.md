@@ -1,3 +1,6 @@
+### Status
+![workflow](https://github.com/kj-49/StudyPomo/actions/workflows/deploy.yml/badge.svg)
+
 ### Stack
 
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-512BD4?style=flat&logo=dotnet&logoColor=white)
