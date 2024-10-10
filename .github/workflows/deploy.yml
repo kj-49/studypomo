@@ -1,13 +1,32 @@
-name: Fly Deploy
+name: Test & Deploy
+
 on:
   push:
     branches:
       - main
+
 jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build the project
+        run: dotnet build --no-restore
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
-    concurrency: deploy-group    # optional: ensure only one action runs at a time
+    needs: test   # Ensures this job only runs after the test job completes successfully
+    concurrency: deploy-group
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
