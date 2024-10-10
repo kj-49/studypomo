@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
-namespace StudyPomo.Library.Tests.Authorization;
+namespace StudyPomo.Library.Tests.Authorization.CourseAuthorization;
 
 public class CourseAuthorizationHandlerTests
 {
