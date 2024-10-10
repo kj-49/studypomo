@@ -9,13 +9,8 @@
 {
     @*If this is not the user's first log in, say "Welcome back" instead of hello.*@
     <li class="nav-item">
-        <a id="manage" class="nav-link fw-semibold" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)</a>
+        <a id="manage" class="nav-link fw-semibold px-0" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)</a>
     </li>
-    @* <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link">Logout</button>
-        </form>
-    </li> *@
 }
 else
 {
