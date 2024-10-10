@@ -20,6 +20,8 @@ using VnLibrary.Services.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.DataProtection;
 using Serilog.Core;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,8 +95,13 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 #endregion
 
 builder.Services.AddDataProtection()
+    .SetApplicationName("StudyPomo")
     .PersistKeysToFileSystem(new DirectoryInfo("/root/.aspnet/DataProtection-Keys"))
-    .SetApplicationName("StudyPomo");
+    .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration()
+    {
+        EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+        ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+    });
 
 var app = builder.Build();
 
