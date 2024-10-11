@@ -1,5 +1,5 @@
 # Vendor all files in the lib directory
-/src/StudyPomo.UI/wwwroot/lib/** linguist-vendored
+src/StudyPomo.UI/wwwroot/lib/** linguist-vendored
 
-/src/StudyPomo.UI/wwwroot/lib/bootstrap/scss/custom.css linguist-generated
+src/StudyPomo.UI/wwwroot/lib/bootstrap/scss/custom.css linguist-generated
 
