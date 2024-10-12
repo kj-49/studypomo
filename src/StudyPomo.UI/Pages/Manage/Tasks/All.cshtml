@@ -5,7 +5,7 @@
 @using StudyPomo.UI.Pages.Shared.Snippets.StudyTaskSnippets
 @using StudyPomo.UI.ViewModels
 @model StudyPomo.UI.Pages.Manage.Tasks.AllModel
-@inject IMapper mapper
+
 @{
 }
 
@@ -359,7 +359,7 @@
     <div class="d-flex justify-content-between align-items-end mb-3">
         <h5 class="mb-0">Tasks</h5>
         <div class="d-flex align-items-center">
-            @if (Model.StudyTasks.Count > 0)
+            @if (Model.StudyTasksPaginated.Count > 0)
             {
                 <div class="d-flex align-items-center">
                     @if (Model.FilterActive)
@@ -380,143 +380,10 @@
         </div>
         
     </div>
-    <ul class="list-group">
-        <li class="list-group-item bg-body-tertiary">
-            <div class="row align-items-center">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="col-md-5">
-                        <span><strong>Task</strong></span>
-                    </div>
-                    <div class="d-none d-md-block col-md-3">
-                        <span><strong>Due</strong></span>
-                    </div>
-                    <div class="d-none d-lg-block col-md-1">
-                        <span><strong>Priority</strong></span>
-                    </div>
-                    <div class="d-none d-lg-block col-md-1">
-                        <span><strong>Course</strong></span>
-                    </div>
-                    <div class="col-md-1 text-end text-nowrap">
-                        <span><strong>Actions</strong></span>
-                    </div>
-                </div>
-            </div>
-        </li>
-        @foreach (var task in Model.StudyTasks)
-        {
-            <li class="list-group-item">
-                <div class="row align-items-center">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="col-md-5 d-flex flex-nowrap align-items-center">
-                            @if (task.Completed)
-                            {
-                                <i class="bi bi-check-circle text-success me-2"></i>
-                            } else
-                            {
-                                <i class="bi bi-x-circle text-secondary me-2"></i>
-                            }
-                            <study-task-link task="@task"></study-task-link>
-                            @foreach (var label in task.TaskLabels)
-                            {
-                                <badge text="@label.Name" color="@label.HexColor"></badge>
-                            }
-                        </div>
-                        <div class="d-none d-md-block col-md-3">
-                            <deadline date="@task.Deadline"></deadline>
-                        </div>
-                        <div class="d-none d-lg-block col-md-1">
-                            @if (task.TaskPriority != null)
-                            {
-                                <badge text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
-                            }
-                        </div>
-                        <div class="d-none d-lg-block col-md-1">
-                            @if (task.Course != null)
-                            {
-                                <badge text="@task.Course.Name" color="@task.Course.HexColor"></badge>
-                            }
-                        </div>
-                        <div class="col-md-1">
-                            <div class="d-flex align-items-center justify-content-end">
-                                <div class="dropdown">
-                                    <i style="cursor: pointer" class="text-secondary bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"></i>
-                                    <ul class="dropdown-menu">
-                                        @if (!task.Completed)
-                                        {
-                                            <li>
-                                                <form method="post">
-                                                    <button type="submit" class="dropdown-item" asp-page-handler="CompleteStudyTask" asp-route-id="@task.Id">Mark As Completed</button>
-                                                </form>
-                                            </li>
-                                        }
-                                        else
-                                        {
-                                            <li>
-                                                <form method="post">
-                                                    <button type="submit" class="dropdown-item" asp-page-handler="UncompleteStudyTask" asp-route-id="@task.Id">Mark As Incomplete</button>
-                                                </form>
-                                            </li>
-                                        }
-                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="@($"#{StudyTaskModalHelper.GetEditModalId(task.Id)}")">Edit</a></li>
-                                        <hr class="my-2" />
-                                        <li>
-                                            <form method="post">
-                                                <button type="submit" class="dropdown-item" asp-page-handler="ArchiveStudyTask" asp-route-studyTaskId="@task.Id">Delete</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-        }
-        @if (Model.StudyTasks.Count == 0)
-        {
-            if (Model.FilterActive)
-            {
-                <li class="list-group-item text-body-tertiary">
-                    No matching tasks.
-                </li>
-            } else
-            {
-                <li class="list-group-item custom-hover">
-                    <a data-bs-toggle="modal" data-bs-target="#study-task-create-modal" class="row align-items-center">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="col-md-5">
-                                <i class="bi bi-plus"></i>
-                                <span class="ext-decoration-none text-opacity-50">Add New Task</span>
-                            </div>
-                            <div class="d-none d-md-block col-md-3">
-                                <span class="text-opacity-50">Due...</span>
-                            </div>
-                            <div class="d-none d-lg-block col-md-1">
-                                <span class="text-opacity-50">Priority...</span>
-                            </div>
-                            <div class="d-none d-lg-block col-md-1">
-                                <span class="text-opacity-50">Course...</span>
-                            </div>
-                            <div class="col-md-1 text-end text-nowrap">
-                            </div>
-                        </div>
-                    </a>
-                </li>
-            }
-
-        }
-    </ul>
-    @foreach (var task in Model.StudyTasks)
-    {
-        @await Html.PartialAsync("/Pages/Shared/Snippets/StudyTaskSnippets/_EditStudyTaskModal.cshtml", new EditStudyTaskVM(
-                Model.TimeZone,
-                mapper.Map<StudyTaskUpdate>(task),
-                Model.TaskLabels,
-                Model.TaskPriorities,
-                Model.Courses
-                ))
-    }
+    @await Html.PartialAsync("Partials/_List")
 </div>
+
+
 
 @section Scripts {
 

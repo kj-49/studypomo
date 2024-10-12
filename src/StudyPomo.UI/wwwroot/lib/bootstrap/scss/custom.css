@@ -11867,6 +11867,9 @@ textarea.form-control-lg {
   color: #0969da !important;
   font-weight: 400;
 }
+[data-bs-theme=light] .page-link:not(.disabled) {
+  color: #0969da;
+}
 [data-bs-theme=light] .link-hover-color {
   color: #0969da;
 }
@@ -12057,6 +12060,9 @@ textarea.form-control-lg {
 [data-bs-theme=dark] a:hover {
   color: #478be6 !important;
   font-weight: 400;
+}
+[data-bs-theme=dark] .page-link:not(.disabled) {
+  color: #478be6;
 }
 [data-bs-theme=dark] .link-hover-color {
   color: #478be6;
@@ -12251,6 +12257,10 @@ a {
 .list-group-item.custom-hover:hover *,
 .list-group-item.custom-hover:active * {
   color: var(--bs-body-color);
+}
+
+.page-link:focus {
+  box-shadow: none;
 }
 
 a.muted-link {
