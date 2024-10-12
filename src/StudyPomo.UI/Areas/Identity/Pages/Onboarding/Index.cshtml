@@ -1,0 +1,57 @@
+﻿@page
+@model StudyPomo.UI.Areas.Identity.Pages.Onboarding.IndexModel
+@{
+    Layout = "_OnboardingLayout";
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-lg-6 col-md-8">
+        <div class="card shadow-lg border-0 rounded">
+            <div class="card-header bg-body-tertiary text-center py-4 rounded-top">
+                <h2 class="mb-0">🎉 Welcome to StudyPomo!</h2>
+            </div>
+            <div class="card-body p-4">
+                <p class="mb-4 text-muted text-center">Let’s set up your account preferences and get you started.</p>
+                <form method="post">
+                    <div class="form-floating mb-3">
+                        <select class="form-select" asp-for="Input.TimeZoneId" asp-items="@Model.TimeZones">
+
+                        </select>
+                        <label for="timezone">Timezone</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Notification Preferences</label>
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications">
+                            <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pushNotifications">
+                            <label class="form-check-label" for="pushNotifications">Push Notifications</label>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="studyGoal" min="0" max="1440" placeholder="Daily Study Goal">
+                        <label for="studyGoal">Daily Study Goal (in minutes)</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <select class="form-select" id="pomodoroLength">
+                            <option value="25">25 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                        <label for="pomodoroLength">Preferred Pomodoro Length (in minutes)</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                        <i class="bi bi-check-circle"></i> Save Preferences
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

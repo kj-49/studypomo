@@ -135,6 +135,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<LogContextEnrichmentMiddleware>();
+app.UseMiddleware<OnboardingMiddleware>();
 
 
 app.MapRazorPages();
