@@ -93,6 +93,10 @@ $color-mode-type: data;
         font-weight: 400;
     }
 
+    .page-link:not(.disabled) {
+        color: #0969da
+    }
+
     .link-hover-color {
         color: #0969da
     }
@@ -252,6 +256,10 @@ $color-mode-type: data;
         font-weight: 400;
     }
 
+    .page-link:not(.disabled) {
+        color: #478be6
+    }
+
     .link-hover-color {
         color: #478be6
     }
@@ -398,6 +406,10 @@ a {
     * {
         color: $list-group-color;
     }
+}
+
+.page-link:focus {
+    box-shadow: none;
 }
 
 a.muted-link {

@@ -50,8 +50,8 @@ public class AllModel : BaseModel
 
     [BindProperty]
     public StudyTaskCreate StudyTaskCreate { get; set; }
-
-    public ICollection<StudyTask> StudyTasks { get; set; }
+    private IEnumerable<StudyTask> StudyTasks { get; set; }
+    public PaginatedList<StudyTask> StudyTasksPaginated { get; set; }
     public SelectList TaskPriorities { get; set; }
     public ICollection<TaskLabel> TaskLabels { get; set; }
     public ICollection<Course> Courses { get; set; }
@@ -66,17 +66,26 @@ public class AllModel : BaseModel
         var user = await _userService.GetCurrentUserAsync();
 
         if (user == null) return Challenge();
-        StudyTasks = await _studyTaskService.GetAllAsync(user.Id);
 
-        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
-        TaskLabels = await _taskLabelService.GetAllAsync(user.Id);
-        Courses = await _courseService.GetAllAsync(user.Id);
-
-        await InitializeTimeZoneAsync();
+        await SetupPage(user.Id);
 
         ApplyFilter();
 
+        StudyTasksPaginated = PaginatedList<StudyTask>.Create(StudyTasks.AsQueryable(), 1, 15);
+
         return Page();
+    }
+
+    private async Task SetupPage(int userId)
+    {
+
+        StudyTasks = await _studyTaskService.GetAllAsync(userId);
+
+        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
+        TaskLabels = await _taskLabelService.GetAllAsync(userId);
+        Courses = await _courseService.GetAllAsync(userId);
+
+        await InitializeTimeZoneAsync();
     }
 
     public async Task<IActionResult> OnPostArchiveStudyTaskAsync(int studyTaskId)
@@ -279,6 +288,28 @@ public class AllModel : BaseModel
                     .ToList();
             }
         }
+    }
+
+    public async Task<IActionResult> OnPostChangePageAsync(int pageNumber, FilterOptions? filter)
+    {
+        if (!Request.IsHtmx())
+        {
+            return new EmptyResult();
+        }
+
+        Filter = filter ?? new FilterOptions();
+
+        var user = await _userService.GetCurrentUserAsync();
+
+        if (user == null) return Challenge();
+
+        await SetupPage(user.Id);
+
+        ApplyFilter();
+
+        StudyTasksPaginated = PaginatedList<StudyTask>.Create(StudyTasks.AsQueryable(), pageNumber, 15);
+
+        return Partial("Partials/_List", this);
     }
 
 }
