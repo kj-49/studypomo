@@ -79,11 +79,13 @@
         </li>
         @foreach (var course in Model.Courses)
         {
-            <li class="list-group-item">
+            <li class="list-group-item bg-hover">
                 <div class="row align-items-center">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="col-md-3 d-flex flex-nowrap align-items-center">
-                            <badge text="@course.Name" color="@course.HexColor"></badge>
+                            <a asp-page="/Manage/Courses/Index" asp-route-id="@course.Id" class="text-decoration-none">
+                                <badge text="@course.Name" color="@course.HexColor"></badge>
+                            </a>
                         </div>
                         <div class="d-none d-md-block col-md-5">
                             <span>@course.Description</span>
