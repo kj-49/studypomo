@@ -2,6 +2,7 @@
 @using StudyPomo.Library.Models.Tables.StudyTaskEntities
 @using StudyPomo.UI.Pages.Shared.Snippets.StudyTaskSnippets
 @using StudyPomo.UI.ViewModels
+@using System.Text.Json
 @model StudyPomo.UI.Pages.Manage.Tasks.AllModel
 @inject IMapper mapper
 
@@ -151,27 +152,23 @@
     }
     <div class="d-flex align-items-center">
         <nav class="me-3">
+
+            <input type="hidden" name="filter" id="filter" value='@JsonSerializer.Serialize(Model.Filter)' />
             <ul class="pagination m-0">
                 <li class="page-item">
-                    <a href="#" 
-                       hx-post
-                       hx-page=""
-                       hx-page-handler="ChangePage"
+                    <a href="#" hx-post="@Url.Page("", new { Handler = "ChangePage", PageNumber = Model.StudyTasksPaginated.PageNumber - 1 })"
+                       hx-include="#filter"
                        hx-target="#list"
                        hx-swap="outerHTML"
-                       hx-route-pageNumber="@(Model.StudyTasksPaginated.PageNumber - 1)"
                        class="page-link muted-link @prevDisabled">
                         Previous
                     </a>
                 </li>
                 <li class="page-item">
-                    <a hx-post
-                       href="#"
-                       hx-page=""
-                       hx-page-handler="ChangePage"
+                    <a href="#" hx-post="@Url.Page("", new { Handler = "ChangePage", PageNumber = Model.StudyTasksPaginated.PageNumber + 1 })"
+                       hx-include="#filter"
                        hx-target="#list"
                        hx-swap="outerHTML"
-                       hx-route-pageNumber="@(Model.StudyTasksPaginated.PageNumber + 1)"
                        class="page-link muted-link @nextDisabled">
                         Next
                     </a>
