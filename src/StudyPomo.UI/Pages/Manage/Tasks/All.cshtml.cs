@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using StudyPomo.Library.Authorization;
 using StudyPomo.Library.Models.Identity;
 using StudyPomo.Library.Models.Tables.CourseEntities;
@@ -13,6 +14,7 @@ using StudyPomo.Library.Models.Tables.TaskPriorityEntities;
 using StudyPomo.Library.Services;
 using StudyPomo.Library.Services.Interfaces;
 using StudyPomo.UI.Util.PageModels;
+using System.Text.Json;
 
 namespace StudyPomo.UI.Pages.Manage.Tasks;
 
@@ -290,14 +292,16 @@ public class AllModel : BaseModel
         }
     }
 
-    public async Task<IActionResult> OnPostChangePageAsync(int pageNumber, FilterOptions? filter)
+    public async Task<IActionResult> OnPostChangePageAsync(int pageNumber, [FromForm] string filter)
     {
         if (!Request.IsHtmx())
         {
             return new EmptyResult();
         }
 
-        Filter = filter ?? new FilterOptions();
+        Filter = string.IsNullOrEmpty(filter)
+            ? new FilterOptions()
+            : JsonSerializer.Deserialize<FilterOptions>(filter);
 
         var user = await _userService.GetCurrentUserAsync();
 
