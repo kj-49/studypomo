@@ -37,7 +37,7 @@ public class IndexModel : PageModel
 
         _userService.UpdateUser(user);
 
-        return RedirectToPage("~", new { Area = "" });
+        return RedirectToPage("/Manage/Index", new { Area = "" });
     }
 
     public class InputModel
