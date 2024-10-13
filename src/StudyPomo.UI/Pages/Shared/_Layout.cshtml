@@ -13,7 +13,7 @@
         this.theme = newTheme;
         localStorage.setItem('theme', newTheme);
     },
-    pinned: JSON.parse(localStorage.getItem('pinned'))
+    pinned: JSON.parse(localStorage.getItem('pinned')) || true
 }" x-init="$watch('theme', value => localStorage.setItem('theme', value)); $watch('pinned', value => localStorage.setItem('pinned', value));" :data-bs-theme="theme">
 <head>
     <meta charset="utf-8" />
