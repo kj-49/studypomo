@@ -59,9 +59,45 @@ public class StatisticServiceTests
         var studySessions = new List<StudySession>
             {
                 new StudySession { UserId = 1, DateStarted = DateTime.Now, TotalPomodoros = 1 },
-                new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-2), TotalPomodoros = 1 },
-                new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-3), TotalPomodoros = 1 }
+                new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-1), TotalPomodoros = 1 },
+                new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-4), TotalPomodoros = 1 },
+                new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-5), TotalPomodoros = 1 }
             };
+
+        // Act
+        var result = _statisticService.GetCurrentStreak(studySessions);
+
+        // Assert
+        Assert.Equal(2, result);
+    }
+
+    [Fact]
+    public void GetCurrentStreak_ShouldReturnOneIfOnlyToday()
+    {
+        // Arrange
+        var studySessions = new List<StudySession>
+        {
+            new StudySession { UserId = 1, DateStarted = DateTime.Now, TotalPomodoros = 1 },
+            new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-1), TotalPomodoros = 0 },
+            new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-4), TotalPomodoros = 0 },
+            new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-5), TotalPomodoros = 0 }
+        };
+
+        // Act
+        var result = _statisticService.GetCurrentStreak(studySessions);
+
+        // Assert
+        Assert.Equal(1, result);
+    }
+
+    [Fact]
+    public void GetCurrentStreak_ShouldReturnOneIfYesterdayButNotToday()
+    {
+        // Arrange
+        var studySessions = new List<StudySession>
+        {
+            new StudySession { UserId = 1, DateStarted = DateTime.Now.AddDays(-1), TotalPomodoros = 1 }
+        };
 
         // Act
         var result = _statisticService.GetCurrentStreak(studySessions);
