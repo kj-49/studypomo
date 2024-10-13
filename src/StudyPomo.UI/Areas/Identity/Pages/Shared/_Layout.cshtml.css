@@ -1,0 +1,29 @@
+﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.footer {
+    margin-top: auto;
+    padding: 0.1rem 0rem 0.5rem 0rem;
+    text-align: center;
+}
+
+
+#hover-area {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3vw;
+    z-index: 1040;
+}
+
+#nav-offcanvas {
+    z-index: 1050; /* Higher than the hover area */
+}
