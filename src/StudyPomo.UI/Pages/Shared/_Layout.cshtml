@@ -41,115 +41,110 @@
     <!-- Hidden input to store the client's timezone -->
     <input type="hidden" id="timezone-input" name="ianaTimeZone" value="test">
     <div class="content-wrapper">
-        <div class="container-fluid">
-            <div class="row flex-nowrap">
-                <!-- Sidebar (hidden on smaller screens) -->
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <div :class="pinned ? 'd-none d-md-block' : 'd-none'" class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-body border border-end-1" style="min-width: 275px">
-                        <div class="d-flex flex-column align-items-sm-start px-2 pt-2 min-vh-100 flex-grow-1">
-                            <div class="d-flex justify-content-between w-100 mt-2">
-                                <div class="mb-4">
-                                    <h5 class="mb-1 mt-0">studypomo</h5>
-                                    <a class="small text-muted" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bi bi-person-fill me-1"></i>@UserManager.GetUserName(User)</a>
-                                </div>
-                                <i x-on:click="pinned = false" style="cursor: pointer; font-size: 1.3rem;" class="bi bi-arrows-collapse-vertical"></i>
-                            </div>
-
-                            <div class="w-100">
-                                <ul class="navbar-nav flex-grow-1">
-                                    <li class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Index">
-                                            <i class="bi bi-house-door me-1 text-muted"></i> Home
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Labels/Index">
-                                            <i class="bi bi-tag me-1 text-muted"></i> Labels
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Tasks/All">
-                                            <i class="bi bi-list-task me-1 text-muted"></i> Tasks
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Courses/All">
-                                            <i class="bi bi-book me-1 text-muted"></i> Courses
-                                        </a>
-                                    </li>
-                                </ul>
-                                <hr />
-                                <ul class="navbar-nav">
-                                    <small class="fw-semibold mb-1" style="padding-left: 0.6rem">Quick Actions</small>
-                                    <li class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" asp-page="/Timer/Index">
-                                            <i class="bi bi-clock me-1 text-muted"></i> Enter Pomodoro
-                                        </a>
-                                    </li>
-                                </ul>
-                                <hr />
-                                <ul class="navbar-nav">
-                                    <small class="fw-semibold mb-1" style="padding-left: 0.6rem">Account</small>
-                                    <li class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" asp-area="Identity" asp-page="/Account/Manage/Index">
-                                            <i class="bi bi-gear me-1 text-muted"></i> Settings
-                                        </a>
-                                    </li>
-                                    <li x-show="theme == 'dark'" class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" style="cursor: pointer;" x-on:click="setTheme('light')">
-                                            <i class="bi bi-sun me-1 text-muted"></i> Change To Light Mode
-                                        </a>
-                                    </li>
-                                    <li x-show="theme == 'light'" class="nav-item">
-                                        <a class="nav-link illuminate text-nowrap" style="cursor: pointer;" x-on:click="setTheme('dark')">
-                                            <i class="bi bi-moon-stars me-1 text-muted"></i> Change To Dark Mode
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
-                                            <button id="logout" type="submit" class="nav-link illuminate w-100 text-start">
-                                                <i class="bi bi-arrow-bar-right me-1 text-muted"></i> Logout
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
+        <nav class="navbar bg-body border-bottom border-1">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <div :class="pinned ? 'd-block d-md-none' : 'd-block'" class="border rounded-2 me-3" style="padding: 0.1rem 0.4rem" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
+                            <i class="bi bi-list" style="font-size: 1.2rem"></i>
+                        </div>
+                    }
+                    <a class="navbar-brand d-none d-md-block" asp-page="/Manage/Index" style="padding-left: 0.6rem">
+                        <h4 :class="theme == 'dark' ? 'text-light' : 'text-dark'">studypomo</h4>
+                    </a>
+                </div>
+                <div class="d-flex align-items-center">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <i class="bi bi-fire me-1"></i>
+                        @(await StatisticService.GetCurrentStreakAsync((await UserService.GetCurrentUserAsync()).Id))
+                        <span class="ms-3 me-2">/</span>
+                    }
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+        <div class="d-flex flex-grow-1">
+            <!-- Sidebar (hidden on smaller screens) -->
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div :class="pinned ? 'd-flex flex-column' : 'd-none'" class="bg-body border-1 border-end" style="min-width: 275px">
+                    <div class="d-flex flex-column align-items-sm-start px-3 pt-3 mb-auto">
+                        <div class="w-100">
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Index">
+                                        <i class="bi bi-house-door me-1 text-muted"></i> Home
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Labels/Index">
+                                        <i class="bi bi-tag me-1 text-muted"></i> Labels
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Tasks/All">
+                                        <i class="bi bi-list-task me-1 text-muted"></i> Tasks
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Courses/All">
+                                        <i class="bi bi-book me-1 text-muted"></i> Courses
+                                    </a>
+                                </li>
+                            </ul>
+                            <hr />
+                            <ul class="navbar-nav">
+                                <small class="fw-semibold mb-1" style="padding-left: 0.6rem">Quick Actions</small>
+                                <li class="nav-item">
+                                    <a class="nav-link illuminate text-nowrap" asp-page="/Timer/Index">
+                                        <i class="bi bi-clock me-1 text-muted"></i> Enter Pomodoro
+                                    </a>
+                                </li>
+                            </ul>
+                            <hr />
+                            <ul class="navbar-nav">
+                                <small class="fw-semibold mb-1" style="padding-left: 0.6rem">Account</small>
+                                <li class="nav-item">
+                                    <a class="nav-link illuminate text-nowrap" asp-area="Identity" asp-page="/Account/Manage/Index">
+                                        <i class="bi bi-gear me-1 text-muted"></i> Settings
+                                    </a>
+                                </li>
+                                <li x-show="theme == 'dark'" class="nav-item">
+                                    <a class="nav-link illuminate text-nowrap" style="cursor: pointer;" x-on:click="setTheme('light')">
+                                        <i class="bi bi-sun me-1 text-muted"></i> Change To Light Mode
+                                    </a>
+                                </li>
+                                <li x-show="theme == 'light'" class="nav-item">
+                                    <a class="nav-link illuminate text-nowrap" style="cursor: pointer;" x-on:click="setTheme('dark')">
+                                        <i class="bi bi-moon-stars me-1 text-muted"></i> Change To Dark Mode
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+                                        <button id="logout" type="submit" class="nav-link illuminate w-100 text-start">
+                                            <i class="bi bi-arrow-bar-right me-1 text-muted"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                }
+                    <div class="border-1 border-top p-3">
+                        <span x-on:click="pinned = false" data-bs-dismiss="offcanvas" style="cursor: pointer;"><i class="bi bi-arrow-bar-left me-2"></i>Collapse</span>
+                    </div>
+                </div>
 
+            }
+            <div class="flex-grow-1">
                 <!-- Main content -->
-                <div class="col">
+                <div>
                     <header>
-                        <nav class="navbar navbar-expand-md mb-4 mt-1">
-                            <div class="container">
-                                <div class="d-flex align-items-center">
-                                    @if (SignInManager.IsSignedIn(User))
-                                    {
-                                        <div :class="pinned ? 'd-block d-md-none' : 'd-block'" class="border rounded-2 me-3" style="padding: 0.1rem 0.4rem" type="button" data-bs-toggle="offcanvas" data-bs-target="#navOffcanvas" aria-controls="navOffcanvas">
-                                            <i class="bi bi-list" style="font-size: 1.2rem"></i>
-                                        </div>
-                                    }
-                                    <a class="navbar-brand d-none d-md-block"  asp-page="/Manage/Index">
-                                        <h4 :class="theme == 'dark' ? 'text-light' : 'text-dark'">studypomo</h4>
-                                    </a>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    @if (SignInManager.IsSignedIn(User))
-                                    {
-                                        <i class="bi bi-fire me-1"></i>
-                                        @(await StatisticService.GetCurrentStreakAsync((await UserService.GetCurrentUserAsync()).Id))
-                                        <span class="ms-3 me-2">/</span>
-                                    }
-                                    <partial name="_LoginPartial" />
-                                </div>
-                            </div>
-                        </nav>
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <!-- Offcanvas (shown on smaller screens) -->
-                            <div class="offcanvas offcanvas-start rounded-end-4" style="width: 300px;" tabindex="-1" id="navOffcanvas" aria-labelledby="navOffcanvasLabel">
+                            <div :class="pinned ? 'd-none' : ''" class="offcanvas offcanvas-start rounded-end-4" style="width: 300px;" tabindex="-1" id="navOffcanvas" aria-labelledby="navOffcanvasLabel">
                                 <div class="offcanvas-header">
                                     <div class="d-flex justify-content-between w-100">
                                         <div>
@@ -224,7 +219,7 @@
                             </div>
                         }
                     </header>
-                    <main role="main" class="container-sm">
+                    <main role="main" class="container-sm p-4">
                         @RenderBody()
                     </main>
                 </div>
