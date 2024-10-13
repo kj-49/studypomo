@@ -95,13 +95,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 #endregion
 
 builder.Services.AddDataProtection()
-    .SetApplicationName("StudyPomo")
-    .PersistKeysToFileSystem(new DirectoryInfo("/root/.aspnet/DataProtection-Keys"))
-    .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration()
-    {
-        EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
-        ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
-    });
+    .PersistKeysToDbContext<ApplicationDbContext>();
 
 var app = builder.Build();
 
