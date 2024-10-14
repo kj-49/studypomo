@@ -69,7 +69,7 @@
             <!-- Sidebar (hidden on smaller screens) -->
             @if (SignInManager.IsSignedIn(User))
             {
-                <div :class="pinned ? 'd-flex flex-column' : 'd-none'" class="bg-body border-1 border-end" style="min-width: 275px">
+                <div :class="pinned ? 'd-none d-md-flex flex-column' : 'd-none'" class="bg-body border-1 border-end" style="min-width: 275px">
                     <div class="d-flex flex-column align-items-sm-start px-3 pt-3 mb-auto">
                         <div class="w-100">
                             <ul class="navbar-nav flex-grow-1">
@@ -144,7 +144,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <!-- Offcanvas (shown on smaller screens) -->
-                            <div :class="pinned ? 'd-none' : ''" class="offcanvas offcanvas-start rounded-end-4" style="width: 300px;" tabindex="-1" id="navOffcanvas" aria-labelledby="navOffcanvasLabel">
+                            <div :class="pinned ? 'd-md-none' : ''" class="offcanvas offcanvas-start rounded-end-4" style="width: 300px;" tabindex="-1" id="navOffcanvas" aria-labelledby="navOffcanvasLabel">
                                 <div class="offcanvas-header">
                                     <div class="d-flex justify-content-between w-100">
                                         <div>
