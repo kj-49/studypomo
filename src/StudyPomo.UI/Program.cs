@@ -33,8 +33,9 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AddPageRoute("/Manage/Index", "");
 
     options.Conventions
-        .AuthorizeFolder("/") // Require auth for all paths
-        .AuthorizeAreaFolder("Registered", "/");
+        .AuthorizeFolder("/") // For all Pages content
+        .AuthorizeAreaFolder("Identity", "/Onboarding")
+        .AuthorizeAreaFolder("Identity", "/Account/Manage");
 
 });
 
