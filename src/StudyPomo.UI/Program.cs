@@ -66,7 +66,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseMySql(builder.Configuration.GetConnectionString("StudyPomo"), new MySqlServerVersion(new Version(8, 0, 33)));
     options.AddInterceptors(new SlowQueryDetectionHelper());
-    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
