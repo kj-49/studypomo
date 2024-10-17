@@ -38,7 +38,7 @@ public class GeneralRepository<T> : IRepository<T> where T : class
             query = query.Include(includeProperty);
         }
 
-        return await query.AsNoTracking().ToListAsync();
+        return await query.ToListAsync();
     }
 
     public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties)
@@ -52,7 +52,7 @@ public class GeneralRepository<T> : IRepository<T> where T : class
             query = query.Include(includeProperty);
         }
 
-        return await query.AsNoTracking().ToListAsync();
+        return await query.ToListAsync();
     }
 
     public async Task<T?> GetAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties)
@@ -66,7 +66,7 @@ public class GeneralRepository<T> : IRepository<T> where T : class
             query = query.Include(includeProperty);
         }
 
-        return await query.AsNoTracking().FirstOrDefaultAsync();
+        return await query.FirstOrDefaultAsync();
     }
 
     public void Remove(T model)
