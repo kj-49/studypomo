@@ -61,7 +61,7 @@
                                                 }
                                             </div>
                                             <div class="d-none d-md-block col-md-3">
-                                                <deadline date="@task.Deadline"></deadline>
+                                                <deadline date="@task.Deadline" display-tz="@Model.TimeZone.Id"></deadline>
                                             </div>
                                             <div class="d-none d-lg-block col-md-1">
                                                 @if (task.TaskPriority != null)
