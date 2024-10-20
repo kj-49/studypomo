@@ -26,9 +26,6 @@
                                             <span><strong>Due</strong></span>
                                         </div>
                                         <div class="d-none d-lg-block col-md-1">
-                                            <span><strong>Priority</strong></span>
-                                        </div>
-                                        <div class="d-none d-lg-block col-md-1">
                                             <span><strong>Course</strong></span>
                                         </div>
                                         <div class="col-md-1 text-end text-nowrap">
@@ -62,12 +59,6 @@
                                             </div>
                                             <div class="d-none d-md-block col-md-3">
                                                 <deadline date="@task.Deadline" display-tz="@Model.TimeZone.Id"></deadline>
-                                            </div>
-                                            <div class="d-none d-lg-block col-md-1">
-                                                @if (task.TaskPriority != null)
-                                                {
-                                                    <badge text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
-                                                }
                                             </div>
                                             <div class="d-none d-lg-block col-md-1">
                                                 @if (task.Course != null)
