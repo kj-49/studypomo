@@ -28,9 +28,9 @@
                         <div class="d-flex flex-column justify-content-between">
                             <div class="d-flex align-items-center mw-50">
                                 <study-task-link task="@task" bold="true"></study-task-link>
-                                @if (task.TaskPriority != null)
+                                @if (task.Course != null)
                                 {
-                                    <badge priority="true" text="@task.TaskPriority.Level" color="@task.TaskPriority.DisplayHexColor"></badge>
+                                    <badge text="@task.Course.Name" color="@task.Course.HexColor"></badge>
                                 }
                                 @foreach (var label in task.TaskLabels)
                                 {
