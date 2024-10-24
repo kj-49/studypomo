@@ -359,7 +359,7 @@
     <div class="d-flex justify-content-between align-items-end mb-3">
         <h5 class="mb-0">Tasks</h5>
         <div class="d-flex align-items-center">
-            @if (Model.StudyTasksPaginated.Count > 0)
+            @if (Model.StudyTasksPaginated.Count > 0 || Model.FilterActive)
             {
                 <div class="d-flex align-items-center">
                     @if (Model.FilterActive)
