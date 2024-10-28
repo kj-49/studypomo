@@ -63,7 +63,12 @@ public class StatisticService : IStatisticService
         if (previousDate.Date == DateTime.Today || previousDate.Date == DateTime.Now.AddDays(-1).Date)
         {
             streak++;
+        } else
+        {
+            return 0;
         }
+
+        // If here we have completed a pomodoro today or yesterday
 
         IEnumerable<DateTime> remainingDates = daysWithPomodoros.Skip(1);
 

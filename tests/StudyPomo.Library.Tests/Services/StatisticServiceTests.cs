@@ -119,4 +119,22 @@ public class StatisticServiceTests
         // Act & Assert
         Assert.Throws<ArgumentException>(() => _statisticService.GetCurrentStreak(studySessions));
     }
+
+    [Fact]
+    public void GetCurrentStreak_ShouldReturnZero_WhenConsecutiveButNotRecent()
+    {
+        // Arrange
+        var studySessions = new List<StudySession>
+            {
+                new StudySession { UserId = 2, DateStarted = DateTime.Now.AddDays(-5), TotalPomodoros = 1 },
+                new StudySession { UserId = 2, DateStarted = DateTime.Now.AddDays(-6), TotalPomodoros = 1 },
+                new StudySession { UserId = 2, DateStarted = DateTime.Now.AddDays(-7), TotalPomodoros = 1 },
+            };
+
+        // Act
+        var result = _statisticService.GetCurrentStreak(studySessions);
+
+        // Assert
+        Assert.Equal(0, result);
+    }
 }
