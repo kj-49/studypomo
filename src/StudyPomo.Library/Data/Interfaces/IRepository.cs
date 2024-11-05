@@ -13,6 +13,7 @@ public interface IRepository<T> where T : class
     Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties);
     Task<T?> GetAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties);
     Task<T> AddAsync(T model);
+    Task AddRangeAsync(IEnumerable<T> models);
     void Remove(T model);
     void RemoveRange(IEnumerable<T> models);
 }

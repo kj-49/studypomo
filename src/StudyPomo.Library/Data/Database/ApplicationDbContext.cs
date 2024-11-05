@@ -67,6 +67,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        builder.Entity<StudyTaskLabel>(studyTaskLabel =>
+        {
+            studyTaskLabel
+                .ToTable(nameof(StudyTaskLabel));
+
+            studyTaskLabel
+                .HasOne(u => u.StudyTask)
+                .WithMany(u => u.StudyTaskLabels);
+        });
+
         builder.Entity<TaskLabel>(taskLabel =>
         {
             taskLabel

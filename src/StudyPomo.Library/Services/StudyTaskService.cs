@@ -40,20 +40,20 @@ public class StudyTaskService : IStudyTaskService
         StudyTask studyTask = studyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC));
 
         // Now add labels to task
-        if (studyTaskCreate.TaskLabelIds != null)
+        if (studyTaskCreate.TaskLabelIds != null && studyTaskCreate.TaskLabelIds.Any())
         {
-            foreach (int labelId in studyTaskCreate.TaskLabelIds)
+            // Fetch all labels at once
+            var labels = await _unitOfWork.TaskLabel.GetAllAsync(u => studyTaskCreate.TaskLabelIds.Contains(u.Id));
+
+            // Create the StudyTaskLabel entities
+            var studyTaskLabels = labels.Select(label => new StudyTaskLabel
             {
-                var label = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == labelId);
-                if (label != null)
-                {
-                    await _unitOfWork.StudyTaskLabel.AddAsync(new StudyTaskLabel
-                    {
-                        StudyTask = studyTask,
-                        TaskLabel = label
-                    });
-                }
-            }
+                StudyTask = studyTask,
+                TaskLabel = label
+            });
+
+            // Add all StudyTaskLabels in one go
+            await _unitOfWork.StudyTaskLabel.AddRangeAsync(studyTaskLabels);
         }
 
         await _unitOfWork.StudyTask.AddAsync(studyTask);
@@ -85,7 +85,6 @@ public class StudyTaskService : IStudyTaskService
         ApplicationUser user = await _userService.GetCurrentUserAsync();
 
         StudyTask? studyTask = await _unitOfWork.StudyTask.GetAsync(u => u.Id == studyTaskUpdate.Id);
-
         if (studyTask == null) throw new Exception("Study Task not found");
 
         StudyTask updatedStudyTask = studyTaskUpdate.ToEntity(TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC), studyTask);
@@ -93,25 +92,23 @@ public class StudyTaskService : IStudyTaskService
         await RemoveAllLabels(studyTask.Id);
 
         // Now add labels to task
-        if (studyTaskUpdate.TaskLabelIds != null)
+        if (studyTaskUpdate.TaskLabelIds != null && studyTaskUpdate.TaskLabelIds.Any())
         {
-            foreach (int labelId in studyTaskUpdate.TaskLabelIds)
+            var labels = await _unitOfWork.TaskLabel.GetAllAsync(u => studyTaskUpdate.TaskLabelIds.Contains(u.Id));
+
+            var studyTaskLabels = labels.Select(label => new StudyTaskLabel
             {
-                var label = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == labelId);
-                if (label != null)
-                {
-                    await _unitOfWork.StudyTaskLabel.AddAsync(new StudyTaskLabel
-                    {
-                        StudyTaskId = studyTask.Id,
-                        TaskLabelId = label.Id
-                    });
-                }
-            }
+                StudyTaskId = studyTask.Id,
+                TaskLabelId = label.Id
+            });
+
+            await _unitOfWork.StudyTaskLabel.AddRangeAsync(studyTaskLabels);
         }
 
         _unitOfWork.StudyTask.Update(updatedStudyTask);
         _unitOfWork.Complete();
     }
+
 
     public async Task RemoveAllLabels(int studyTaskId)
     

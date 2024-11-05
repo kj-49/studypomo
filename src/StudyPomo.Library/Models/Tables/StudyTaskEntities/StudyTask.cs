@@ -1,6 +1,7 @@
 ﻿using StudyPomo.Library.Models.Identity;
 using StudyPomo.Library.Models.Tables.CourseEntities;
 using StudyPomo.Library.Models.Tables.LabelEntities;
+using StudyPomo.Library.Models.Tables.StudyTaskLabelEntities;
 using StudyPomo.Library.Models.Tables.TaskPriorityEntities;
 using System;
 using System.Collections.Generic;
@@ -27,5 +28,6 @@ public class StudyTask
     public int? CourseId { get; set; }
     public Course? Course { get; set; }
 
+    public List<StudyTaskLabel> StudyTaskLabels { get; set; }
     public List<TaskLabel> TaskLabels { get; } = [];
 }
