@@ -29,6 +29,11 @@ public class GeneralRepository<T> : IRepository<T> where T : class
         return (await dbSet.AddAsync(model)).Entity;
     }
 
+
+    public async Task AddRangeAsync(IEnumerable<T> models)
+    {
+        await dbSet.AddRangeAsync(models);
+    }
     public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties)
     {
         IQueryable<T> query = dbSet;

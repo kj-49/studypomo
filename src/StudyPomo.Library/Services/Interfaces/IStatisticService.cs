@@ -9,6 +9,6 @@ namespace StudyPomo.Library.Services.Interfaces;
 
 public interface IStatisticService
 {
-    int GetCurrentStreak(IEnumerable<StudySession> studySessions);
-    Task<int> GetCurrentStreakAsync(int userId);
+    int GetCurrentStreak(IEnumerable<StudySession> studySessions, TimeZoneInfo userTimeZone);
+    Task<int> GetCurrentStreakAsync(int userId, TimeZoneInfo userTimeZone);
 }

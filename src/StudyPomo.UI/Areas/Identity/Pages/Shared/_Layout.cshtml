@@ -58,7 +58,7 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <i class="bi bi-fire me-1"></i>
-                        @(await StatisticService.GetCurrentStreakAsync((await UserService.GetCurrentUserAsync()).Id))
+                        @(await StatisticService.GetCurrentStreakAsync((await UserService.GetCurrentUserAsync()).Id, TimeZoneInfo.FindSystemTimeZoneById((await UserService.GetCurrentUserAsync(User)).TimeZoneId)))
                         <span class="ms-3 me-2">/</span>
                     }
                     <div>
