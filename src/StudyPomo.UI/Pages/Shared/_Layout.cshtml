@@ -5,6 +5,15 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserService UserService
 @inject IStatisticService StatisticService
+@{
+    bool IsActivePage(string page)
+    {
+        var currentPath = Context.Request.Path;
+        return currentPath.Equals(page, StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+
 
 <!DOCTYPE html>
 <html lang="en" x-data="{
@@ -76,32 +85,35 @@
                     <div class="d-flex flex-column align-items-sm-start px-3 pt-3 mb-auto">
                         <div class="w-100">
                             <ul class="navbar-nav flex-grow-1">
-                                <li class="nav-item">
-                                    <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Index">
-                                        <i class="bi bi-house-door me-1 text-muted"></i> Home
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Labels/Index">
-                                        <i class="bi bi-tag me-1 text-muted"></i> Labels
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Tasks/All">
-                                        <i class="bi bi-list-task me-1 text-muted"></i> Tasks
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link illuminate text-nowrap" asp-page="/Manage/Courses/All">
-                                        <i class="bi bi-book me-1 text-muted"></i> Courses
-                                    </a>
-                                </li>
+                                <ul class="navbar-nav flex-grow-1">
+                                    <li class="nav-item">
+                                        <a class="nav-link illuminate text-nowrap @(IsActivePage("/") ? "active" : "")" asp-page="/Manage/Index">
+                                            <i class="bi bi-house-door me-1 text-muted"></i> Home
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link illuminate text-nowrap @(IsActivePage("/Manage/Labels") ? "active" : "")" asp-page="/Manage/Labels/Index">
+                                            <i class="bi bi-tag me-1 text-muted"></i> Labels
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link illuminate text-nowrap @(IsActivePage("/Manage/Tasks/All") ? "active" : "")" asp-page="/Manage/Tasks/All">
+                                            <i class="bi bi-list-task me-1 text-muted"></i> Tasks
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link illuminate text-nowrap @(IsActivePage("/Manage/Courses/All") ? "active" : "")" asp-page="/Manage/Courses/All">
+                                            <i class="bi bi-book me-1 text-muted"></i> Courses
+                                        </a>
+                                    </li>
+                                </ul>
+
                             </ul>
                             <hr />
                             <ul class="navbar-nav">
                                 <small class="fw-semibold mb-1" style="padding-left: 0.6rem">Quick Actions</small>
                                 <li class="nav-item">
-                                    <a class="nav-link illuminate text-nowrap" asp-page="/Timer/Index">
+                                    <a class="nav-link illuminate text-nowrap @(IsActivePage("/Timer") ? "active" : "")" asp-page="/Timer/Index">
                                         <i class="bi bi-clock me-1 text-muted"></i> Enter Pomodoro
                                     </a>
                                 </li>
@@ -110,7 +122,7 @@
                             <ul class="navbar-nav">
                                 <small class="fw-semibold mb-1" style="padding-left: 0.6rem">Account</small>
                                 <li class="nav-item">
-                                    <a class="nav-link illuminate text-nowrap" asp-area="Identity" asp-page="/Account/Manage/Index">
+                                    <a class="nav-link illuminate text-nowrap @(IsActivePage("/Identity/Account/Manage") ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/Index">
                                         <i class="bi bi-gear me-1 text-muted"></i> Settings
                                     </a>
                                 </li>
@@ -159,32 +171,35 @@
                                 </div>
                                 <div class="offcanvas-body">
                                     <ul class="navbar-nav">
-                                        <li class="nav-item">
-                                            <a class="nav-link illuminate" asp-page="/Manage/Index">
-                                                <i class="bi bi-house-door me-1 text-muted"></i> Home
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link illuminate" asp-page="/Manage/Labels/Index">
-                                                <i class="bi bi-tag me-1 text-muted"></i> Labels
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link illuminate" asp-page="/Manage/Tasks/All">
-                                                <i class="bi bi-list-task me-1 text-muted"></i> Tasks
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link illuminate" asp-page="/Manage/Courses/All">
-                                                <i class="bi bi-book me-1 text-muted"></i> Courses
-                                            </a>
-                                        </li>
+                                        <ul class="navbar-nav flex-grow-1">
+                                            <li class="nav-item">
+                                                <a class="nav-link illuminate text-nowrap @(IsActivePage("/") ? "active" : "")" asp-page="/Manage/Index">
+                                                    <i class="bi bi-house-door me-1 text-muted"></i> Home
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link illuminate text-nowrap @(IsActivePage("/Manage/Labels") ? "active" : "")" asp-page="/Manage/Labels/Index">
+                                                    <i class="bi bi-tag me-1 text-muted"></i> Labels
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link illuminate text-nowrap @(IsActivePage("/Manage/Tasks/All") ? "active" : "")" asp-page="/Manage/Tasks/All">
+                                                    <i class="bi bi-list-task me-1 text-muted"></i> Tasks
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link illuminate text-nowrap @(IsActivePage("/Manage/Courses/All") ? "active" : "")" asp-page="/Manage/Courses/All">
+                                                    <i class="bi bi-book me-1 text-muted"></i> Courses
+                                                </a>
+                                            </li>
+                                        </ul>
+
                                     </ul>
                                     <hr />
                                     <ul class="navbar-nav">
                                         <small class="fw-semibold mb-1" style="padding-left: 0.6rem">Quick Actions</small>
                                         <li class="nav-item">
-                                            <a class="nav-link illuminate" asp-page="/Timer/Index">
+                                            <a class="nav-link illuminate @(IsActivePage("/Timer") ? "active" : "")" asp-page="/Timer/Index">
                                                 <i class="bi bi-clock me-1 text-muted"></i> Enter Pomodoro
                                             </a>
                                         </li>
@@ -193,7 +208,7 @@
                                     <ul class="navbar-nav">
                                         <small class="fw-semibold mb-1" style="padding-left: 0.6rem">Account</small>
                                         <li class="nav-item">
-                                            <a class="nav-link illuminate" asp-area="Identity" asp-page="/Account/Manage/Index">
+                                            <a class="nav-link illuminate @(IsActivePage("/Identity/Account/Manage") ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/Index">
                                                 <i class="bi bi-gear me-1 text-muted"></i> Settings
                                             </a>
                                         </li>

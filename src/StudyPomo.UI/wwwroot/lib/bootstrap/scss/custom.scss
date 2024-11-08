@@ -84,6 +84,11 @@ $color-mode-type: data;
         }
     }
 
+    .nav-link.illuminate.active {
+        background-color: darken($body-bg, $darken-percentage) !important;
+        color: $body-color !important;
+    }
+
     .list-group-item.bg-hover:hover {
         background-color: $body-tertiary-bg;
     }
@@ -245,6 +250,11 @@ $color-mode-type: data;
             background-color: lighten($body-bg-dark, $lighten-percentage) !important;
             color: $body-color-dark !important;
         }
+    }
+
+    .nav-link.illuminate.active {
+        background-color: lighten($body-bg-dark, $lighten-percentage) !important;
+        color: $body-color-dark !important;
     }
 
     .list-group-item.bg-hover:hover {
