@@ -78,7 +78,7 @@
             <!-- Sidebar (hidden on smaller screens) -->
             @if (SignInManager.IsSignedIn(User))
             {
-                <div :class="pinned ? 'd-none d-md-flex flex-column' : 'd-none'" class="bg-body border-1 border-end" style="min-width: 275px;">
+                <div :class="pinned ? 'd-none d-lg-flex flex-column' : 'd-none'" class="bg-body border-1 border-end" style="min-width: 275px;">
                     <div class="border-1 border-bottom p-3 px-4">
                         <span x-on:click="pinned = false" class="text-muted" data-bs-dismiss="offcanvas" style="cursor: pointer;"><i class="bi bi-arrow-bar-left me-2"></i>Collapse</span>
                     </div>
@@ -156,7 +156,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <!-- Offcanvas (shown on smaller screens) -->
-                            <div :class="pinned ? 'd-md-none' : ''" class="offcanvas offcanvas-start rounded-end-4" style="width: 300px;" tabindex="-1" id="navOffcanvas" aria-labelledby="navOffcanvasLabel">
+                            <div :class="pinned ? 'd-lg-none' : ''" class="offcanvas offcanvas-start rounded-end-4" style="width: 300px;" tabindex="-1" id="navOffcanvas" aria-labelledby="navOffcanvasLabel">
                                 <div class="offcanvas-header">
                                     <div class="d-flex justify-content-between w-100">
                                         <div>
