@@ -163,11 +163,11 @@
                                             <h5 class="offcanvas-title" id="nav-offcanvas-label">studypomo</h5>
                                             <a class="small text-muted" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bi bi-person-fill me-1"></i>@UserManager.GetUserName(User)</a>
                                         </div>
-                                        <i x-on:click="pinned = true" style="cursor: pointer;" class="mt-2 d-none d-md-block" :class="pinned ? 'bi bi-pin-fill' : 'bi bi-pin'" data-bs-dismiss="offcanvas"></i>
+                                        <i x-on:click="pinned = true" style="cursor: pointer;" class="mt-2 d-none d-lg-block" :class="pinned ? 'bi bi-pin-fill' : 'bi bi-pin'" data-bs-dismiss="offcanvas"></i>
                                     </div>
 
 
-                                    <button type="button" class="btn-close d-block d-md-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                    <button type="button" class="btn-close d-block d-lg-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                 </div>
                                 <div class="offcanvas-body">
                                     <ul class="navbar-nav">
