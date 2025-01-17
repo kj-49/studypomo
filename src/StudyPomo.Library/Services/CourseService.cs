@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using StudyPomo.Library.Data.Database;
 using StudyPomo.Library.Data.Interfaces;
 using StudyPomo.Library.Models.Identity;
 using StudyPomo.Library.Models.Tables.CourseEntities;
@@ -14,38 +16,33 @@ namespace StudyPomo.Library.Services;
 
 public class CourseService : ICourseService
 {
-
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IUserService _userService;
+    private readonly ApplicationDbContext _context;
 
-    public CourseService(IUnitOfWork unitOfWork, IUserService userService)
+    public CourseService(IUserService userService, ApplicationDbContext context)
     {
-        _unitOfWork = unitOfWork;
         _userService = userService;
+        _context = context;
     }
 
     public async Task ArchiveAsync(int id)
     {
-        Course? course = await _unitOfWork.Course.GetAsync(u => u.Id == id);
-        if (course == null) throw new Exception("Course not found");
-        
+        Course course = await _context.Courses.SingleAsync(u => u.Id == id);
+
         course.Archived = true;
         course.DateUpdated = DateTime.Now;
 
-        _unitOfWork.Course.Update(course);
-        _unitOfWork.Complete();
+        await _context.SaveChangesAsync();
     }
 
     public async Task UnArchiveAsync(int id)
     {
-        Course? course = await _unitOfWork.Course.GetAsync(u => u.Id == id);
-        if (course == null) throw new Exception("Course not found");
+        Course course = await _context.Courses.SingleAsync(u => u.Id == id);
 
         course.Archived = false;
         course.DateUpdated = DateTime.Now;
 
-        _unitOfWork.Course.Update(course);
-        _unitOfWork.Complete();
+        await _context.SaveChangesAsync();
     }
 
     public async Task CreateAsync(CourseCreate courseCreate)
@@ -55,8 +52,9 @@ public class CourseService : ICourseService
 
         Course course = courseCreate.ToEntity(user.Id);
 
-        await _unitOfWork.Course.AddAsync(course);
-        _unitOfWork.Complete();
+        await _context.Courses.AddAsync(course);
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task<ICollection<Course>> GetAllAsync(int userId, bool includeArchived = false)
@@ -68,38 +66,38 @@ public class CourseService : ICourseService
             filter = u => u.UserId == userId && u.Archived == false;
         }
 
-        IEnumerable<Course> courses = await _unitOfWork.Course.GetAllAsync(
-            filter: filter,
-            includeProperties: t => t.StudyTasks);
-
-        return courses.ToList();
+        return await _context.Courses
+            .Where(filter)
+            .Include(u => u.StudyTasks)
+            .ToListAsync();
     }
 
     public async Task<Course> GetAsync(int id)
     {
-        Course? course = await _unitOfWork.Course.GetAsync(
-            filter: u => u.Id == id,
-            includeProperties: t => t.StudyTasks);
-        if (course == null) throw new Exception("Course not found");
-        return course;
+        return await _context.Courses
+            .Include(u => u.StudyTasks)
+            .SingleAsync(u => u.Id == id);
     }
 
     public async Task RemoveAsync(int id)
     {
-        Course? course = await _unitOfWork.Course.GetAsync(u => u.Id == id);
-        if (course == null) throw new Exception("Course not found");
+        Course course = await _context.Courses.SingleAsync(u => u.Id == id);
 
-        _unitOfWork.Course.Remove(course);
-        _unitOfWork.Complete();
+        _context.Courses.Remove(course);
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(CourseUpdate courseUpdate)
     {
-        Course? course = await _unitOfWork.Course.GetAsync(u => u.Id == courseUpdate.Id);
-        if (course == null) throw new Exception("Course not found");
+        Course course = await _context.Courses.SingleAsync(u => u.Id == courseUpdate.Id);
+
+        _context.Courses.Remove(course);
 
         Course updatedCourse = courseUpdate.ToEntity(course);
-        _unitOfWork.Course.Update(updatedCourse);
-        _unitOfWork.Complete();
+
+        _context.Update(updatedCourse);
+
+        await _context.SaveChangesAsync();
     }
 }
