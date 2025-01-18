@@ -140,13 +140,18 @@ public class StudyTaskService : IStudyTaskService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ICollection<StudyTask>> GetAllAsync(int userId, bool includeArchived = false)
+    public async Task<ICollection<StudyTask>> GetAllAsync(int userId, bool includeArchived = false, bool showFromArchivedCourses = false)
     {
         IQueryable<StudyTask> query = _context.StudyTasks;
 
         if (!includeArchived)
         {
             query = query.Where(u => !u.Archived);
+        }
+
+        if (!showFromArchivedCourses)
+        {
+            query = query.Where(u => u.Course == null || !u.Course.Archived);
         }
 
         return await query
