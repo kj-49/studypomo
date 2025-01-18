@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using StudyPomo.Library.Data;
+using StudyPomo.Library.Data.Database;
 using StudyPomo.Library.Data.Interfaces;
 using StudyPomo.Library.Models.Identity;
 using StudyPomo.Library.Models.Tables.StudySessionEntities;
@@ -18,12 +19,12 @@ public class UserService : IUserService
 {
     private readonly IHttpContextAccessor _http;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IUnitOfWork _unitOfWork;
-    public UserService(IHttpContextAccessor http, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
+    private readonly ApplicationDbContext _context;
+    public UserService(IHttpContextAccessor http, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
     {
         _http = http;
         _userManager = userManager;
-        _unitOfWork = unitOfWork;
+        _context = context;
     }
 
     public async Task<ApplicationUser> GetCurrentUserAsync(ClaimsPrincipal cliamsPrinciple)
@@ -40,7 +41,7 @@ public class UserService : IUserService
     {
         ClaimsPrincipal? principle = _http?.HttpContext?.User;
 
-        if (principle == null) return null;
+        if (principle == null) throw new Exception("User not found.");
 
         ApplicationUser? user = await _userManager.GetUserAsync(principle);
 
@@ -61,9 +62,9 @@ public class UserService : IUserService
         return false;
     }
 
-    public void UpdateUser(ApplicationUser user)
+    public async void UpdateUser(ApplicationUser user)
     {
-        _unitOfWork.User.Update(user);
-        _unitOfWork.Complete();
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
     }
 }

@@ -26,6 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<StudySession> StudySessions { get; set; }
     public DbSet<StudyType> StudyTypes { get; set; }
     public DbSet<TaskLabel> TaskLabels { get; set; }
+    public DbSet<StudyTaskLabel> StudyTaskLabels { get; set; }
     public DbSet<Course> Courses { get; set; }
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;

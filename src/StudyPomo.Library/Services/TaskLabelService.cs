@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using StudyPomo.Library.Data.Database;
 using StudyPomo.Library.Data.Interfaces;
 using StudyPomo.Library.Models.Identity;
 using StudyPomo.Library.Models.Tables.LabelEntities;
@@ -15,36 +17,35 @@ namespace StudyPomo.Library.Services;
 
 public class TaskLabelService : ITaskLabelService
 {
-    public readonly IUnitOfWork _unitOfWork;
     private readonly IUserService _userService;
     private readonly IMapper _mapper;
+    private readonly ApplicationDbContext _context;
 
-    public TaskLabelService(IUnitOfWork unitOfWork, IUserService userService, IMapper mapper)
+    public TaskLabelService(IUserService userService, IMapper mapper, ApplicationDbContext context)
     {
-        _unitOfWork = unitOfWork;
         _userService = userService;
         _mapper = mapper;
+        _context = context;
     }
 
     public async Task CreateAsync(TaskLabelCreate taskLabelCreate)
     {
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
-        if (user == null) throw new Exception("User not found");
 
         TaskLabel taskLabel = taskLabelCreate.ToTaskLabel(user.Id);
 
-        await _unitOfWork.TaskLabel.AddAsync(taskLabel);
-        _unitOfWork.Complete();
+        await _context.TaskLabels.AddAsync(taskLabel);
+
+        _context.SaveChangesAsync();
     }
 
     public async Task<ICollection<TaskLabel>> GetAllAsync(int userId)
     {
-        IEnumerable<TaskLabel> taskLabels = await _unitOfWork.TaskLabel.GetAllAsync(
-            u => u.UserId == userId,
-            t => t.User,
-            t => t.StudyTasks
-        );
-        return taskLabels.ToList();
+        return await _context.TaskLabels
+            .Where(u => u.UserId == userId)
+            .Include(u => u.User)
+            .Include(u => u.StudyTasks)
+            .ToListAsync();
     }
 
     public async Task UpdateAsync(TaskLabelUpdate taskLabelUpdate)
@@ -52,29 +53,24 @@ public class TaskLabelService : ITaskLabelService
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) throw new Exception("User not found");
 
-        TaskLabel? taskLabel = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == taskLabelUpdate.Id);
-        if (taskLabel == null) throw new Exception("Task label not found");
+        TaskLabel taskLabel = await _context.TaskLabels.SingleAsync(u => u.Id == taskLabelUpdate.Id);
 
         taskLabel = taskLabelUpdate.ToTaskLabel(user.Id, taskLabel);
 
-        _unitOfWork.TaskLabel.Update(taskLabel);
-        _unitOfWork.Complete();
+        _context.TaskLabels.Update(taskLabel);
+        await _context.SaveChangesAsync();
     }
 
     public async Task RemoveAsync(int id)
     {
-        TaskLabel? taskLabel = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == id);
-        if (taskLabel == null) throw new Exception("Task label not found");
+        TaskLabel taskLabel = await _context.TaskLabels.SingleAsync(u => u.Id == id);
 
-        _unitOfWork.TaskLabel.Remove(taskLabel);
-        _unitOfWork.Complete();
+        _context.TaskLabels.Remove(taskLabel);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<TaskLabel?> GetAsync(int id)
     {
-        TaskLabel? taskLabel = await _unitOfWork.TaskLabel.GetAsync(u => u.Id == id);
-        if (taskLabel == null) throw new Exception("Task label not found");
-
-        return taskLabel;
+        return await _context.TaskLabels.SingleAsync(u => u.Id == id);
     }
 }

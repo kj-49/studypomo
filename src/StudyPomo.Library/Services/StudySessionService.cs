@@ -1,6 +1,8 @@
 ﻿                                                                                                                                                                                                            using AutoMapper;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using StudyPomo.Library.Data.Database;
 using StudyPomo.Library.Data.Interfaces;
 using StudyPomo.Library.Models.Identity;
 using StudyPomo.Library.Models.Tables.LabelEntities;
@@ -20,15 +22,15 @@ namespace StudyPomo.Library.Services;
 
 public class StudySessionService : IStudySessionService
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
+    private readonly ApplicationDbContext _context;
 
-    public StudySessionService(IMapper mapper, IUnitOfWork unitOfWork, IUserService userService)
+    public StudySessionService(IMapper mapper, IUserService userService, ApplicationDbContext context)
     {
         _mapper = mapper;
-        _unitOfWork = unitOfWork;
         _userService = userService;
+        _context = context;
     }
 
     public async Task CreateAsync(StudySessionCreate studySessionCreate)
@@ -37,37 +39,33 @@ public class StudySessionService : IStudySessionService
 
         StudySession studySession = studySessionCreate.ToEntity(user.Id);
 
-        await _unitOfWork.StudySession.AddAsync(studySession);
+        await _context.StudySessions.AddAsync(studySession);
 
-        _unitOfWork.Complete();
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(StudySessionUpdate studySessionUpdate)
     {
         ApplicationUser user = await _userService.GetCurrentUserAsync();
 
-        StudySession? studySession = await _unitOfWork.StudySession.GetAsync(u => u.Id == studySessionUpdate.Id);
-
-        if (studySession == null) throw new Exception("Study session not found");
+        StudySession studySession = await _context.StudySessions.SingleAsync(u => u.Id == studySessionUpdate.Id);
 
         studySession = studySessionUpdate.ToEntity(studySession);
 
-        _unitOfWork.StudySession.Update(studySession);
-        _unitOfWork.Complete();
+        _context.StudySessions.Update(studySession);
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task<ICollection<StudySession>> GetAllAsync(int userId)
     {
-        IEnumerable<StudySession> studyTasks = await _unitOfWork.StudySession.GetAllAsync(
-            u => u.User.Id == userId
-        );
-        return studyTasks.ToList();
+        return await _context.StudySessions
+            .Where(u => u.UserId == userId)
+            .ToListAsync();
     }
 
     public async Task<StudySession?> GetAsync(string UUID)
     {
-        StudySession? studySession = await _unitOfWork.StudySession.GetAsync(u => u.SessionUUID == UUID);
-
-        return studySession;
+        return await _context.StudySessions.SingleOrDefaultAsync(u => u.SessionUUID == UUID);
     }
 }
