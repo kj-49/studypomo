@@ -37,8 +37,6 @@ public class StudyTaskService : IStudyTaskService
         ApplicationUser? user = await _userService.GetCurrentUserAsync();
         if (user == null) throw new Exception("User not found");
 
-        TaskPriority taskPriority = await _context.TaskPriorities.SingleAsync(u => u.Id == studyTaskCreate.TaskPriorityId);
-
         StudyTask studyTask = studyTaskCreate.ToEntity(user.Id, TimeZoneInfo.FindSystemTimeZoneById(user.TimeZoneId ?? SD.UTC));
 
         // Now add labels to task
