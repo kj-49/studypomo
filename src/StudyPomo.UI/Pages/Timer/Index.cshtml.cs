@@ -29,7 +29,6 @@ namespace StudyPomo.UI.Pages.Timer;
 
 public class IndexModel : BaseModel
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IStudyTaskService _studyTaskService;
     private readonly ITaskPriorityService _taskPriorityService;
     private readonly ITaskLabelService _taskLabelService;
@@ -44,7 +43,6 @@ public class IndexModel : BaseModel
 
     public IndexModel(
         IUserService userService,
-        IUnitOfWork unitOfWork,
         IStudyTaskService studyTaskService,
         IMapper mapper,
         ITaskPriorityService taskPriorityService,
@@ -56,7 +54,6 @@ public class IndexModel : BaseModel
         : base(userService)
     {
         _userService = userService;
-        _unitOfWork = unitOfWork;
         _studyTaskService = studyTaskService;
         _mapper = mapper;
         _taskPriorityService = taskPriorityService;
