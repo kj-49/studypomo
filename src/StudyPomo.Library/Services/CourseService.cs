@@ -92,8 +92,6 @@ public class CourseService : ICourseService
     {
         Course course = await _context.Courses.SingleAsync(u => u.Id == courseUpdate.Id);
 
-        _context.Courses.Remove(course);
-
         Course updatedCourse = courseUpdate.ToEntity(course);
 
         _context.Update(updatedCourse);
