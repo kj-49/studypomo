@@ -27,3 +27,8 @@ for details on configuring this project to bundle and minify static web assets. 
 #nav-offcanvas {
     z-index: 1050; /* Higher than the hover area */
 }
+.pin-icon:hover {
+    background-color: #f0f0f0; /* Change this to any color you want */
+    border-radius: 4px; /* Optional: gives it a rounded look */
+}
+
