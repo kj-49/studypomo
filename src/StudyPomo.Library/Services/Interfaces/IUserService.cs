@@ -9,6 +9,6 @@ namespace StudyPomo.Library.Services.Interfaces
         Task<ApplicationUser> GetCurrentUserAsync();
         Task<ApplicationUser> GetCurrentUserAsync(ClaimsPrincipal cliamsPrinciple);
         Task<bool> IsExternallyAuthenticated(ApplicationUser user);
-        void UpdateUser(ApplicationUser user);
+        Task UpdateUser(ApplicationUser user);
     }
 }
