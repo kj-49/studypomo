@@ -62,7 +62,7 @@ public class UserService : IUserService
         return false;
     }
 
-    public async void UpdateUser(ApplicationUser user)
+    public async Task UpdateUser(ApplicationUser user)
     {
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
