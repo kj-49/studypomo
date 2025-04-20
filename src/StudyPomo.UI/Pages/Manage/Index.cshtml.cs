@@ -83,7 +83,7 @@ public class IndexModel : BaseModel
         Courses = await _courseService.GetAllAsync(user.Id);
         StudyTasks = await _studyTaskService.GetAllAsync(user.Id);
 
-        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
+        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), nameof(TaskPriority.Id), nameof(TaskPriority.Level));
         TaskLabels = await _taskLabelService.GetAllAsync(user.Id);
 
         await InitializeTimeZoneAsync();
