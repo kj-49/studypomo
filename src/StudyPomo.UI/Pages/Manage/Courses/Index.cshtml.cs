@@ -96,7 +96,7 @@ public class IndexModel : BaseModel
     public async Task PopulateFields(int userId, int courseId)
     {
         Course = await _courseService.GetAsync(courseId);
-        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
+        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), nameof(TaskPriority.Id), nameof(TaskPriority.Level));
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
         Courses = await _courseService.GetAllAsync(userId);
     }

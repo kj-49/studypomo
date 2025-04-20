@@ -83,7 +83,7 @@ public class AllModel : BaseModel
 
         StudyTasks = await _studyTaskService.GetAllAsync(userId);
 
-        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), "Id", "Level");
+        TaskPriorities = new SelectList(await _taskPriorityService.GetAllAsync(), nameof(TaskPriority.Id), nameof(TaskPriority.Level));
         TaskLabels = await _taskLabelService.GetAllAsync(userId);
         Courses = await _courseService.GetAllAsync(userId);
 
